@@ -27,6 +27,11 @@
       {% assign bundle_total_price = main_product.selected_or_first_available_variant.price %}
     {% endif %}
 
+    {% if bundle_compare_price_raw != blank and bundle_compare_price_number > bundle_total_price %}
+      {% assign bundle_savings = bundle_compare_price_number | minus: bundle_total_price %}
+      {% assign bundle_savings_pct = bundle_savings | times: 100 | divided_by: bundle_compare_price_number | round %}
+    {% endif %}
+
     {% assign shoes_only_price = main_product.selected_or_first_available_variant.price %}
 
     <label class="bundle-row">
@@ -86,6 +91,9 @@
             <div class="bundle-price">
               {{ bundle_total_price | money }}
             </div>
+            {% if bundle_savings_pct and bundle_savings_pct > 0 %}
+              <div class="bundle-savings-tag">Save {{ bundle_savings_pct }}%</div>
+            {% endif %}
           </div>
         </div>
       </label>
@@ -412,12 +420,28 @@
     font-size: 0.72rem;
     font-weight: 700;
     line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .bundle-row:has(input:checked) {
     border-color: #111;
     background: #fafafa;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+  }
+
+  .bundle-savings-tag {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 3px 8px;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
   }
 
   .bundle-info {

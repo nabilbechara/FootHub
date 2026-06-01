@@ -141,6 +141,50 @@
 {% schema %}
 {
   "name": "Pro Footer",
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "main-menu"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "FOOTHUB"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Brand tagline",
+      "default": "Professional football shoes, jerseys, and equipment built for match day performance."
+    },
+    {
+      "type": "url",
+      "id": "privacy_link",
+      "label": "Privacy policy link"
+    },
+    {
+      "type": "url",
+      "id": "terms_link",
+      "label": "Terms of service link"
+    }
+  ],
   "presets": [
     {
       "name": "Pro Footer"
