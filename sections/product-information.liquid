@@ -363,45 +363,83 @@
       white-space: nowrap;
     }
   }
-.bundle-block {
-  margin-top: 16px;
-}
+/* =================================================================
+   Foothub — Premium Product Page Upgrades
+   ================================================================= */
 
-.bundle-radio input {
-  display: none;
-}
-
-.bundle-card {
-  display: flex;
-  gap: 12px;
-  padding: 14px;
-  border: 2px solid #ddd;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.bundle-radio input:checked + .bundle-card {
-  border-color: #000;
-}
-
-.bundle-image {
-  width: 80px;
-  height: auto;
-  border-radius: 8px;
-}
-
-.bundle-title {
-  display: block;
-  font-weight: 600;
-}
-
-.bundle-price {
-  margin-top: 6px;
+/* ATC button: bold, sport-forward, impossible to miss */
+.product-information .add-to-cart-button.button {
+  min-height: 54px;
+  font-size: 1.05rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 10px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
+.product-information .add-to-cart-button.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
 
+.product-information .add-to-cart-button.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
 
+/* Price: large, impactful */
+.product-information .price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.product-information .compare-at-price {
+  font-size: 1rem;
+  opacity: 0.5;
+}
+
+/* Size buttons: large clickable boxes */
+.product-information .variant-option--buttons .variant-option__button-label {
+  min-width: 52px;
+  min-height: 46px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.product-information .variant-option--buttons .variant-option__button-label:hover {
+  transform: translateY(-1px);
+}
+
+/* Low stock pulse animation */
+.product-information .product-inventory__icon-low {
+  animation: fh-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes fh-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Gallery: slightly rounded */
+.product-information .media-gallery__thumbnail {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Sticky bar button */
+.sticky-add-to-cart__button.add-to-cart-button {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
 
 {% endstylesheet %}

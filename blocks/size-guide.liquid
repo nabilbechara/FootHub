@@ -1,0 +1,225 @@
+{% liquid
+  assign has_size_option = false
+  for opt in closest.product.options
+    assign opt_lower = opt | downcase
+    if opt_lower contains 'size'
+      assign has_size_option = true
+      break
+    endif
+  endfor
+%}
+
+{% if has_size_option or request.visual_preview_mode %}
+  <div class="fh-size-guide" {{ block.shopify_attributes }}>
+    <button
+      class="fh-size-guide__trigger"
+      type="button"
+      aria-haspopup="dialog"
+      onclick="document.getElementById('fh-size-dialog-{{ block.id }}').showModal()"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Size Guide
+    </button>
+
+    <dialog id="fh-size-dialog-{{ block.id }}" class="fh-size-guide__dialog">
+      <div class="fh-size-guide__inner">
+        <div class="fh-size-guide__header">
+          <h2 class="fh-size-guide__title">Football Boot Size Guide</h2>
+          <button
+            class="fh-size-guide__close"
+            type="button"
+            aria-label="Close size guide"
+            onclick="this.closest('dialog').close()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="fh-size-guide__intro">Football boots run true to size. If you're between sizes, go half a size up for comfort and sock clearance.</p>
+
+        <div class="fh-size-guide__table-wrap">
+          <table class="fh-size-guide__table">
+            <thead>
+              <tr>
+                <th>EU</th>
+                <th>UK</th>
+                <th>US</th>
+                <th>Foot (cm)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>38</td><td>5</td><td>6</td><td>24.0</td></tr>
+              <tr><td>39</td><td>5.5</td><td>6.5</td><td>24.5</td></tr>
+              <tr><td>40</td><td>6</td><td>7</td><td>25.5</td></tr>
+              <tr><td>41</td><td>7</td><td>8</td><td>26.0</td></tr>
+              <tr><td>42</td><td>8</td><td>9</td><td>26.7</td></tr>
+              <tr><td>43</td><td>9</td><td>10</td><td>27.5</td></tr>
+              <tr><td>44</td><td>9.5</td><td>10.5</td><td>28.0</td></tr>
+              <tr><td>45</td><td>10</td><td>11</td><td>28.8</td></tr>
+              <tr><td>46</td><td>11</td><td>12</td><td>29.5</td></tr>
+              <tr><td>47</td><td>12</td><td>13</td><td>30.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="fh-size-guide__tip">
+          <strong>How to measure:</strong> Stand on paper, trace your foot, and measure heel to longest toe.
+        </p>
+      </div>
+    </dialog>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .fh-size-guide {
+    display: inline-flex;
+  }
+
+  .fh-size-guide__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-family: var(--font-body--family);
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .fh-size-guide__trigger:hover {
+    opacity: 1;
+  }
+
+  .fh-size-guide__dialog {
+    padding: 0;
+    border: none;
+    border-radius: 16px;
+    max-width: 520px;
+    width: 90vw;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
+  }
+
+  .fh-size-guide__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(3px);
+  }
+
+  .fh-size-guide__inner {
+    padding: 28px 28px 24px;
+  }
+
+  .fh-size-guide__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .fh-size-guide__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  .fh-size-guide__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    border-radius: 6px;
+    transition: opacity 0.15s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .fh-size-guide__close:hover {
+    opacity: 1;
+    background: rgb(var(--color-foreground-rgb) / 0.08);
+  }
+
+  .fh-size-guide__intro {
+    font-size: 0.88rem;
+    color: rgb(var(--color-foreground-rgb) / 0.65);
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+
+  .fh-size-guide__table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+  }
+
+  .fh-size-guide__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .fh-size-guide__table th {
+    background: rgb(var(--color-foreground-rgb) / 0.06);
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-foreground);
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+  }
+
+  .fh-size-guide__table td {
+    padding: 9px 14px;
+    text-align: center;
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.06);
+    color: var(--color-foreground);
+  }
+
+  .fh-size-guide__table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .fh-size-guide__table tbody tr:nth-child(even) {
+    background: rgb(var(--color-foreground-rgb) / 0.03);
+  }
+
+  .fh-size-guide__tip {
+    margin: 14px 0 0;
+    font-size: 0.8rem;
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 480px) {
+    .fh-size-guide__inner {
+      padding: 20px 16px 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Size guide",
+  "tag": null,
+  "settings": [],
+  "presets": [{ "name": "Size guide", "category": "Product" }]
+}
+{% endschema %}
