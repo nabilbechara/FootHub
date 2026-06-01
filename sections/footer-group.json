@@ -1,0 +1,56 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "pro_footer_JhieAh": {
+      "type": "pro-footer",
+      "blocks": {
+        "menu_rfgbHU": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu_bDqmh6": {
+          "type": "menu",
+          "settings": {
+            "heading": "Support",
+            "menu": "customer-account-main-menu"
+          }
+        },
+        "menu_iWKzqF": {
+          "type": "menu",
+          "settings": {
+            "heading": "Company",
+            "menu": ""
+          }
+        }
+      },
+      "block_order": [
+        "menu_rfgbHU",
+        "menu_bDqmh6",
+        "menu_iWKzqF"
+      ],
+      "name": "Pro Footer",
+      "settings": {
+        "brand_name": "FOOTHUB",
+        "brand_text": "Professional football shoes, jerseys, and equipment built for match day performance.",
+        "privacy_link": "shopify://policies/privacy-policy",
+        "terms_link": "shopify://policies/terms-of-service"
+      }
+    }
+  },
+  "order": [
+    "pro_footer_JhieAh"
+  ]
+}

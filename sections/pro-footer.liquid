@@ -1,0 +1,150 @@
+{% comment %}
+  Pro Footer – Premium Sports Brand
+{% endcomment %}
+
+<footer class="pro-footer">
+  <div class="pro-footer__inner">
+
+    <div class="pro-footer__grid">
+
+      <!-- BRAND -->
+      <div class="pro-footer__brand">
+        <h3>{{ shop.name }}</h3>
+        <p>
+          Professional football shoes, jerseys, and equipment built for
+          match day performance.
+        </p>
+      </div>
+
+      <!-- NAV -->
+      <div class="pro-footer__col">
+        <span class="pro-footer__title">Shop</span>
+        <ul>
+          <li><a href="/collections/shoes">Football Shoes</a></li>
+          <li><a href="/collections/jerseys">Jerseys</a></li>
+          <li><a href="/collections/equipment">Equipment</a></li>
+        </ul>
+      </div>
+
+      <!-- SUPPORT -->
+      <div class="pro-footer__col">
+        <span class="pro-footer__title">Support</span>
+        <ul>
+          <li><a href="/pages/contact">Contact</a></li>
+          <li><a href="/pages/shipping">Shipping</a></li>
+          <li><a href="/pages/returns">Returns</a></li>
+        </ul>
+      </div>
+
+      <!-- TRUST -->
+      <div class="pro-footer__col">
+        <span class="pro-footer__title">Company</span>
+        <ul>
+          <li><a href="/pages/about">About</a></li>
+          <li><a href="/pages/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/pages/terms-of-service">Terms</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="pro-footer__bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}.</span>
+      <span>Built for match day.</span>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .pro-footer {
+    background: #0b0b0b;
+    color: rgba(255,255,255,0.75);
+    padding: 80px 24px 40px;
+  }
+
+  .pro-footer__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pro-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .pro-footer__brand h3 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    color: #ffffff;
+  }
+
+  .pro-footer__brand p {
+    max-width: 36ch;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .pro-footer__title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .pro-footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .pro-footer li {
+    margin-bottom: 8px;
+  }
+
+  .pro-footer a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.85rem;
+  }
+
+  .pro-footer a:hover {
+    color: #ffffff;
+  }
+
+  .pro-footer__bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  @media (max-width: 900px) {
+    .pro-footer__grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .pro-footer__bottom {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Pro Footer",
+  "presets": [
+    {
+      "name": "Pro Footer"
+    }
+  ]
+}
+{% endschema %}

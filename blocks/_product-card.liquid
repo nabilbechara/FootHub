@@ -1,0 +1,68 @@
+{% liquid
+  assign product = closest.product
+-%}
+
+{% capture children %}
+  {% content_for 'blocks', closest.product: product %}
+{% endcapture %}
+
+{% render 'product-card', children: children, product: product %}
+
+{%- assign size_option = nil -%}
+{%- for option in product.options_with_values -%}
+  {%- assign option_name = option.name | downcase -%}
+  {%- if option_name contains 'size' -%}
+    {%- assign size_option = option -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if size_option -%}
+  <div class="pro-size-row pro-size-row--collection">
+    {%- for value in size_option.values -%}
+      {%- assign available = false -%}
+
+      {%- for variant in product.variants -%}
+        {%- if
+          variant.option1 == value
+          or variant.option2 == value
+          or variant.option3 == value
+        -%}
+          {%- if variant.available -%}
+            {%- assign available = true -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      <span class="pro-size{% unless available %} is-unavailable{% endunless %}">
+        {{ value }}
+      </span>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:names.product_card",
+  "blocks": [
+    { "type": "_product-card-group" },
+    { "type": "text" },
+    { "type": "image" },
+    { "type": "buy-buttons" },
+    { "type": "price" },
+    { "type": "review" },
+    { "type": "sku" },
+    { "type": "swatches" },
+    { "type": "_product-card-gallery" },
+    { "type": "product-title" },
+    { "type": "custom-liquid" },
+    { "type": "@app" }
+  ],
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.resource_reference_product_card"
+    }
+  ]
+}
+{% endschema %}

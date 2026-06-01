@@ -1,0 +1,182 @@
+{% comment %}
+  Pro Final CTA – Premium, Strong Close
+{% endcomment %}
+
+<section class="pro-final-cta">
+  <div class="pro-final-cta__inner">
+
+    <div class="pro-final-cta__content">
+      {% if section.settings.kicker != blank %}
+        <span class="pro-final-cta__kicker">{{ section.settings.kicker }}</span>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <p>{{ section.settings.subheading }}</p>
+      {% endif %}
+
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="pro-final-cta__button">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pro-final-cta {
+    padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
+    background: #0b0b0b;
+  }
+
+  .pro-final-cta__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pro-final-cta__kicker {
+    display: inline-block;
+    margin-bottom: 14px;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .pro-final-cta h2 {
+    margin: 0 0 14px;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 1.1;
+    color: #ffffff;
+  }
+
+  .pro-final-cta p {
+    margin: 0 auto 36px;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 42ch;
+  }
+
+  /* 🔥 FIXED BUTTON */
+  .pro-final-cta__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 220px;
+    height: 54px;
+
+    background: #ffffff;
+    color: #0b0b0b;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .pro-final-cta__button:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  }
+
+  .pro-final-cta__button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .pro-final-cta__button {
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Pro Final CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Small kicker text",
+      "default": "READY FOR MATCH DAY?"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Gear up and play at your best."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Professional football shoes, jerseys, and equipment built for performance."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop all products"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1400,
+      "step": 40,
+      "unit": "px",
+      "default": 1000
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 80,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pro Final CTA"
+    }
+  ]
+}
+{% endschema %}

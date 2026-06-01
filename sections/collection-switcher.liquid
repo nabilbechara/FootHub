@@ -1,0 +1,351 @@
+{% schema %}
+{
+  "name": "Collection Switcher",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Performance Boosters"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Shop by category"
+    },
+    {
+      "type": "text",
+      "id": "view_more_text",
+      "label": "View more button text",
+      "default": "View more"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_more",
+      "label": "Show View more button",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products per tab",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection tab",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "default": "Category"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Switcher",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="collection-switcher" data-collection-switcher>
+  <div class="collection-switcher__inner">
+
+    <header class="collection-switcher__header">
+      <h2 class="collection-switcher__heading">{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+        <p class="collection-switcher__subheading">
+          {{ section.settings.subheading }}
+        </p>
+      {% endif %}
+    </header>
+
+    <div class="collection-switcher__tabs">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+        {% if collection %}
+          <button
+            type="button"
+            class="collection-switcher__tab {% if forloop.first %}active{% endif %}"
+            data-tab-index="{{ forloop.index0 }}"
+            data-collection-url="{{ collection.url }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="collection-switcher__panels">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+        {% if collection %}
+          <div
+            class="collection-switcher__panel {% if forloop.first %}active{% endif %}"
+            data-panel-index="{{ forloop.index0 }}"
+          >
+            <div class="collection-switcher__products">
+              {% for product in collection.products limit: section.settings.products_limit %}
+                <div class="collection-switcher__product">
+                  <a href="{{ product.url }}" class="collection-switcher__product-link">
+                    <div class="collection-switcher__image-wrap">
+                      <img
+                        src="{{ product.featured_image | image_url: width: 900 }}"
+                        alt="{{ product.title | escape }}"
+                        loading="lazy"
+                      >
+                    </div>
+                    <h3>{{ product.title }}</h3>
+                    <p class="price">{{ product.price | money }}</p>
+                  </a>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_view_more %}
+      {% assign first_collection = collections[section.blocks.first.settings.collection] %}
+      <div class="collection-switcher__footer">
+        <a
+          href="{{ first_collection.url }}"
+          class="collection-switcher__view-more"
+          data-view-more
+        >
+          {{ section.settings.view_more_text }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  .collection-switcher {
+    padding: 72px 0;
+    background: #f8f8f6;
+  }
+
+  .collection-switcher__inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .collection-switcher__header {
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .collection-switcher__heading {
+    margin: 0;
+    font-size: clamp(2.3rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: #2d2926;
+  }
+
+  .collection-switcher__subheading {
+    margin: 10px 0 0;
+    color: #7a746d;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .collection-switcher__tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 34px;
+    flex-wrap: wrap;
+  }
+
+  .collection-switcher__tab {
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid #1a1a1a;
+    background: transparent;
+    color: #1a1a1a;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: all 0.22s ease;
+  }
+
+  .collection-switcher__tab.active,
+  .collection-switcher__tab:hover {
+    background: #111;
+    color: #fff;
+  }
+
+  .collection-switcher__panel {
+    display: none;
+  }
+
+  .collection-switcher__panel.active {
+    display: block;
+  }
+
+  .collection-switcher__products {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
+  }
+
+  .collection-switcher__product {
+    min-width: 0;
+  }
+
+  .collection-switcher__product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .collection-switcher__image-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: transparent;
+    border-radius: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .collection-switcher__image-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: initial;
+  }
+
+  .collection-switcher__product h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    line-height: 1.35;
+    font-weight: 400;
+    color: #2b2b2b;
+    min-height: 2.7em;
+  }
+
+  .collection-switcher__product .price {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111;
+  }
+
+  .collection-switcher__footer {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .collection-switcher__view-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 12px 30px;
+    border-radius: 999px;
+    border: 1px solid #111;
+    font-weight: 600;
+    text-decoration: none;
+    color: #111;
+    background: transparent;
+    transition: all 0.22s ease;
+  }
+
+  .collection-switcher__view-more:hover {
+    background: #111;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 990px) {
+    .collection-switcher__products {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .collection-switcher {
+      padding: 56px 0;
+    }
+
+    .collection-switcher__products {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 8px;
+    }
+
+    .collection-switcher__product {
+      min-width: 78%;
+      scroll-snap-align: start;
+    }
+
+    .collection-switcher__product h3 {
+      font-size: 0.96rem;
+    }
+  }
+</style>
+
+<script>
+(() => {
+  const section = document.querySelector('[data-collection-switcher]');
+  if (!section) return;
+
+  const tabs = section.querySelectorAll('.collection-switcher__tab');
+  const panels = section.querySelectorAll('.collection-switcher__panel');
+  const viewMore = section.querySelector('[data-view-more]');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const index = tab.dataset.tabIndex;
+      const url = tab.dataset.collectionUrl;
+
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      section
+        .querySelector(`.collection-switcher__panel[data-panel-index="${index}"]`)
+        .classList.add('active');
+
+      if (viewMore) {
+        viewMore.setAttribute('href', url);
+      }
+    });
+  });
+})();
+</script>

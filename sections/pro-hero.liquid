@@ -1,0 +1,388 @@
+{% comment %}
+  Section: Pro Hero (Professional Sports)
+  File: sections/pro-hero.liquid
+{% endcomment %}
+
+<section
+  class="pro-hero"
+  style="
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --content-max: {{ section.settings.content_max_width }}px;
+    --radius: {{ section.settings.radius }}px;
+    --pad-y: {{ section.settings.padding_y }}px;
+    --pad-x: {{ section.settings.padding_x }}px;
+    --btn-radius: {{ section.settings.button_radius }}px;
+  "
+>
+  <div class="pro-hero__media">
+    {% if section.settings.desktop_image != blank %}
+      <picture>
+        {% if section.settings.mobile_image != blank %}
+          <source
+            media="(max-width: 749px)"
+            srcset="{{ section.settings.mobile_image | image_url: width: 900 }}"
+          >
+        {% endif %}
+        <img
+          class="pro-hero__img"
+          src="{{ section.settings.desktop_image | image_url: width: 1800 }}"
+          alt="{{ section.settings.desktop_image.alt | escape }}"
+          loading="lazy"
+          width="{{ section.settings.desktop_image.width }}"
+          height="{{ section.settings.desktop_image.height }}"
+        >
+      </picture>
+    {% else %}
+      <div class="pro-hero__placeholder">
+        <p>Add a hero image in this section’s settings.</p>
+      </div>
+    {% endif %}
+
+    <div class="pro-hero__overlay"></div>
+  </div>
+
+  <div class="pro-hero__content-wrap">
+    <div class="pro-hero__content">
+      {% if section.settings.kicker != blank %}
+        <p class="pro-hero__kicker">{{ section.settings.kicker }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h1 class="pro-hero__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <p class="pro-hero__subheading">{{ section.settings.subheading }}</p>
+      {% endif %}
+
+    <div class="pro-hero__actions">
+  {% if section.settings.primary_label != blank and section.settings.primary_link != blank %}
+    <a class="pro-hero__btn pro-hero__btn--primary" href="{{ section.settings.primary_link }}">
+      {{ section.settings.primary_label }}
+    </a>
+  {% endif %}
+
+  {% if section.settings.secondary_label != blank and section.settings.secondary_link != blank %}
+    <a class="pro-hero__btn pro-hero__btn--secondary" href="{{ section.settings.secondary_link }}">
+      {{ section.settings.secondary_label }}
+    </a>
+  {% endif %}
+
+  {% if section.settings.tertiary_label != blank and section.settings.tertiary_link != blank %}
+    <a
+      class="pro-hero__btn pro-hero__btn--{{ section.settings.tertiary_style }}"
+      href="{{ section.settings.tertiary_link }}"
+    >
+      {{ section.settings.tertiary_label }}
+    </a>
+  {% endif %}
+</div>
+
+
+      {% if section.settings.note != blank %}
+        <p class="pro-hero__note">{{ section.settings.note }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pro-hero {
+    position: relative;
+    padding: var(--pad-y) var(--pad-x);
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .pro-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .pro-hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.02);
+  }
+
+  .pro-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,var(--overlay-opacity));
+  }
+
+  .pro-hero__content-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+  }
+
+  .pro-hero__content {
+    width: 100%;
+    color: #fff;
+  }
+
+  .pro-hero__kicker {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .pro-hero__heading {
+    margin: 0 0 12px;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.05;
+  }
+
+  .pro-hero__subheading {
+    margin: 0 0 18px;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.5;
+    max-width: 42ch;
+    opacity: 0.92;
+  }
+
+  .pro-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .pro-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: var(--btn-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+    will-change: transform;
+  }
+
+  .pro-hero__btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .pro-hero__btn--primary {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .pro-hero__btn--secondary {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(6px);
+  }
+
+  .pro-hero__note {
+    margin: 14px 0 0;
+    font-size: 0.95rem;
+    opacity: 0.85;
+  }
+
+  .pro-hero__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    padding: 24px;
+  }
+
+  /* Mobile tweaks */
+  @media (max-width: 749px) {
+    .pro-hero {
+      padding: calc(var(--pad-y) * 0.75) calc(var(--pad-x) * 0.75);
+      border-radius: calc(var(--radius) * 0.85);
+    }
+
+    .pro-hero__content-wrap {
+      min-height: 360px;
+    }
+
+    .pro-hero__subheading {
+      max-width: 34ch;
+    }
+
+    .pro-hero__btn {
+      width: 100%;
+    }
+  }
+  .pro-hero__btn--ghost {
+  background: transparent;
+  color: #ffffff;
+  border: 1px dashed rgba(255,255,255,0.45);
+  opacity: 0.9;
+}
+
+.pro-hero__btn--ghost:hover {
+  opacity: 1;
+}
+
+</style>
+
+{% schema %}
+{
+  "name": "Pro Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 45
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker (small top text)",
+      "default": "SPORTS STORE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Gear up like a pro."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Football shoes, jerseys, and equipment built for match day — for every level of play."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Shop Football Shoes"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Shop Jerseys"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+  "type": "text",
+  "id": "tertiary_label",
+  "label": "Third button label",
+  "default": "Explore Collection"
+},
+{
+  "type": "url",
+  "id": "tertiary_link",
+  "label": "Third button link"
+},
+{
+  "type": "select",
+  "id": "tertiary_style",
+  "label": "Third button style",
+  "default": "ghost",
+  "options": [
+    { "value": "primary", "label": "Primary" },
+    { "value": "secondary", "label": "Secondary" },
+    { "value": "ghost", "label": "Ghost (subtle)" }
+  ]
+},
+
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Small note (optional)",
+      "default": "Fast shipping • Secure checkout • Easy returns"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 520,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Content max width",
+      "default": 920
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "min": 12,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "min": 0,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button radius",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pro Hero"
+    }
+  ]
+}
+{% endschema %}

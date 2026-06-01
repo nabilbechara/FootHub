@@ -1,0 +1,65 @@
+{% assign product = closest.product %}
+
+{% assign winter_bundle_handle = 'winter-set-bundle' %}
+{% assign winter_bundle = all_products[winter_bundle_handle] %}
+
+{% if winter_bundle != blank %}
+  {% liquid
+    assign wb_price = winter_bundle.price
+    assign wb_compare = winter_bundle.compare_at_price
+    assign wb_has_save = false
+
+    if wb_compare and wb_compare > wb_price
+      assign wb_has_save = true
+    endif
+  %}
+
+  <div class="bundle-wrap" data-bundle-selector>
+    <div class="bundle-title">Choose your bundle</div>
+
+    <div class="bundle-options">
+      <!-- OPTION 1: SHOES ONLY -->
+      <label class="bundle-option is-active">
+        <input
+          type="radio"
+          name="bundle_choice"
+          value="none"
+          checked
+        >
+        <div class="bundle-card">
+          <div class="bundle-card-main">
+            <strong>Shoes only</strong>
+            <span>No add-ons</span>
+          </div>
+        </div>
+      </label>
+
+      <!-- OPTION 2: SHOES + WINTER SET -->
+      <label class="bundle-option">
+        <input
+          type="radio"
+          name="bundle_choice"
+          value="winter"
+          data-bundle-id="{{ winter_bundle.selected_or_first_available_variant.id }}"
+        >
+        <div class="bundle-card">
+          <div class="bundle-card-main">
+            <strong>Add winter set</strong>
+            <span>Discounted bundle</span>
+          </div>
+
+          <div class="bundle-price">
+            {% if wb_has_save %}
+              <span class="bundle-compare">
+                {{ wb_compare | money }}
+              </span>
+            {% endif %}
+            <span class="bundle-final">
+              {{ wb_price | money }}
+            </span>
+          </div>
+        </div>
+      </label>
+    </div>
+  </div>
+{% endif %}

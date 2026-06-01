@@ -1,0 +1,480 @@
+{% assign show_bundle = false %}
+
+{% for c in product.collections %}
+  {% if c.handle == 'all-shoes' %}
+    {% assign show_bundle = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% assign main_product = product | default: closest.product %}
+
+{% if block.settings.bundle_product != blank %}
+  {% assign bundle_variant = block.settings.bundle_product.selected_or_first_available_variant %}
+{% endif %}
+
+{% assign bundle_compare_price_raw = block.settings.bundle_compare_price | strip %}
+{% assign bundle_compare_price_number = bundle_compare_price_raw | times: 100 %}
+
+{% if show_bundle %}
+  <div class="bundle-selector" {{ block.shopify_attributes }}>
+    <p class="bundle-title">{{ block.settings.title }}</p>
+    <p class="bundle-helper">Most customers choose the complete setup.</p>
+
+    {% if bundle_variant %}
+      {% assign bundle_total_price = main_product.selected_or_first_available_variant.price | plus: bundle_variant.price %}
+    {% else %}
+      {% assign bundle_total_price = main_product.selected_or_first_available_variant.price %}
+    {% endif %}
+
+    {% assign shoes_only_price = main_product.selected_or_first_available_variant.price %}
+
+    <label class="bundle-row">
+      <input type="radio" name="bundle_choice" value="single">
+
+      <div class="bundle-radio"></div>
+
+      <div class="bundle-content">
+        <div class="bundle-text">
+          <strong>Shoes only</strong>
+          <div class="bundle-sub">Standard setup</div>
+        </div>
+
+        <div class="bundle-price-wrap">
+          <div class="bundle-price">
+            {{ shoes_only_price | money }}
+          </div>
+        </div>
+      </div>
+    </label>
+
+    {% if bundle_variant %}
+      <label class="bundle-row bundle-row--featured">
+        <input
+          type="radio"
+          name="bundle_choice"
+          value="bundle"
+          data-bundle-variant-id="{{ bundle_variant.id }}"
+          checked
+        >
+
+        <div class="bundle-radio"></div>
+
+        <div class="bundle-content">
+          <div class="bundle-text">
+            <div class="bundle-badges">
+              <span class="bundle-badge bundle-badge--dark">Most Popular</span>
+              <span class="bundle-badge bundle-badge--soft">Best Value</span>
+            </div>
+
+            <strong>{{ block.settings.bundle_title }}</strong>
+            <div class="bundle-sub">
+              {% if block.settings.description != blank %}
+                {{ block.settings.description }}
+              {% else %}
+                Complete setup for training and match days.
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="bundle-price-wrap">
+            {% if bundle_compare_price_raw != blank %}
+              <div class="bundle-compare-price">
+                {{ bundle_compare_price_number | money }}
+              </div>
+            {% endif %}
+            <div class="bundle-price">
+              {{ bundle_total_price | money }}
+            </div>
+          </div>
+        </div>
+      </label>
+    {% endif %}
+
+    <div class="bundle-info" {% if bundle_variant %}{% else %}hidden{% endif %}>
+      {% if block.settings.image %}
+        <div class="bundle-info__image">
+          {{
+            block.settings.image
+            | image_url: width: 300
+            | image_tag:
+              loading: 'lazy',
+              alt: block.settings.bundle_title
+          }}
+        </div>
+      {% endif %}
+
+      <div class="bundle-info__text">
+        {% if block.settings.info_text != blank %}
+          <p>{{ block.settings.info_text }}</p>
+        {% else %}
+          <p>Add the complete bundle for a more practical setup during colder training days and match travel.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+(function () {
+  function getProductForm() {
+    return document.querySelector('product-form-component form') || document.querySelector('form[action*="/cart/add"]');
+  }
+
+  function getBundleSelector() {
+    return document.querySelector('.bundle-selector');
+  }
+
+  function getSelectedBundleRadio() {
+    return document.querySelector('.bundle-selector input[name="bundle_choice"][value="bundle"]:checked');
+  }
+
+  function getBundleSingleRadio() {
+    return document.querySelector('.bundle-selector input[name="bundle_choice"][value="single"]:checked');
+  }
+
+  function getMainVariantId(form) {
+    if (!form) return null;
+    const variantInput = form.querySelector('input[name="id"]') || document.querySelector('input[name="id"]');
+    return variantInput ? variantInput.value : null;
+  }
+
+  function getMainQuantity(form) {
+    if (!form) return 1;
+    const qtyInput = form.querySelector('input[name="quantity"]') || document.querySelector('input[name="quantity"]');
+    const qty = qtyInput ? parseInt(qtyInput.value, 10) : 1;
+    return Number.isNaN(qty) || qty < 1 ? 1 : qty;
+  }
+
+  function removeBundleInputs(form) {
+    if (!form) return;
+    form.querySelectorAll('[data-bundle-input]').forEach(function (el) {
+      el.remove();
+    });
+  }
+
+  function syncBundleToForm() {
+    const form = getProductForm();
+    if (!form) return;
+
+    removeBundleInputs(form);
+
+    const bundleRadio = getSelectedBundleRadio();
+    if (!bundleRadio) return;
+
+    const bundleVariantId = bundleRadio.dataset.bundleVariantId;
+    if (!bundleVariantId) return;
+
+    const bundleIdInput = document.createElement('input');
+    bundleIdInput.type = 'hidden';
+    bundleIdInput.name = 'items[][id]';
+    bundleIdInput.value = bundleVariantId;
+    bundleIdInput.dataset.bundleInput = 'true';
+
+    const bundleQtyInput = document.createElement('input');
+    bundleQtyInput.type = 'hidden';
+    bundleQtyInput.name = 'items[][quantity]';
+    bundleQtyInput.value = '1';
+    bundleQtyInput.dataset.bundleInput = 'true';
+
+    form.appendChild(bundleIdInput);
+    form.appendChild(bundleQtyInput);
+  }
+
+  function toggleBundleInfo() {
+    const selector = getBundleSelector();
+    if (!selector) return;
+
+    const info = selector.querySelector('.bundle-info');
+    if (!info) return;
+
+    info.hidden = !getSelectedBundleRadio();
+  }
+
+  function updateBundleState() {
+    syncBundleToForm();
+    toggleBundleInfo();
+
+    const bundleSelected = !!getSelectedBundleRadio();
+    document.documentElement.classList.toggle('bundle-selected', bundleSelected);
+  }
+
+  async function buyBundleNow() {
+  const form = getProductForm();
+  const bundleRadio = getSelectedBundleRadio();
+  if (!form || !bundleRadio) return;
+
+  const mainVariantId = getMainVariantId(form);
+  const bundleVariantId = bundleRadio.dataset.bundleVariantId;
+  const mainQuantity = getMainQuantity(form);
+
+  if (!mainVariantId || !bundleVariantId) return;
+
+  const customButton = document.querySelector('.bundle-buy-now-button');
+  if (customButton) {
+    customButton.disabled = true;
+    customButton.textContent = 'Redirecting...';
+  }
+
+  try {
+    const checkoutUrl = `/cart/${mainVariantId}:${mainQuantity},${bundleVariantId}:1?checkout`;
+    window.location.href = checkoutUrl;
+  } catch (error) {
+    console.error(error);
+    if (customButton) {
+      customButton.disabled = false;
+      customButton.textContent = 'Buy now';
+    }
+  }
+}
+
+  document.addEventListener('change', function (e) {
+    if (e.target.matches('.bundle-selector input[name="bundle_choice"]')) {
+      updateBundleState();
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    const customButton = e.target.closest('.bundle-buy-now-button');
+    if (!customButton) return;
+
+    e.preventDefault();
+    buyBundleNow();
+  });
+
+  document.addEventListener('DOMContentLoaded', updateBundleState);
+  document.addEventListener('shopify:section:load', updateBundleState);
+  window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+})();
+</script>
+
+<style>
+  .bundle-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .bundle-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .bundle-helper {
+    margin: -4px 0 4px;
+    font-size: 0.92rem;
+    color: #6b7280;
+  }
+
+  .bundle-row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 16px;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.22s ease;
+  }
+
+  .bundle-row:hover {
+    border-color: #111;
+  }
+
+  .bundle-row input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .bundle-radio {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #b8b8b8;
+    border-radius: 50%;
+    margin-top: 2px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .bundle-row:has(input:checked) .bundle-radio {
+    border-color: #111;
+  }
+
+  .bundle-row:has(input:checked) .bundle-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #2563eb;
+    border-radius: 50%;
+  }
+
+  .bundle-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .bundle-text {
+    min-width: 0;
+  }
+
+  .bundle-text strong {
+    display: block;
+    font-size: 1.06rem;
+    line-height: 1.25;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .bundle-sub {
+    font-size: 0.94rem;
+    line-height: 1.45;
+    color: #6b7280;
+  }
+
+  .bundle-price-wrap {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .bundle-compare-price {
+    font-size: 0.86rem;
+    line-height: 1.1;
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
+
+  .bundle-price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+
+  .bundle-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .bundle-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .bundle-badge--dark {
+    background: #111;
+    color: #fff;
+  }
+
+  .bundle-badge--soft {
+    background: #eef4ff;
+    color: #1d4ed8;
+  }
+
+  .bundle-row--featured {
+    border: 2px solid #111;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+  }
+
+  .bundle-row--featured::before {
+    content: "Recommended";
+    position: absolute;
+    top: -11px;
+    left: 16px;
+    background: #111;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .bundle-row:has(input:checked) {
+    border-color: #111;
+    background: #fafafa;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  .bundle-info {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #fafafa;
+  }
+
+  .bundle-info__image {
+    flex: 0 0 72px;
+  }
+
+  .bundle-info__image img {
+    width: 72px;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+  }
+
+  .bundle-info__text p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #4b5563;
+  }
+
+  @media (max-width: 749px) {
+    .bundle-content {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bundle-price-wrap {
+      text-align: left;
+    }
+
+    .bundle-info {
+      flex-direction: column;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Bundle selector",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Choose your option" },
+    { "type": "text", "id": "bundle_title", "label": "Bundle title", "default": "Shoes + Winter set + Bag" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Complete setup for training and match days." },
+    { "type": "text", "id": "bundle_compare_price", "label": "Bundle compare-at price", "default": "85" },
+    { "type": "product", "id": "bundle_product", "label": "Bundle product" },
+    { "type": "image_picker", "id": "image", "label": "Bundle image" },
+    { "type": "textarea", "id": "info_text", "label": "Expanded info text", "default": "Add the complete bundle for a more practical setup during colder training days and match travel." }
+  ],
+  "presets": [{ "name": "Bundle selector" }]
+}
+{% endschema %}

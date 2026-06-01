@@ -1,0 +1,228 @@
+{% comment %}
+  Pro Trust Bar – FINAL FIX
+  Blocks are fully editable
+{% endcomment %}
+
+<section class="pro-trust">
+  <div class="pro-trust__inner">
+
+    {% if section.settings.heading != blank %}
+      <header class="pro-trust__header">
+        <h2>{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p>{{ section.settings.subheading }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    <div class="pro-trust__items">
+      {% for block in section.blocks %}
+        <div class="pro-trust__item" {{ block.shopify_attributes }}>
+          <p class="pro-trust__title">{{ block.settings.title }}</p>
+          {% if block.settings.subtitle != blank %}
+            <p class="pro-trust__subtitle">{{ block.settings.subtitle }}</p>
+          {% endif %}
+        </div>
+
+        {% unless forloop.last %}
+          <span class="pro-trust__divider"></span>
+        {% endunless %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pro-trust {
+    padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
+  }
+
+  .pro-trust__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pro-trust__header {
+    margin-bottom: 24px;
+  }
+
+  .pro-trust__header h2 {
+    margin: 0 0 6px;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: {{ section.settings.text_color }};
+  }
+
+  .pro-trust__header p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: {{ section.settings.muted_color }};
+  }
+
+  .pro-trust__items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .pro-trust__item {
+    min-width: 160px;
+  }
+
+  .pro-trust__title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: {{ section.settings.text_color }};
+  }
+
+  .pro-trust__subtitle {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: {{ section.settings.muted_color }};
+  }
+
+  .pro-trust__divider {
+    width: 1px;
+    height: 28px;
+    background: {{ section.settings.divider_color }};
+    opacity: 0.5;
+  }
+
+  @media (max-width: 768px) {
+    .pro-trust__divider {
+      display: none;
+    }
+
+    .pro-trust__item {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Pro Trust Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why shop with us"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Professional service. Match-ready quality."
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 720,
+      "max": 1400,
+      "step": 40,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 12,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Primary text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#E5E7EB"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fast Shipping"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Worldwide delivery"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Pro Trust Bar",
+      "blocks": [
+        {
+          "type": "trust_item",
+          "settings": {
+            "title": "Fast Shipping",
+            "subtitle": "Worldwide delivery"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "title": "Secure Checkout",
+            "subtitle": "Encrypted payments"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "title": "Easy Returns",
+            "subtitle": "14-day policy"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "title": "Trusted by Players",
+            "subtitle": "Quality gear only"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

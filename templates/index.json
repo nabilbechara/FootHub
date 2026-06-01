@@ -1,0 +1,221 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_slider_PQjfaH": {
+      "type": "hero-slider",
+      "blocks": {
+        "slide_RRLpgQ": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/Copy_of_Untitled_Design_1.png",
+            "mobile_image": "shopify://shop_images/Copy_of_Football_Shoes_1.png",
+            "link": "shopify://collections/all-shoes"
+          }
+        },
+        "slide_JTjEUf": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/FOOTBALL_JERSEYS_add51cc1-2417-480f-ada1-7359c3704257.png",
+            "mobile_image": "shopify://shop_images/Football_Shoes_1.png",
+            "link": "shopify://collections/football-jerseys"
+          }
+        }
+      },
+      "block_order": [
+        "slide_RRLpgQ",
+        "slide_JTjEUf"
+      ],
+      "name": "Hero Slider",
+      "settings": {}
+    },
+    "pro_category_grid_6ndeMt": {
+      "type": "pro-category-grid",
+      "blocks": {
+        "category_aUmpCg": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/attack-15-min.jpg",
+            "title": "Football Shoes",
+            "subtitle": "Speed, control & traction",
+            "link": "shopify://collections/all-shoes",
+            "overlay": 45
+          }
+        },
+        "category_AaFMXE": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/TrioBanner-AwayKit26-Balde_Gavi_6b63d094-9292-4d22-b4fd-6f43e7553c48.webp",
+            "title": "Football Jerseys",
+            "subtitle": "Match-ready fabric",
+            "link": "shopify://collections/football-jerseys",
+            "overlay": 45
+          }
+        },
+        "category_CYiYw9": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/SNKRBAG.jpg",
+            "title": "Football Equipment",
+            "subtitle": "Essentials for training & match day",
+            "link": "shopify://collections/football-wquipment",
+            "overlay": 45
+          }
+        }
+      },
+      "block_order": [
+        "category_aUmpCg",
+        "category_AaFMXE",
+        "category_CYiYw9"
+      ],
+      "name": "Pro Category Grid",
+      "settings": {
+        "heading": "Shop by Category",
+        "subheading": "",
+        "max_width": 1200,
+        "padding_y": 60,
+        "padding_x": 24,
+        "radius": 16
+      }
+    },
+    "pro_best_sellers_kjk8TK": {
+      "type": "pro-best-sellers",
+      "name": "Pro Best Sellers",
+      "settings": {
+        "heading": "Best Sellers",
+        "subheading": "Top picks trusted by players.",
+        "collection": "all-shoes",
+        "products_limit": 4,
+        "view_more_link": "shopify://collections/all-shoes",
+        "view_more_label": "View all products",
+        "max_width": 1200,
+        "padding_y": 80,
+        "padding_x": 24,
+        "radius": 12
+      }
+    },
+    "hero_slider_EhVk9P": {
+      "type": "hero-slider",
+      "blocks": {
+        "slide_PCYNWt": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/Copy_of_Untitled_Design.png",
+            "mobile_image": "shopify://shop_images/Copy_of_Football_Shoes.png",
+            "link": "shopify://collections/all-shoes"
+          }
+        }
+      },
+      "block_order": [
+        "slide_PCYNWt"
+      ],
+      "name": "Hero Slider (Desktop + Mobile)",
+      "settings": {}
+    },
+    "collection_switcher_mTHVfB": {
+      "type": "collection-switcher",
+      "blocks": {
+        "collection_4cbwBN": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-jerseys",
+            "label": "Kits"
+          }
+        },
+        "collection_hare6q": {
+          "type": "collection",
+          "settings": {
+            "collection": "all-shoes",
+            "label": "Shoes"
+          }
+        },
+        "collection_fArKX3": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-wquipment",
+            "label": "Equipment"
+          }
+        }
+      },
+      "block_order": [
+        "collection_4cbwBN",
+        "collection_hare6q",
+        "collection_fArKX3"
+      ],
+      "name": "Collection Switcher",
+      "settings": {
+        "heading": "Performance Boosters",
+        "subheading": "",
+        "view_more_text": "View more",
+        "show_view_more": true,
+        "products_limit": 4
+      }
+    },
+    "pro_final_cta_kiD4TF": {
+      "type": "pro-final-cta",
+      "name": "Pro Final CTA",
+      "settings": {
+        "kicker": "READY FOR MATCH DAY?",
+        "heading": "Everything you need. Nothing you don’t.",
+        "subheading": "Professional-grade football shoes, jerseys, and equipment — curated for performance when it matters.",
+        "button_label": "Shop all products",
+        "button_link": "shopify://collections/all-shoes",
+        "max_width": 1000,
+        "padding_y": 120,
+        "padding_x": 24
+      }
+    },
+    "premium_faq_8qmKge": {
+      "type": "premium-faq",
+      "blocks": {
+        "faq_E7YeUf": {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Orders are processed within 24 hours and typically arrive within 2–3 business days.</p>"
+          }
+        },
+        "faq_HVeP7J": {
+          "type": "faq",
+          "settings": {
+            "question": "Is there an exchange policy?",
+            "answer": "<p>Size exchange is available within the first 2 days of delivery</p>"
+          }
+        },
+        "faq_LgFJmG": {
+          "type": "faq",
+          "settings": {
+            "question": "Should I buy FG cleats or Turf?",
+            "answer": "<p>Depends on what field you play on, if you play on very low grass or on IC courts then we recommend turf. Other than that FG cleats will do the job!</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_E7YeUf",
+        "faq_HVeP7J",
+        "faq_LgFJmG"
+      ],
+      "name": "Premium FAQ",
+      "settings": {
+        "heading": "Questions & answers",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "hero_slider_PQjfaH",
+    "pro_category_grid_6ndeMt",
+    "pro_best_sellers_kjk8TK",
+    "hero_slider_EhVk9P",
+    "collection_switcher_mTHVfB",
+    "pro_final_cta_kiD4TF",
+    "premium_faq_8qmKge"
+  ]
+}
