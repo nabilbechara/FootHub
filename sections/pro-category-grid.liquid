@@ -1,5 +1,5 @@
 {% comment %}
-  Pro Category Grid – Desktop Premium / Mobile Compact Stack
+  Pro Category Grid - Desktop Premium / Mobile Visual Stack
 {% endcomment %}
 
 <section class="pro-categories">
@@ -51,6 +51,7 @@
   /* Base */
   .pro-categories {
     padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
+    background: #ffffff;
   }
 
   .pro-categories__inner {
@@ -60,12 +61,17 @@
 
   .pro-categories__header {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 30px;
   }
 
   .pro-categories__header h2 {
     margin: 0 0 8px;
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1.55rem, 3vw, 2.3rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: #111;
   }
 
@@ -119,7 +125,9 @@
   .pro-categories__content h3 {
     margin: 0;
     font-size: 1.4rem;
-    font-weight: 600;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
   }
 
   .pro-categories__content p {
@@ -133,18 +141,30 @@
   }
 
   /* =========================
-     MOBILE – COMPACT STACK
+     MOBILE - VISUAL STACK
      ========================= */
   @media (max-width: 900px) {
     .pro-categories__grid {
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 16px;
+    }
+
+    .pro-categories {
+      padding-top: 40px;
+    }
+
+    .pro-categories__header {
+      margin-bottom: 24px;
+    }
+
+    .pro-categories__header h2 {
+      font-size: clamp(1.45rem, 7vw, 2rem);
     }
 
     .pro-categories__card {
-      min-height: 120px;
+      min-height: 210px;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
     }
 
     .pro-categories__card img {
@@ -153,18 +173,24 @@
     }
 
     .pro-categories__content {
-      padding: 16px 18px;
-      justify-content: center;
+      padding: 22px;
+      justify-content: flex-end;
     }
 
     .pro-categories__content h3 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       line-height: 1.2;
     }
 
     .pro-categories__content p {
-      font-size: 0.85rem;
+      font-size: 0.92rem;
       max-width: 90%;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .pro-categories__card {
+      min-height: 200px;
     }
   }
 </style>

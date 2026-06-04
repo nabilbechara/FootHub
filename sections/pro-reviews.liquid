@@ -207,8 +207,52 @@
   }
 
   @media (max-width: 640px) {
+    .pro-reviews {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .pro-reviews__inner {
+      max-width: none;
+    }
+
+    .pro-reviews__header {
+      margin-right: 24px;
+      margin-left: 24px;
+      margin-bottom: 30px;
+    }
+
+    .pro-reviews__aggregate {
+      flex-wrap: wrap;
+      row-gap: 4px;
+    }
+
     .pro-reviews__grid {
-      grid-template-columns: 1fr;
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding: 0 24px 8px;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 24px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .pro-reviews__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pro-reviews__card {
+      flex: 0 0 min(86vw, 420px);
+      min-height: 300px;
+      padding: 24px;
+      scroll-snap-align: start;
+    }
+
+    .pro-reviews__quote {
+      font-size: 0.98rem;
+      line-height: 1.62;
     }
   }
 </style>

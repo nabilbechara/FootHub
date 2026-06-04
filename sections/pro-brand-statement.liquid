@@ -1,0 +1,229 @@
+{% comment %}
+  Pro Brand Statement
+{% endcomment %}
+
+<section class="pro-brand-statement">
+  {% if section.settings.background_video_asset != blank %}
+    <video
+      class="pro-brand-statement__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    >
+      <source src="{{ section.settings.background_video_asset | asset_url }}" type="video/mp4">
+    </video>
+  {% endif %}
+
+  <div class="pro-brand-statement__shade"></div>
+
+  <div class="pro-brand-statement__inner">
+    {% if section.settings.kicker != blank %}
+      <p class="pro-brand-statement__kicker">{{ section.settings.kicker }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.text != blank %}
+      <p class="pro-brand-statement__text">{{ section.settings.text }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .pro-brand-statement {
+    position: relative;
+    overflow: hidden;
+    padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
+    background: {{ section.settings.background }};
+    color: {{ section.settings.text_color }};
+  }
+
+  .pro-brand-statement__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .pro-brand-statement__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.24)),
+      rgba(0,0,0,0.08);
+  }
+
+  .pro-brand-statement__inner {
+    position: relative;
+    z-index: 2;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pro-brand-statement__kicker {
+    margin: 0 0 12px;
+    color: {{ section.settings.accent_color }};
+    font-size: 0.78rem;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow:
+      0 2px 0 #000,
+      0 0 14px rgba(0,0,0,0.95);
+  }
+
+  .pro-brand-statement h2 {
+    margin: 0;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1.9rem, 4vw, 3.4rem);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-shadow:
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000,
+      2px 2px 0 #000,
+      0 8px 22px rgba(0,0,0,0.9);
+  }
+
+  .pro-brand-statement__text {
+    max-width: 620px;
+    margin: 16px auto 0;
+    color: {{ section.settings.muted_color }};
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+    line-height: 1.55;
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000,
+      0 4px 14px rgba(0,0,0,0.9);
+  }
+
+  @media (max-width: 768px) {
+    .pro-brand-statement {
+      padding-top: 42px;
+      padding-bottom: 42px;
+    }
+
+    .pro-brand-statement__kicker {
+      margin-bottom: 10px;
+      font-size: 0.72rem;
+    }
+
+    .pro-brand-statement h2 {
+      font-size: clamp(1.65rem, 8vw, 2.45rem);
+      line-height: 1.05;
+    }
+
+    .pro-brand-statement__text {
+      margin-top: 14px;
+      font-size: 0.92rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Pro Brand Statement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "For serious footballers"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Football gear chosen for match-day performance."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Boots, kits, and essentials curated for players who care about fit, feel, and every touch."
+    },
+    {
+      "type": "text",
+      "id": "background_video_asset",
+      "label": "Background video asset filename",
+      "default": "foothub-field-bg.mp4",
+      "info": "Upload the MP4 to theme assets, then enter the exact filename."
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 720,
+      "max": 1200,
+      "step": 40,
+      "unit": "px",
+      "default": 920
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 32,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#d1d5db"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#86efac"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pro Brand Statement"
+    }
+  ]
+}
+{% endschema %}
