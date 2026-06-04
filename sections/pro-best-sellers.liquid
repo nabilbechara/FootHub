@@ -65,6 +65,38 @@
   </div>
 </section>
 
+{% if section.settings.collection != blank %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": {{ section.settings.heading | json }},
+  "itemListElement": [
+    {% for product in section.settings.collection.products limit: section.settings.products_limit %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "item": {
+        "@type": "Product",
+        "name": {{ product.title | json }},
+        "url": {{ request.origin | append: product.url | json }},
+        {% if product.featured_image %}
+        "image": {{ product.featured_image | image_url: width: 900 | prepend: "https:" | json }},
+        {% endif %}
+        "offers": {
+          "@type": "Offer",
+          "price": "{{ product.price | money_without_currency | strip_html }}",
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+        }
+      }
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
 <style>
   .pro-bestsellers {
     padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;

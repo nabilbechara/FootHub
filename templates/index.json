@@ -158,6 +158,85 @@
         "products_limit": 4
       }
     },
+    "pro_reviews_8rTqWx": {
+      "type": "pro-reviews",
+      "name": "Pro Reviews",
+      "blocks": {
+        "review_jK1mNp": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "Ordered a pair of Predators and they arrived the next day. Pitch-ready straight out of the box — quality is elite.",
+            "name": "Jordan K.",
+            "meta": "Amateur striker"
+          }
+        },
+        "review_aX2vQr": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "The boots arrived fast and the quality exceeded my expectations. Comfort and grip are on another level.",
+            "name": "Alex M.",
+            "meta": "Semi-pro midfielder"
+          }
+        },
+        "review_bY3wSt": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "Tried a lot of kits over the years — the fit and fabric here feel match-ready straight out of the box.",
+            "name": "Daniel R.",
+            "meta": "Sunday league captain"
+          }
+        },
+        "review_cZ4xTu": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "Everything from packaging to performance feels professional. You can tell this store understands football.",
+            "name": "Chris L.",
+            "meta": "Youth academy coach"
+          }
+        },
+        "review_dA5yUv": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "Bought a full kit for my five-a-side team here. Everyone was impressed — quality-to-price ratio is unreal.",
+            "name": "Marcus T.",
+            "meta": "Five-a-side team captain"
+          }
+        },
+        "review_eB6zVw": {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "As a coach I need gear that lasts. FootHub delivers — durable, well-made, and looks sharp. Ordering for the whole squad next season.",
+            "name": "Liam A.",
+            "meta": "School football coach"
+          }
+        }
+      },
+      "block_order": [
+        "review_jK1mNp",
+        "review_aX2vQr",
+        "review_bY3wSt",
+        "review_cZ4xTu",
+        "review_dA5yUv",
+        "review_eB6zVw"
+      ],
+      "settings": {
+        "heading": "Trusted by players",
+        "subheading": "Real feedback from footballers who care about performance.",
+        "average_rating": "4.9",
+        "review_count": 200,
+        "max_width": 1200,
+        "padding_y": 96,
+        "padding_x": 24,
+        "radius": 16,
+        "background": "#f9fafb"
+      }
+    },
     "pro_final_cta_kiD4TF": {
       "type": "pro-final-cta",
       "name": "Pro Final CTA",
@@ -215,6 +294,7 @@
     "pro_best_sellers_kjk8TK",
     "hero_slider_EhVk9P",
     "collection_switcher_mTHVfB",
+    "pro_reviews_8rTqWx",
     "pro_final_cta_kiD4TF",
     "premium_faq_8qmKge"
   ]

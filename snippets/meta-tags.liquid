@@ -118,4 +118,9 @@
     name="description"
     content="{{ page_description | escape }}"
   >
+{% elsif request.page_type == 'index' %}
+  <meta
+    name="description"
+    content="{{ shop.name }} — Premium football boots, kits and equipment. Shop top brands built for performance. Fast delivery & easy returns."
+  >
 {% endif %}

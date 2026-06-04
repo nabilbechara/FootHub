@@ -23,6 +23,17 @@
           {{ section.settings.button_label }}
         </a>
       {% endif %}
+
+      <div class="pro-final-cta__trust">
+        <p class="pro-final-cta__guarantee">&#10003; 30-day money back guarantee</p>
+        <div class="pro-final-cta__payments">
+          <span class="pro-final-cta__payments-label">We accept</span>
+          <span class="pro-final-cta__payment-badge">Visa</span>
+          <span class="pro-final-cta__payment-badge">Mastercard</span>
+          <span class="pro-final-cta__payment-badge">PayPal</span>
+          <span class="pro-final-cta__payment-badge">Apple Pay</span>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -98,6 +109,47 @@
   .pro-final-cta__button:active {
     transform: translateY(0);
     box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
+
+  .pro-final-cta__trust {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .pro-final-cta__guarantee {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.01em;
+  }
+
+  .pro-final-cta__payments {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pro-final-cta__payments-label {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+  }
+
+  .pro-final-cta__payment-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
   }
 
   /* MOBILE */
