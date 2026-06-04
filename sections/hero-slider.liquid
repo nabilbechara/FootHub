@@ -92,17 +92,27 @@
 
 .hero-slider-wrapper {
   width: 100%;
+  display: grid;
 }
 
 /* Slides */
 .hero-slide {
-  display: none;
+  grid-area: 1 / 1;
   width: 100%;
   position: relative;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.55s ease, visibility 0s linear 0.55s;
 }
 
 .hero-slide.active {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 1;
+  transition: opacity 0.55s ease, visibility 0s linear 0s;
 }
 
 /* Link wrapper */
