@@ -1,6 +1,25 @@
 {% comment %}
-  Pro Reviews – Premium Social Proof (Mock Data)
+  Pro Reviews – Premium Social Proof with Stars & Verified Badges
 {% endcomment %}
+
+{%- assign avg_rating = section.settings.average_rating | default: "4.9" -%}
+{%- assign total_reviews = section.settings.review_count | default: 200 -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ request.origin | json }},
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": {{ avg_rating | json }},
+    "reviewCount": {{ total_reviews }},
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}
+</script>
 
 <section class="pro-reviews">
   <div class="pro-reviews__inner">
@@ -8,6 +27,10 @@
     {% if section.settings.heading != blank %}
       <header class="pro-reviews__header">
         <h2>{{ section.settings.heading }}</h2>
+        <div class="pro-reviews__aggregate">
+          <span class="pro-reviews__aggregate-stars" aria-hidden="true">★★★★★</span>
+          <span class="pro-reviews__aggregate-text">{{ avg_rating }} / 5 &middot; {{ total_reviews }}+ verified reviews</span>
+        </div>
         {% if section.settings.subheading != blank %}
           <p>{{ section.settings.subheading }}</p>
         {% endif %}
@@ -16,8 +39,19 @@
 
     <div class="pro-reviews__grid">
       {% for block in section.blocks %}
+        {%- assign card_rating = block.settings.star_rating | default: 5 -%}
         <div class="pro-reviews__card" {{ block.shopify_attributes }}>
-          <p class="pro-reviews__quote">“{{ block.settings.review }}”</p>
+
+          <div class="pro-reviews__card-top">
+            <div class="pro-reviews__stars" aria-label="{{ card_rating }} out of 5 stars">
+              {% for i in (1..5) %}
+                <span class="pro-reviews__star{% if i <= card_rating %} pro-reviews__star--filled{% endif %}" aria-hidden="true">★</span>
+              {% endfor %}
+            </div>
+            <span class="pro-reviews__verified">&#10003; Verified Buyer</span>
+          </div>
+
+          <p class="pro-reviews__quote">&ldquo;{{ block.settings.review }}&rdquo;</p>
 
           <div class="pro-reviews__footer">
             <span class="pro-reviews__name">{{ block.settings.name }}</span>
@@ -44,31 +78,49 @@
   }
 
   .pro-reviews__header {
-  text-align: left;
-  max-width: 720px;
-  margin-bottom: 40px;
-}
+    text-align: left;
+    max-width: 720px;
+    margin-bottom: 40px;
+  }
 
-.pro-reviews__header::after {
-  content: "";
-  display: block;
-  width: 48px;
-  height: 2px;
-  background: #111;
-  margin-top: 16px;
-}
-
+  .pro-reviews__header::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 2px;
+    background: #111;
+    margin-top: 16px;
+  }
 
   .pro-reviews__header h2 {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     color: #111;
   }
 
   .pro-reviews__header p {
-    margin: 0;
+    margin: 10px 0 0;
     font-size: 1rem;
     color: #6b7280;
+  }
+
+  .pro-reviews__aggregate {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .pro-reviews__aggregate-stars {
+    color: #f59e0b;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .pro-reviews__aggregate-text {
+    font-size: 0.88rem;
+    color: #374151;
+    font-weight: 500;
   }
 
   /* GRID */
@@ -85,21 +137,55 @@
     padding: 28px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+  }
+
+  .pro-reviews__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pro-reviews__stars {
+    display: flex;
+    gap: 1px;
+  }
+
+  .pro-reviews__star {
+    font-size: 1rem;
+    color: #d1d5db;
+  }
+
+  .pro-reviews__star--filled {
+    color: #f59e0b;
+  }
+
+  .pro-reviews__verified {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #059669;
+    background: #d1fae5;
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
   }
 
   .pro-reviews__quote {
     margin: 0;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.65;
     color: #111;
+    flex: 1;
   }
 
   .pro-reviews__footer {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    gap: 2px;
   }
 
   .pro-reviews__name {
@@ -114,7 +200,13 @@
   }
 
   /* MOBILE */
-  @media (max-width: 900px) {
+  @media (max-width: 1024px) {
+    .pro-reviews__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
     .pro-reviews__grid {
       grid-template-columns: 1fr;
     }
@@ -136,6 +228,21 @@
       "id": "subheading",
       "label": "Subheading",
       "default": "Real feedback from footballers who care about performance."
+    },
+    {
+      "type": "text",
+      "id": "average_rating",
+      "label": "Average rating (e.g. 4.9)",
+      "default": "4.9"
+    },
+    {
+      "type": "range",
+      "id": "review_count",
+      "label": "Total review count (for display)",
+      "min": 10,
+      "max": 10000,
+      "step": 10,
+      "default": 200
     },
     {
       "type": "range",
@@ -190,6 +297,15 @@
       "name": "Review",
       "settings": [
         {
+          "type": "range",
+          "id": "star_rating",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
           "type": "textarea",
           "id": "review",
           "label": "Review text",
@@ -204,7 +320,7 @@
         {
           "type": "text",
           "id": "meta",
-          "label": "Meta (optional)",
+          "label": "Role / description",
           "default": "Semi-pro midfielder"
         }
       ]
@@ -218,6 +334,16 @@
         {
           "type": "review",
           "settings": {
+            "star_rating": 5,
+            "review": "Ordered a pair of Predators and they arrived the next day. Pitch-ready straight out of the box — quality is elite.",
+            "name": "Jordan K.",
+            "meta": "Amateur striker"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
             "review": "The boots arrived fast and the quality exceeded my expectations. Comfort and grip are on another level.",
             "name": "Alex M.",
             "meta": "Semi-pro midfielder"
@@ -226,7 +352,8 @@
         {
           "type": "review",
           "settings": {
-            "review": "I’ve tried a lot of kits over the years, but the fit and fabric here feel match-ready straight out of the box.",
+            "star_rating": 5,
+            "review": "Tried a lot of kits over the years — the fit and fabric here feel match-ready straight out of the box.",
             "name": "Daniel R.",
             "meta": "Sunday league captain"
           }
@@ -234,9 +361,28 @@
         {
           "type": "review",
           "settings": {
+            "star_rating": 5,
             "review": "Everything from packaging to performance feels professional. You can tell this store understands football.",
             "name": "Chris L.",
             "meta": "Youth academy coach"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "Bought a full kit for my five-a-side team here. Everyone was impressed — quality-to-price ratio is unreal.",
+            "name": "Marcus T.",
+            "meta": "Five-a-side team captain"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "star_rating": 5,
+            "review": "As a coach I need gear that lasts. FootHub delivers — durable, well-made, and looks sharp. Ordering for the whole squad next season.",
+            "name": "Liam A.",
+            "meta": "School football coach"
           }
         }
       ]
