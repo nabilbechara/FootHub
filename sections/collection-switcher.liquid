@@ -6,7 +6,7 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Performance Boosters"
+      "default": "Shop Match Essentials"
     },
     {
       "type": "text",
@@ -164,8 +164,8 @@
     margin: 0;
     font-size: clamp(2.3rem, 4vw, 3.5rem);
     line-height: 1.05;
-    font-weight: 400;
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    letter-spacing: 0;
     color: #2d2926;
   }
 
@@ -230,8 +230,8 @@
   .collection-switcher__image-wrap {
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: transparent;
-    border-radius: 0;
+    background: #f4f5f6;
+    border-radius: 8px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -240,10 +240,15 @@
   }
 
   .collection-switcher__image-wrap img {
-    width: 100%;
-    height: auto;
+    width: 92%;
+    height: 92%;
     display: block;
-    object-fit: initial;
+    object-fit: contain;
+    transition: transform 0.25s ease;
+  }
+
+  .collection-switcher__product-link:hover .collection-switcher__image-wrap img {
+    transform: scale(1.04);
   }
 
   .collection-switcher__product h3 {

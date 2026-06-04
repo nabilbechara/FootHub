@@ -17,7 +17,12 @@
           "settings": {
             "desktop_image": "shopify://shop_images/Copy_of_Untitled_Design_1.png",
             "mobile_image": "shopify://shop_images/Copy_of_Football_Shoes_1.png",
-            "link": "shopify://collections/all-shoes"
+            "link": "shopify://collections/all-shoes",
+            "logo": "shopify://shop_images/FoothubLogo.png",
+            "kicker": "",
+            "heading": "No hesitation, just speed",
+            "subheading": "",
+            "button_label": "Shop shoes"
           }
         },
         "slide_JTjEUf": {
@@ -25,7 +30,12 @@
           "settings": {
             "desktop_image": "shopify://shop_images/FOOTBALL_JERSEYS_add51cc1-2417-480f-ada1-7359c3704257.png",
             "mobile_image": "shopify://shop_images/Football_Shoes_1.png",
-            "link": "shopify://collections/football-jerseys"
+            "link": "shopify://collections/football-jerseys",
+            "logo": "shopify://shop_images/FoothubLogo.png",
+            "kicker": "",
+            "heading": "Wear the game",
+            "subheading": "",
+            "button_label": "Shop jerseys"
           }
         }
       },
@@ -35,6 +45,56 @@
       ],
       "name": "Hero Slider",
       "settings": {}
+    },
+    "pro_trust_bar_after_hero": {
+      "type": "pro-trust-bar",
+      "blocks": {
+        "trust_shipping": {
+          "type": "trust_item",
+          "settings": {
+            "title": "Fast Shipping",
+            "subtitle": "Processed in 24 hours"
+          }
+        },
+        "trust_checkout": {
+          "type": "trust_item",
+          "settings": {
+            "title": "Secure Checkout",
+            "subtitle": "Encrypted payments"
+          }
+        },
+        "trust_returns": {
+          "type": "trust_item",
+          "settings": {
+            "title": "Size Exchanges",
+            "subtitle": "Quick fit support"
+          }
+        },
+        "trust_players": {
+          "type": "trust_item",
+          "settings": {
+            "title": "Player-Ready",
+            "subtitle": "Curated football gear"
+          }
+        }
+      },
+      "block_order": [
+        "trust_shipping",
+        "trust_checkout",
+        "trust_returns",
+        "trust_players"
+      ],
+      "name": "Pro Trust Bar",
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "max_width": 1200,
+        "padding_y": 24,
+        "padding_x": 24,
+        "text_color": "#111111",
+        "muted_color": "#6B7280",
+        "divider_color": "#E5E7EB"
+      }
     },
     "pro_category_grid_6ndeMt": {
       "type": "pro-category-grid",
@@ -46,7 +106,7 @@
             "title": "Football Shoes",
             "subtitle": "Speed, control & traction",
             "link": "shopify://collections/all-shoes",
-            "overlay": 45
+            "overlay": 30
           }
         },
         "category_AaFMXE": {
@@ -56,7 +116,7 @@
             "title": "Football Jerseys",
             "subtitle": "Match-ready fabric",
             "link": "shopify://collections/football-jerseys",
-            "overlay": 45
+            "overlay": 30
           }
         },
         "category_CYiYw9": {
@@ -65,8 +125,8 @@
             "image": "shopify://shop_images/SNKRBAG.jpg",
             "title": "Football Equipment",
             "subtitle": "Essentials for training & match day",
-            "link": "shopify://collections/football-wquipment",
-            "overlay": 45
+            "link": "shopify://collections/football-equipment",
+            "overlay": 30
           }
         }
       },
@@ -101,23 +161,22 @@
         "radius": 12
       }
     },
-    "hero_slider_EhVk9P": {
-      "type": "hero-slider",
-      "blocks": {
-        "slide_PCYNWt": {
-          "type": "slide",
-          "settings": {
-            "desktop_image": "shopify://shop_images/Copy_of_Untitled_Design.png",
-            "mobile_image": "shopify://shop_images/Copy_of_Football_Shoes.png",
-            "link": "shopify://collections/all-shoes"
-          }
-        }
-      },
-      "block_order": [
-        "slide_PCYNWt"
-      ],
-      "name": "Hero Slider (Desktop + Mobile)",
-      "settings": {}
+    "pro_brand_statement_midpage": {
+      "type": "pro-brand-statement",
+      "name": "Pro Brand Statement",
+      "settings": {
+        "kicker": "Why FootHub",
+        "heading": "Football gear chosen for match-day performance.",
+        "text": "Boots, kits, and essentials curated for players who care about fit, feel, and every touch.",
+        "background_video_asset": "foothub-field-bg.mp4",
+        "max_width": 920,
+        "padding_y": 64,
+        "padding_x": 24,
+        "background": "#111111",
+        "text_color": "#ffffff",
+        "muted_color": "#d1d5db",
+        "accent_color": "#86efac"
+      }
     },
     "collection_switcher_mTHVfB": {
       "type": "collection-switcher",
@@ -139,7 +198,7 @@
         "collection_fArKX3": {
           "type": "collection",
           "settings": {
-            "collection": "football-wquipment",
+            "collection": "football-equipment",
             "label": "Equipment"
           }
         }
@@ -151,8 +210,8 @@
       ],
       "name": "Collection Switcher",
       "settings": {
-        "heading": "Performance Boosters",
-        "subheading": "",
+        "heading": "Shop Match Essentials",
+        "subheading": "Jump straight into the gear you need most.",
         "view_more_text": "View more",
         "show_view_more": true,
         "products_limit": 4
@@ -242,8 +301,8 @@
       "name": "Pro Final CTA",
       "settings": {
         "kicker": "READY FOR MATCH DAY?",
-        "heading": "Everything you need. Nothing you don’t.",
-        "subheading": "Professional-grade football shoes, jerseys, and equipment — curated for performance when it matters.",
+        "heading": "Your match-day setup starts here.",
+        "subheading": "Football shoes, jerseys, and equipment curated for performance when it matters.",
         "button_label": "Shop all products",
         "button_link": "shopify://collections/all-shoes",
         "max_width": 1000,
@@ -290,9 +349,10 @@
   },
   "order": [
     "hero_slider_PQjfaH",
+    "pro_trust_bar_after_hero",
     "pro_category_grid_6ndeMt",
     "pro_best_sellers_kjk8TK",
-    "hero_slider_EhVk9P",
+    "pro_brand_statement_midpage",
     "collection_switcher_mTHVfB",
     "pro_reviews_8rTqWx",
     "pro_final_cta_kiD4TF",
