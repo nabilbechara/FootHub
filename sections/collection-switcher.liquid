@@ -342,10 +342,11 @@
       tabs.forEach(t => t.classList.remove('active'));
       panels.forEach(p => p.classList.remove('active'));
 
+      const panel = section.querySelector(`.collection-switcher__panel[data-panel-index="${index}"]`);
+      if (!panel) return;
+
       tab.classList.add('active');
-      section
-        .querySelector(`.collection-switcher__panel[data-panel-index="${index}"]`)
-        .classList.add('active');
+      panel.classList.add('active');
 
       if (viewMore) {
         viewMore.setAttribute('href', url);

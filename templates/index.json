@@ -15,8 +15,8 @@
         "slide_RRLpgQ": {
           "type": "slide",
           "settings": {
-            "desktop_image": "shopify://shop_images/Copy_of_Untitled_Design_1.png",
-            "mobile_image": "shopify://shop_images/Copy_of_Football_Shoes_1.png",
+            "desktop_image": "shopify://shop_images/nike-mercurial-superfly-11-and-vapor-17-release-date-tech-and-how-they_re-different.avif",
+            "mobile_image": "shopify://shop_images/nike-mercurial-superfly-11-and-vapor-17-release-date-tech-and-how-they_re-different.avif",
             "link": "shopify://collections/all-shoes",
             "logo": "shopify://shop_images/FoothubLogo.png",
             "kicker": "",
@@ -28,8 +28,8 @@
         "slide_JTjEUf": {
           "type": "slide",
           "settings": {
-            "desktop_image": "shopify://shop_images/FOOTBALL_JERSEYS_add51cc1-2417-480f-ada1-7359c3704257.png",
-            "mobile_image": "shopify://shop_images/Football_Shoes_1.png",
+            "desktop_image": "shopify://shop_images/LeoMessi20092010_pic_fcb-arsenal62.jpg",
+            "mobile_image": "shopify://shop_images/FRh7AqJX0AEVMnJ.jpg",
             "link": "shopify://collections/football-jerseys",
             "logo": "shopify://shop_images/FoothubLogo.png",
             "kicker": "",
@@ -92,8 +92,8 @@
         "padding_y": 24,
         "padding_x": 24,
         "text_color": "#111111",
-        "muted_color": "#6B7280",
-        "divider_color": "#E5E7EB"
+        "muted_color": "#6b7280",
+        "divider_color": "#e5e7eb"
       }
     },
     "pro_category_grid_6ndeMt": {
@@ -125,7 +125,7 @@
             "image": "shopify://shop_images/SNKRBAG.jpg",
             "title": "Football Equipment",
             "subtitle": "Essentials for training & match day",
-            "link": "shopify://collections/football-equipment",
+            "link": "shopify://collections/football-wquipment",
             "overlay": 30
           }
         }
@@ -152,10 +152,10 @@
         "heading": "Best Sellers",
         "subheading": "Top picks trusted by players.",
         "collection": "all-shoes",
-        "products_limit": 4,
+        "products_limit": 8,
         "view_more_link": "shopify://collections/all-shoes",
-        "view_more_label": "View all products",
-        "max_width": 1200,
+        "view_more_label": "View all",
+        "max_width": 1480,
         "padding_y": 80,
         "padding_x": 24,
         "radius": 12
@@ -198,7 +198,7 @@
         "collection_fArKX3": {
           "type": "collection",
           "settings": {
-            "collection": "football-equipment",
+            "collection": "football-wquipment",
             "label": "Equipment"
           }
         }
@@ -219,7 +219,6 @@
     },
     "pro_reviews_8rTqWx": {
       "type": "pro-reviews",
-      "name": "Pro Reviews",
       "blocks": {
         "review_jK1mNp": {
           "type": "review",
@@ -284,6 +283,7 @@
         "review_dA5yUv",
         "review_eB6zVw"
       ],
+      "name": "Pro Reviews",
       "settings": {
         "heading": "Trusted by players",
         "subheading": "Real feedback from footballers who care about performance.",
