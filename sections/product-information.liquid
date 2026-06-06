@@ -1,4 +1,12 @@
 {% assign product = closest.product %}
+{% liquid
+  assign is_jersey_product = false
+  for product_collection in product.collections
+    if product_collection.handle == 'football-jerseys'
+      assign is_jersey_product = true
+    endif
+  endfor
+%}
 
 <script type="application/ld+json">
   {{ closest.product | structured_data }}
@@ -169,6 +177,16 @@
   </sticky-add-to-cart>
 {% endif %}
 
+{% if is_jersey_product %}
+  <div class="jersey-product-sale">
+    <div class="jersey-product-sale__inner">
+      <span class="jersey-product-sale__tag">This week's jersey sale</span>
+      <strong>Any football jersey for $19.99</strong>
+      <span>Limited-time offer while sizes last.</span>
+    </div>
+  </div>
+{% endif %}
+
 {% render 'product-information-content',
   product_media_size: closest.product.media.size,
   section_id: section.id,
@@ -183,6 +201,51 @@
 
 
 {% stylesheet %}
+  .jersey-product-sale {
+    padding: 0 16px;
+  }
+
+  .jersey-product-sale__inner {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #050505;
+    color: #ffffff;
+    text-align: center;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.86rem;
+    line-height: 1.25;
+  }
+
+  .jersey-product-sale__tag {
+    padding: 4px 8px;
+    background: #d40000;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .jersey-product-sale strong {
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  @media screen and (max-width: 749px) {
+    .jersey-product-sale__inner {
+      margin-bottom: 10px;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+  }
+
   .sticky-add-to-cart__bar {
     position: fixed;
     bottom: 20px;
