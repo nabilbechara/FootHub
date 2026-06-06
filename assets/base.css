@@ -2190,6 +2190,17 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   white-space: nowrap;
 }
 
+.price {
+  color: rgb(var(--color-foreground-rgb));
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.price--sale {
+  color: #d60000;
+  font-weight: 900;
+}
+
 .unit-price {
   display: block;
   font-size: min(0.85em, var(--font-paragraph--size));
@@ -2207,7 +2218,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
 }
 
 .compare-at-price {
-  opacity: 0.4;
+  opacity: 0.46;
   text-decoration-line: line-through;
   text-decoration-thickness: 1.5px;
 }
@@ -4238,83 +4249,31 @@ header-menu .menu-list__link span {
   z-index: 2;
 }
 /* ===============================
-   PREMIUM SALE BADGE OVERRIDE
+   FOOTHUB PRODUCT BADGES
    =============================== */
 
-.badge--sale {
-  background-color: #0f0f0f !important;
+.badge--sale,
+.product-badge--sale,
+.product-badges__badge--sale,
+[data-badge="sale"],
+[data-label="sale"] {
+  background: linear-gradient(135deg, #ff2a00 0%, #ff6a00 54%, #ffd000 120%) !important;
   color: #ffffff !important;
-  border: none !important;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  border-color: rgba(255,255,255,0.8) !important;
+  box-shadow: 0 10px 22px rgba(255, 54, 0, 0.26);
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-/* Optional: make it slightly more premium */
-.badge--sale {
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 11px;
-}
-/* ===============================
-   DWELL SALE BADGE — FINAL OVERRIDE
-   =============================== */
-
-/* Primary Dwell sale badge */
-.product-badge--sale,
-.product-badge[data-badge="sale"],
-.product-badge.is-sale {
-  background: #0b0b0b !important;
+.product-badges__badge--few-left {
+  background: #111111 !important;
   color: #ffffff !important;
-  border: none !important;
-}
-
-/* Badge base styling (premium look) */
-.product-badge {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  border-color: rgba(255,255,255,0.72) !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-radius: 999px;
-  padding: 6px 10px;
-  line-height: 1;
-}
-/* ===============================
-   FORCE SALE BADGE TO BLACK (DWELL)
-   =============================== */
-
-/* Catch most badge systems */
-.badge,
-.product-badge,
-[class*="badge"],
-[class*="Badge"],
-[class*="product-badge"],
-[data-badge],
-[data-label] {
-  --color-accent-rgb: 0 0 0;
-  --color-accent: 0 0 0;
-}
-
-/* Specifically force common sale selectors */
-.badge--sale,
-.product-badge--sale,
-[data-badge="sale"],
-[data-label="sale"],
-.is-sale,
-.on-sale {
-  background-color: #0b0b0b !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
-
-/* If the badge is using CSS variables like rgb(var(--color-accent-rgb)) */
-.badge--sale,
-.product-badge--sale,
-[data-badge="sale"],
-[data-label="sale"],
-.is-sale,
-.on-sale {
-  background: rgb(var(--color-accent-rgb)) !important;
 }
 .bundle-wrap {
   margin-top: 16px;

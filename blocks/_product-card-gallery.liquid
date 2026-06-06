@@ -1,6 +1,26 @@
 
 
 {% assign product = closest.product %}
+{% liquid
+  assign available_inventory = 0
+  assign tracks_inventory = false
+
+  if product != blank and product.available
+    for variant in product.variants
+      if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+        assign tracks_inventory = true
+        if variant.inventory_quantity > 0
+          assign available_inventory = available_inventory | plus: variant.inventory_quantity
+        endif
+      endif
+    endfor
+  endif
+
+  assign show_few_left = false
+  if tracks_inventory and available_inventory > 0 and available_inventory <= 3
+    assign show_few_left = true
+  endif
+%}
 
 {% capture children %}
   {% unless product == blank %}
@@ -15,7 +35,7 @@
         <div
           class="
             product-badges__badge product-badges__badge--rectangle
-            {% if product.available == false %} color-{{ settings.badge_sold_out_color_scheme }}{% elsif product.compare_at_price > product.price %} color-{{ settings.badge_sale_color_scheme }}{% endif %}
+            {% if product.available == false %} color-{{ settings.badge_sold_out_color_scheme }}{% elsif product.compare_at_price > product.price %} color-{{ settings.badge_sale_color_scheme }} product-badges__badge--sale{% endif %}
           "
         >
           {%- if product.available == false -%}
@@ -23,6 +43,12 @@
           {%- elsif product.compare_at_price > product.price -%}
             {{ 'content.product_badge_sale' | t }}
           {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if product.available and show_few_left -%}
+        <div class="product-badges__badge product-badges__badge--rectangle product-badges__badge--few-left">
+          Few left
         </div>
       {%- endif -%}
     </div>
@@ -49,6 +75,10 @@
 
     position: absolute;
     z-index: var(--layer-flat);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 
   .product-badges--bottom-left {
@@ -85,6 +115,24 @@
   .product-badges__badge--rectangle {
     padding-block: var(--badge-rectangle-padding-block);
     padding-inline: var(--badge-rectangle-padding-inline);
+  }
+
+  .product-badges__badge--sale {
+    background: linear-gradient(135deg, #ff2a00 0%, #ff6a00 54%, #ffd000 120%) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 10px 22px rgba(255, 54, 0, 0.26);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+  }
+
+  .product-badges__badge--few-left {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.72);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    font-weight: 900;
+    letter-spacing: 0.06em;
   }
 {% endstylesheet %}
 

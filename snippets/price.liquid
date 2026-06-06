@@ -97,7 +97,7 @@
     {% if show_compare_price %}
       <span role="group">
         <span class="visually-hidden">{{ 'content.price_sale' | t }}&nbsp;</span>
-        <span class="price">{{ price | default: '&nbsp;' }}</span>
+        <span class="price price--sale">{{ price | default: '&nbsp;' }}</span>
       </span>
     {% else %}
       <span class="price">{{ price | default: '&nbsp;' }}</span>
