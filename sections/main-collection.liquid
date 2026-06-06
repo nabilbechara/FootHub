@@ -35,6 +35,12 @@
   <div
     class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"
   >
+    <div class="foothub-collection-utility">
+      <div class="foothub-collection-utility__count">
+        {{ collection.products_count }} products
+      </div>
+    </div>
+
     {% content_for 'block',
       type: 'filters',
       id: 'filters',
@@ -62,6 +68,21 @@
             {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
             {% # theme-check-enable %}
           </li>
+          {% if forloop.index == 8 and collection.handle contains 'shoe' %}
+            <li class="product-grid__item foothub-grid-guide" data-page="{{ paginate.current_page }}">
+              <a
+                href="{{ section.settings.grid_guide_link | default: '/pages/contact' }}"
+                class="foothub-grid-guide__inner"
+                {% if section.settings.grid_guide_image != blank %}
+                  style="--foothub-grid-guide-image: url('{{ section.settings.grid_guide_image | image_url: width: 1200 }}');"
+                {% endif %}
+              >
+                <span>{{ section.settings.grid_guide_eyebrow }}</span>
+                <strong>{{ section.settings.grid_guide_heading }}</strong>
+                <p>{{ section.settings.grid_guide_text }}</p>
+              </a>
+            </li>
+          {% endif %}
         {% endfor %}
       {% endcapture %}
 
@@ -82,6 +103,85 @@
 
     @media screen and (min-width: 750px) {
       grid-column: var(--grid-column--desktop);
+    }
+  }
+
+  .foothub-collection-utility {
+    grid-column: var(--centered);
+    margin-bottom: 18px;
+    padding: 0 var(--page-margin);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .foothub-collection-utility__count {
+    color: rgba(0,0,0,0.62);
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .foothub-grid-guide {
+    align-self: stretch;
+  }
+
+  .foothub-grid-guide__inner {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.76) 100%),
+      var(--foothub-grid-guide-image, linear-gradient(135deg, #141414, #2a2a2a));
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .foothub-grid-guide__inner span {
+    margin-bottom: 12px;
+    color: #86efac;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .foothub-grid-guide__inner strong {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .foothub-grid-guide__inner p {
+    margin: 12px 0 0;
+    color: rgba(255,255,255,0.76);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  @media screen and (max-width: 749px) {
+    .foothub-collection-utility {
+      grid-column: var(--full-width);
+      padding: 0 14px;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .foothub-grid-guide__inner {
+      min-height: 220px;
+      padding: 22px;
     }
   }
 
@@ -276,6 +376,38 @@
       "step": 1,
       "unit": "px",
       "default": 16
+    },
+    {
+      "type": "header",
+      "content": "In-grid guide card"
+    },
+    {
+      "type": "image_picker",
+      "id": "grid_guide_image",
+      "label": "Guide card image"
+    },
+    {
+      "type": "text",
+      "id": "grid_guide_eyebrow",
+      "label": "Guide card label",
+      "default": "Boot guide"
+    },
+    {
+      "type": "text",
+      "id": "grid_guide_heading",
+      "label": "Guide card heading",
+      "default": "Not sure FG or Turf?"
+    },
+    {
+      "type": "textarea",
+      "id": "grid_guide_text",
+      "label": "Guide card text",
+      "default": "Pick the right soleplate for your pitch before you buy."
+    },
+    {
+      "type": "url",
+      "id": "grid_guide_link",
+      "label": "Guide card link"
     },
     {
       "type": "range",

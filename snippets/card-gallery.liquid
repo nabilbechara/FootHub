@@ -17,7 +17,26 @@
   assign has_badges = false
   assign badge_position = null
   if product != blank
-    if product.available == false or product.compare_at_price > product.price
+    assign available_inventory = 0
+    assign tracks_inventory = false
+
+    if product.available
+      for variant in product.variants
+        if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+          assign tracks_inventory = true
+          if variant.inventory_quantity > 0
+            assign available_inventory = available_inventory | plus: variant.inventory_quantity
+          endif
+        endif
+      endfor
+    endif
+
+    assign show_few_left = false
+    if tracks_inventory and available_inventory > 0 and available_inventory <= 3
+      assign show_few_left = true
+    endif
+
+    if product.available == false or product.compare_at_price > product.price or show_few_left
       assign has_badges = true
       assign badge_position = settings.badge_position
     endif
