@@ -4,6 +4,16 @@
   class="cart-items-component"
   data-section-id="{{ section.id }}"
 >
+  {% liquid
+    assign has_jersey_in_cart = false
+    for item in cart.items
+      for item_collection in item.product.collections
+        if item_collection.handle == 'football-jerseys'
+          assign has_jersey_in_cart = true
+        endif
+      endfor
+    endfor
+  %}
   <div class="section-background color-{{ section.settings.color_scheme }}"></div>
   <div
     class="section color-{{ section.settings.color_scheme }} section--{{ section.settings.section_width }}"
@@ -12,6 +22,17 @@
       class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
       style="{% render 'spacing-style', settings: section.settings %}"
     >
+      {% unless cart.empty? %}
+        <div class="cart-jersey-sale">
+          {% if has_jersey_in_cart %}
+            <strong>Jersey deal applied:</strong> Football jerseys are on sale for $19.99.
+          {% else %}
+            <strong>This week's jersey sale:</strong> Add a football jersey for only $19.99 before checkout.
+          {% endif %}
+          <a href="/collections/football-jerseys">Shop jerseys</a>
+        </div>
+      {% endunless %}
+
       <div class="cart-page__title">
         {%- content_for 'block', id: 'cart-page-title', type: '_cart-title' %}
       </div>
@@ -46,6 +67,44 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 0 var(--padding-5xl);
+  }
+
+  .cart-jersey-sale {
+    grid-column: 1 / -1;
+    margin-bottom: var(--margin-lg);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #050505;
+    color: #ffffff;
+    text-align: center;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .cart-jersey-sale strong {
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .cart-jersey-sale a {
+    color: #ffffff;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 749px) {
+    .cart-jersey-sale {
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.82rem;
+    }
   }
 
   .cart-page--empty {
