@@ -4333,3 +4333,33 @@ header-menu .menu-list__link span {
 .bundle-final {
   font-weight: 600;
 }
+
+/* ── World Cup 2026 nav highlight ── */
+:root {
+  --color-gold: #D4AF37;
+  --color-gold-hover: #E6C75A;
+}
+
+.nav--world-cup {
+  color: var(--color-gold) !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav--world-cup:hover,
+.nav--world-cup:focus {
+  color: var(--color-gold-hover) !important;
+}
+
+.menu-drawer__menu-item.nav--world-cup {
+  justify-content: flex-start;
+}
+
+.nav--world-cup__trophy {
+  height: 18px;
+  width: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+}

@@ -181,11 +181,14 @@
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if link.url contains 'world-cup-2026' %} nav--world-cup{% endif %}"
                     {% if link.current %}
                       aria-current="page"
                     {% endif %}
                   >
+                    {%- if link.url contains 'world-cup-2026' -%}
+                      <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="nav--world-cup__trophy" loading="lazy">
+                    {%- endif -%}
                     <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
                   </a>
                   {% liquid
@@ -232,11 +235,14 @@
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if link.url contains 'world-cup-2026' %} nav--world-cup{% endif %}"
                     {% if link.current %}
                       aria-current="page"
                     {% endif %}
                   >
+                    {%- if link.url contains 'world-cup-2026' -%}
+                      <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="nav--world-cup__trophy" loading="lazy">
+                    {%- endif -%}
                     <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
                   </a>
                 {% endif %}
@@ -546,11 +552,14 @@
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if link.url contains 'world-cup-2026' %} nav--world-cup{% endif %}"
                     {% if link.current %}
                       aria-current="page"
                     {% endif %}
                   >
+                    {%- if link.url contains 'world-cup-2026' -%}
+                      <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="nav--world-cup__trophy" loading="lazy">
+                    {%- endif -%}
                     <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
                   </a>
                 {%- endif -%}

@@ -41,11 +41,14 @@
                 <a
                   href="{{ link.url }}"
                   id="MenuItem-{{ link.handle }}"
-                  class="menu-list__item"
+                  class="menu-list__item{% if link.url contains 'world-cup-2026' %} nav--world-cup{% endif %}"
                   {% if link.current %}
                     aria-current="page"
                   {% endif %}
                 >
+                  {%- if link.url contains 'world-cup-2026' -%}
+                    <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="nav--world-cup__trophy" loading="lazy">
+                  {%- endif -%}
                   {{- link.title -}}
                 </a>
               </li>
@@ -93,7 +96,7 @@
           <a
             href="{{ link.url }}"
             data-skip-node-update="true"
-            class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
+            class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}{% if link.url contains 'world-cup-2026' %} nav--world-cup{% endif %}"
             {%- if link.links != blank -%}
               aria-controls="submenu-{{ forloop.index }}"
               aria-haspopup="true"
@@ -101,6 +104,9 @@
             {%- endif -%}
             ref="menuitem"
           >
+            {%- if link.url contains 'world-cup-2026' -%}
+              <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="nav--world-cup__trophy" loading="lazy">
+            {%- endif -%}
             <span class="menu-list__link-title">{{- link.title -}}</span>
           </a>
           {%- if link.links != blank -%}
