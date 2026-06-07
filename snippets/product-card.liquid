@@ -11,6 +11,14 @@
 
 {% assign block_settings = block.settings %}
 
+{% liquid
+  assign wc_check = product.collections | where: 'handle', 'world-cup-2026'
+  assign is_wc_card = false
+  if wc_check.size > 0
+    assign is_wc_card = true
+  endif
+%}
+
 {% style %}
   {% if request.visual_preview_mode %}
     product-card-link {
@@ -111,6 +119,12 @@
       {% if block_settings.padding-block-end > 0 %}--zoom-out-padding-block-end: min(var(--padding-xs), {{ block_settings.padding-block-end | times: 0.7}}px);{% endif %}
     "
   >
+    {%- if is_wc_card -%}
+      <div class="wc2026-card-badge" aria-label="World Cup 2026 Collection">
+        <img src="{{ 'world-cup-trophy.png' | asset_url }}" alt="" class="wc2026-card-badge__icon" loading="lazy">
+        <span>WC 2026</span>
+      </div>
+    {%- endif -%}
     {{ children }}
   </div>
 </product-card>
@@ -143,5 +157,41 @@
   [data-quick-add-button='add'] .quick-add__button--choose {
     display: none;
   }
-  
+
+  /* ── WC 2026 card badge ── */
+  .product-card__content {
+    position: relative;
+  }
+
+  .wc2026-card-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px 4px 5px;
+    background: linear-gradient(135deg, rgba(22, 16, 0, 0.93) 0%, rgba(10, 8, 0, 0.93) 100%);
+    border: 1px solid #D4AF37;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
+    color: #D4AF37;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .wc2026-card-badge__icon {
+    height: 14px;
+    width: auto;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
 {% endstylesheet %}
