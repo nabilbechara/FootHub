@@ -4340,12 +4340,20 @@ header-menu .menu-list__link span {
   --color-gold-hover: #E6C75A;
 }
 
+@keyframes wc-glow {
+  0%, 100% { text-shadow: 0 0 6px rgba(212, 175, 55, 0.25); }
+  50%       { text-shadow: 0 0 12px rgba(212, 175, 55, 0.7), 0 0 24px rgba(212, 175, 55, 0.35); }
+}
+
 .nav--world-cup {
   color: var(--color-gold) !important;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   gap: 5px;
+  animation: wc-glow 2.5s ease-in-out infinite;
 }
 
 .nav--world-cup:hover,
