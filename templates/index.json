@@ -312,167 +312,47 @@
         "background": "#f9fafb"
       }
     },
-    "ss_wellness_stats_kPmN8x": {
-      "type": "ss-wellness-temp--ss-well-8313c7f1",
-      "blocks": {
-        "stats_block_kPmN8y": {
-          "type": "stats",
-          "settings": {
-            "heading": "<p></p><h2>Built for Performance. Backed by Numbers.</h2><p></p>",
-            "heading_color": "#ffffff",
-            "text": "<p>We source the best football gear so you can focus on what matters — your game.</p>",
-            "text_color": "#d4d4d4",
-            "btn_label": "Shop all products",
-            "btn_url": "/collections/all-shoes",
-            "btn_style": "non_outline",
-            "card1_title": "Orders Delivered",
-            "card1_stat": "10K+",
-            "card1_text": "Worldwide shipments",
-            "card2_title": "Product Quality",
-            "card2_stat": "100%",
-            "card2_text": "Authentic gear only",
-            "card3_title": "Avg. Dispatch",
-            "card3_stat": "48h",
-            "card3_text": "Fast processing",
-            "card4_title": "Return Rate",
-            "card4_stat": "<2%",
-            "card4_text": "Players love their gear",
-            "card_bg_color": "#1a1a1a",
-            "card_bg_opacity": 85,
-            "card_border_thickness": 1,
-            "card_border_color": "#333333",
-            "card_radius": 0,
-            "card_title_color": "#aaaaaa",
-            "card_stat_color": "#f5d442",
-            "card_stat_gradient": "linear-gradient(90deg, rgba(245, 212, 66, 1), rgba(200, 168, 46, 1) 100%)",
-            "card_text_color": "#999999",
-            "enable_count_animation": true,
-            "disclaimer": "<p>*Based on Foothub order data from the past 12 months.</p>",
-            "disclaimer_color": "#777777",
-            "bg_style": "solid",
-            "background_color": "#111111",
-            "background_gradient": "",
-            "video_mobile": "shopify://files/videos/ssstik.io_@dein_fussballschuh_1781385819497.mp4",
-            "video_fallback": "shopify://shop_images/a6ff1627ad0e.jpg",
-            "video_fallback_mobile": "shopify://shop_images/a6ff1627ad0e.jpg",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        }
-      },
-      "block_order": [
-        "stats_block_kPmN8y"
-      ],
-      "name": "Performance Stats",
-      "settings": {
-        "heading_custom_font": false,
-        "heading_font": "josefin_sans_n7",
-        "heading_size": 40,
-        "heading_size_mobile": 28,
-        "heading_line_height": 130,
-        "accent_custom_font": false,
-        "accent_font": "playfair_display_i4",
-        "text_custom_font": false,
-        "text_font": "josefin_sans_n4",
-        "text_size": 16,
-        "text_size_mobile": 15,
-        "text_line_height": 150,
-        "badge_custom_font": false,
-        "badge_font": "josefin_sans_n4",
-        "badge_font_size": 11,
-        "badge_font_size_mobile": 11,
-        "badge_text_transform": "uppercase",
-        "badge_radius": 100,
-        "badge_border_thickness": 1,
-        "badge_advanced": false,
-        "badge_padding_v": 8,
-        "badge_padding_h": 24,
-        "button_custom_font": false,
-        "button_font": "josefin_sans_n4",
-        "btn_size": 14,
-        "btn_size_mobile": 14,
-        "button_line_height": 100,
-        "btn_radius": 0,
-        "btn_border_thickness": 1,
-        "enable_hover_effect": true,
-        "btn_shadow_color": "#000000",
-        "btn_advanced": false,
-        "btn_padding_v": 16,
-        "btn_padding_v_mobile": 16,
-        "btn_padding_h": 30,
-        "btn_padding_h_mobile": 20,
-        "btn_filled_color": "#ffffff",
-        "btn_filled_hover_color": "#ffffff",
-        "btn_filled_bg_color": "#000000",
-        "btn_filled_bg_hover_color": "#333333",
-        "btn_outline_color": "#000000",
-        "btn_outline_hover_color": "#ffffff",
-        "btn_outline_bg_color": "rgba(0,0,0,0)",
-        "btn_outline_bg_hover_color": "#121212",
-        "btn_outline_border_color": "#000000",
-        "btn_outline_border_hover_color": "#000000",
-        "btn_link_color": "#000000",
-        "btn_link_hover_color": "#555555",
-        "stars_color": "#ffffff",
-        "stars_bg_color": "#00b67a",
-        "stars_bg_half_color": "#dddddd",
-        "checkmark_style": "3",
-        "enable_animation": false,
-        "margin_top": 0,
-        "margin_bottom": 0,
-        "margin_horizontal": 0,
-        "margin_horizontal_mobile": 0,
-        "padding_top": 36,
-        "padding_bottom": 36,
-        "padding_horizontal": 5,
-        "padding_horizontal_mobile": 1.5,
-        "block_gap": 0,
-        "block_gap_mobile": 0,
-        "width": "page",
-        "content_width": 1200,
-        "section_radius": 0,
-        "section_bg_style": "solid",
-        "section_background_color": "#ffffff",
-        "section_background_gradient": ""
-      }
-    },
     "shoe_video_reel_v1": {
       "type": "shoe-video-reel",
       "blocks": {
+        "reel_card_4": {
+          "type": "video_card",
+          "settings": {
+            "video": "shopify://files/videos/ssstik.io_1788638220736.mp4",
+            "label": "Adidas Messi Ultimo Tango",
+            "product_link": "shopify://products/adidas-f50-messi-elite-fg-el-ultimo-tango-1"
+          }
+        },
         "reel_card_1": {
           "type": "video_card",
           "settings": {
-            "label": "",
-            "product_link": ""
+            "video": "shopify://files/videos/ssstik.io_@dein_fussballschuh_1781385819497.mp4",
+            "label": "Nike mercurial WC special edition",
+            "product_link": "shopify://products/nike-mercurial-superfly-11-elite"
           }
         },
         "reel_card_2": {
           "type": "video_card",
           "settings": {
-            "label": "",
-            "product_link": ""
+            "video": "shopify://files/videos/ssstik.io_1788363012979.mp4",
+            "label": "Nike mercurial CRISTIANO RONALDO",
+            "product_link": "shopify://products/ronaldo-s-2026-world-cup-boots"
           }
         },
         "reel_card_3": {
           "type": "video_card",
           "settings": {
-            "label": "",
-            "product_link": ""
-          }
-        },
-        "reel_card_4": {
-          "type": "video_card",
-          "settings": {
-            "label": "",
-            "product_link": ""
+            "video": "shopify://files/videos/ssstik.io_1788638002136.mp4",
+            "label": "Nike Mercurial Scorpion",
+            "product_link": "shopify://products/nike-mercurial-vapor-17-elite-fg-scorpion-blue-red-silver-metallic-limited-edition"
           }
         }
       },
       "block_order": [
+        "reel_card_4",
         "reel_card_1",
         "reel_card_2",
-        "reel_card_3",
-        "reel_card_4"
+        "reel_card_3"
       ],
       "name": "Shoe Video Reel",
       "settings": {
@@ -528,7 +408,6 @@
     "pro_brand_statement_midpage",
     "collection_switcher_mTHVfB",
     "pro_reviews_8rTqWx",
-    "ss_wellness_stats_kPmN8x",
     "shoe_video_reel_v1",
     "premium_faq_8qmKge"
   ]
