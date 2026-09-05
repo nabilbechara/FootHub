@@ -22,11 +22,11 @@
                 muted
                 loop
                 playsinline
-                preload="none"
+                preload="metadata"
                 data-autoload="true"
               >
                 {%- for source in block.settings.video.sources -%}
-                  <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
                 {%- endfor -%}
               </video>
             {%- else -%}
@@ -249,20 +249,12 @@
   var track   = document.getElementById('shoe-reel-track-{{ section.id }}');
   if (!track) return;
 
-  /* ── lazy-load videos via IntersectionObserver ── */
+  /* ── video activation: ramp to full preload then play ── */
   function activateVideo(video) {
     if (video.dataset.loaded) return;
     video.dataset.loaded = 'true';
 
     var shimmer = video.parentElement.querySelector('.shoe-reel__shimmer');
-
-    /* move data-src → src so the browser starts fetching */
-    video.querySelectorAll('source[data-src]').forEach(function (s) {
-      s.setAttribute('src', s.dataset.src);
-      s.removeAttribute('data-src');
-    });
-
-    video.load();
 
     var onReady = function () {
       video.classList.add('is-ready');
@@ -270,21 +262,35 @@
       video.play().catch(function(){});
     };
 
+    /* already has enough data (metadata preload may have buffered it) */
     if (video.readyState >= 3) {
       onReady();
-    } else {
-      video.addEventListener('canplay', onReady, { once: true });
+      return;
     }
+
+    /* bump preload to auto and force a fresh load pass */
+    video.preload = 'auto';
+    video.load();
+    video.addEventListener('canplay', onReady, { once: true });
   }
 
-  /* observe section with 400px margin so loading starts before scrolling into view */
+  /* show shimmer immediately on videos that aren't ready yet */
+  track.querySelectorAll('video[data-autoload]').forEach(function (video) {
+    if (video.readyState >= 3) {
+      var shimmer = video.parentElement.querySelector('.shoe-reel__shimmer');
+      video.classList.add('is-ready');
+      if (shimmer) shimmer.classList.add('is-hidden');
+    }
+  });
+
+  /* start full buffering 800px before section enters viewport */
   var sectionObserver = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
       sectionObserver.disconnect();
       track.querySelectorAll('video[data-autoload]').forEach(activateVideo);
     });
-  }, { rootMargin: '400px 0px' });
+  }, { rootMargin: '800px 0px' });
 
   sectionObserver.observe(section);
 
