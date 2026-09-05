@@ -1,0 +1,379 @@
+{% comment %}
+  Shoe Video Reel — horizontal scrolling strip of 4 short-form shoe videos.
+  Supports YouTube, TikTok, or uploaded Shopify video files.
+{% endcomment %}
+
+<section class="shoe-reel" id="shoe-reel-{{ section.id }}">
+  <div class="shoe-reel__header">
+    {% if section.settings.heading != blank %}
+      <h2 class="shoe-reel__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p class="shoe-reel__subheading">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  <div class="shoe-reel__track-wrap">
+    <div class="shoe-reel__track" id="shoe-reel-track-{{ section.id }}">
+
+      {% for block in section.blocks %}
+        {%- assign vid_type = block.settings.video_type -%}
+        {%- assign vid_id   = block.settings.video_id -%}
+        {%- assign vid_file = block.settings.video_file -%}
+
+        <div class="shoe-reel__card" {{ block.shopify_attributes }}>
+
+          <div class="shoe-reel__player">
+
+            {%- if vid_type == 'youtube' and vid_id != blank -%}
+              <iframe
+                src="https://www.youtube.com/embed/{{ vid_id }}?autoplay=0&mute=1&loop=1&playlist={{ vid_id }}&controls=0&rel=0&modestbranding=1"
+                class="shoe-reel__iframe"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                loading="lazy"
+                title="{{ block.settings.label | escape }}"
+              ></iframe>
+
+            {%- elsif vid_type == 'tiktok' and vid_id != blank -%}
+              <iframe
+                src="https://www.tiktok.com/embed/v2/{{ vid_id }}"
+                class="shoe-reel__iframe shoe-reel__iframe--tiktok"
+                frameborder="0"
+                allow="autoplay"
+                allowfullscreen
+                loading="lazy"
+                title="{{ block.settings.label | escape }}"
+              ></iframe>
+
+            {%- elsif vid_file != blank -%}
+              <video
+                class="shoe-reel__video"
+                src="{{ vid_file }}"
+                muted
+                loop
+                playsinline
+                preload="metadata"
+              ></video>
+
+            {%- else -%}
+              <div class="shoe-reel__placeholder">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+                  <path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4Z" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+                  <path d="M20 16l12 8-12 8V16Z" fill="rgba(255,255,255,.4)"/>
+                </svg>
+                <span>Add video in theme editor</span>
+              </div>
+            {%- endif -%}
+
+            <!-- hover play icon overlay for file videos -->
+            {%- if vid_file != blank -%}
+              <div class="shoe-reel__play-overlay">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+                  <circle cx="24" cy="24" r="22" fill="rgba(0,0,0,.55)"/>
+                  <path d="M20 16l12 8-12 8V16Z" fill="#fff"/>
+                </svg>
+              </div>
+            {%- endif -%}
+
+          </div>
+
+          {% if block.settings.label != blank %}
+            <p class="shoe-reel__card-label">{{ block.settings.label }}</p>
+          {% endif %}
+
+          {% if block.settings.product_link != blank %}
+            <a href="{{ block.settings.product_link }}" class="shoe-reel__card-btn">Shop this →</a>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- Nav arrows -->
+    <button class="shoe-reel__arrow shoe-reel__arrow--prev" aria-label="Previous" data-reel="{{ section.id }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="shoe-reel__arrow shoe-reel__arrow--next" aria-label="Next" data-reel="{{ section.id }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .shoe-reel {
+    background: {{ section.settings.bg_color | default: '#0a0a0a' }};
+    padding: {{ section.settings.padding_y | default: 80 }}px 0;
+    overflow: hidden;
+  }
+
+  .shoe-reel__header {
+    text-align: center;
+    padding: 0 24px;
+    margin-bottom: 40px;
+  }
+
+  .shoe-reel__heading {
+    margin: 0 0 10px;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+
+  .shoe-reel__subheading {
+    margin: 0;
+    font-size: 0.97rem;
+    color: rgba(255,255,255,0.5);
+    max-width: 46ch;
+    margin-inline: auto;
+    line-height: 1.55;
+  }
+
+  .shoe-reel__track-wrap {
+    position: relative;
+    padding: 0 24px;
+  }
+
+  .shoe-reel__track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+    cursor: grab;
+  }
+
+  .shoe-reel__track::-webkit-scrollbar { display: none; }
+
+  .shoe-reel__track.is-grabbing { cursor: grabbing; }
+
+  .shoe-reel__card {
+    flex: 0 0 clamp(280px, 28vw, 380px);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .shoe-reel__player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    background: #111;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .shoe-reel__iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .shoe-reel__iframe--tiktok {
+    /* TikTok embed needs a taller container */
+    min-height: 700px;
+    height: 100%;
+  }
+
+  .shoe-reel__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .shoe-reel__play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .shoe-reel__card:hover .shoe-reel__play-overlay {
+    opacity: 1;
+  }
+
+  .shoe-reel__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.35);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .shoe-reel__card-label {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.3;
+  }
+
+  .shoe-reel__card-btn {
+    display: inline-flex;
+    align-items: center;
+    color: #D4AF37;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: gap 0.2s ease;
+    gap: 4px;
+  }
+
+  .shoe-reel__card-btn:hover { gap: 8px; color: #FFD700; }
+
+  /* Arrows */
+  .shoe-reel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .shoe-reel__arrow:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  .shoe-reel__arrow--prev { left: 28px; }
+  .shoe-reel__arrow--next { right: 28px; }
+
+  @media (max-width: 640px) {
+    .shoe-reel__arrow { display: none; }
+
+    .shoe-reel__track-wrap { padding: 0 16px; }
+
+    .shoe-reel__card {
+      flex: 0 0 min(260px, 76vw);
+    }
+  }
+</style>
+
+<script>
+(function () {
+  var reelId = 'shoe-reel-track-{{ section.id }}';
+  var track = document.getElementById(reelId);
+  if (!track) return;
+
+  /* Drag-to-scroll */
+  var isDragging = false, startX = 0, scrollStart = 0;
+
+  track.addEventListener('mousedown', function (e) {
+    isDragging = true;
+    startX = e.pageX - track.offsetLeft;
+    scrollStart = track.scrollLeft;
+    track.classList.add('is-grabbing');
+  });
+
+  window.addEventListener('mouseup', function () {
+    isDragging = false;
+    track.classList.remove('is-grabbing');
+  });
+
+  track.addEventListener('mousemove', function (e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    var x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollStart - (x - startX);
+  });
+
+  /* Arrow buttons */
+  var reel = '{{ section.id }}';
+  document.querySelectorAll('.shoe-reel__arrow[data-reel="' + reel + '"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var dir = btn.classList.contains('shoe-reel__arrow--prev') ? -1 : 1;
+      var card = track.querySelector('.shoe-reel__card');
+      var amount = card ? (card.offsetWidth + 20) : 300;
+      track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    });
+  });
+
+  /* Auto-play file videos on hover */
+  track.querySelectorAll('.shoe-reel__video').forEach(function (vid) {
+    var card = vid.closest('.shoe-reel__card');
+    if (!card) return;
+    card.addEventListener('mouseenter', function () { vid.play(); });
+    card.addEventListener('mouseleave', function () { vid.pause(); vid.currentTime = 0; });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Shoe Video Reel",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text",   "id": "heading",    "label": "Heading",    "default": "On the pitch. On camera." },
+    { "type": "text",   "id": "subheading", "label": "Subheading", "default": "The boots that move the game — in motion." },
+    { "type": "header", "content": "Layout" },
+    { "type": "color",  "id": "bg_color",   "label": "Background", "default": "#0a0a0a" },
+    { "type": "range",  "id": "padding_y",  "label": "Vertical padding", "min": 40, "max": 120, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "video_card",
+      "name": "Video Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "video_type",
+          "label": "Video source",
+          "options": [
+            { "value": "file",    "label": "Uploaded file (MP4)" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "tiktok",  "label": "TikTok" }
+          ],
+          "default": "youtube"
+        },
+        { "type": "video",  "id": "video_file", "label": "Video file (MP4)", "info": "Upload via Files in Shopify admin" },
+        { "type": "text",   "id": "video_id",   "label": "YouTube or TikTok Video ID", "info": "YouTube: the part after v= | TikTok: the number at the end of the URL" },
+        { "type": "text",   "id": "label",       "label": "Card label (shoe name)", "default": "Adidas Predator Elite" },
+        { "type": "url",    "id": "product_link","label": "Product link (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shoe Video Reel",
+      "blocks": [
+        { "type": "video_card", "settings": { "video_type": "youtube", "label": "Adidas Messi Final Tango" } },
+        { "type": "video_card", "settings": { "video_type": "youtube", "label": "Nike Mercurial Superfly" } },
+        { "type": "video_card", "settings": { "video_type": "youtube", "label": "Adidas Predator Elite" } },
+        { "type": "video_card", "settings": { "video_type": "youtube", "label": "Nike Phantom GX" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

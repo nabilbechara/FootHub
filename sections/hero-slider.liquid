@@ -1,8 +1,8 @@
 <section class="hero-slider">
   <a class="hero-sale-strip" href="/collections/football-jerseys">
-    <span class="hero-sale-strip__tag">This week's jersey sale</span>
-    <span class="hero-sale-strip__message">Any football jersey for $19.99</span>
-    <span class="hero-sale-strip__note">Limited-time offer while sizes last.</span>
+    <span class="hero-sale-strip__tag">New Collection</span>
+    <span class="hero-sale-strip__message">Shop the new jersey collection</span>
+    <span class="hero-sale-strip__arrow">→</span>
   </a>
 
   <div class="hero-slider-wrapper">
@@ -98,42 +98,52 @@
 
 .hero-sale-strip {
   min-height: 42px;
-  padding: 8px 18px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  background: #050505;
+  gap: 12px;
+  background: #111111;
   color: #ffffff;
   text-align: center;
   text-decoration: none;
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  transition: background 0.2s ease;
+}
+
+.hero-sale-strip:hover {
+  background: #1a1a1a;
 }
 
 .hero-sale-strip__tag {
-  padding: 5px 10px;
-  background: #d40000;
-  color: #ffffff;
-  font-size: 0.74rem;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.68rem;
   line-height: 1;
-  font-weight: 900;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+.hero-sale-strip__message {
+  font-size: 0.88rem;
+  line-height: 1.1;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.hero-sale-strip__message {
-  font-size: 0.98rem;
-  line-height: 1.1;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+.hero-sale-strip__arrow {
+  font-size: 1rem;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
 }
 
-.hero-sale-strip__note {
-  font-size: 0.86rem;
-  line-height: 1.2;
-  font-weight: 600;
-  opacity: 0.9;
+.hero-sale-strip:hover .hero-sale-strip__arrow {
+  transform: translateX(4px);
 }
 
 .hero-slider-wrapper {
@@ -272,23 +282,17 @@
 
 @media (max-width: 768px) {
   .hero-sale-strip {
-    min-height: 52px;
+    min-height: 44px;
     padding: 8px 12px;
-    gap: 7px;
-    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .hero-sale-strip__tag {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
   }
 
   .hero-sale-strip__message {
-    font-size: 0.8rem;
-  }
-
-  .hero-sale-strip__note {
-    width: 100%;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
 
   .hero-slide__overlay {

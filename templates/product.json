@@ -537,7 +537,7 @@
       ],
       "name": "t:names.product_recommendations",
       "settings": {
-        "product": "2006-adidas-france-world-cup-zinedine-zidane-mens-jersey-shirt-away-kit-vintage-retro-embroidered-gold",
+        "product": "{{ closest.product }}",
         "recommendation_type": "related",
         "layout_type": "grid",
         "carousel_on_mobile": false,

@@ -1,0 +1,463 @@
+{%- assign product = section.settings.product -%}
+{%- if product == blank -%}
+  {%- assign product = all_products['adidas-messi-final-tango'] -%}
+{%- endif -%}
+
+<section class="messi-showcase">
+  <div class="messi-showcase__inner">
+
+    <!-- LEFT: cinematic video/3D visual -->
+    <div class="messi-showcase__media">
+      <div class="messi-showcase__media-frame">
+        {%- if section.settings.showcase_video != blank -%}
+          <video
+            class="messi-showcase__video"
+            src="{{ section.settings.showcase_video }}"
+            autoplay
+            muted
+            loop
+            playsinline
+            poster="{% if product and product.featured_image %}{{ product.featured_image | image_url: width: 1200 }}{% endif %}"
+          ></video>
+        {%- elsif product and product.featured_image -%}
+          <div class="messi-showcase__orbit-wrap">
+            <img
+              class="messi-showcase__orbit-img"
+              src="{{ product.featured_image | image_url: width: 900 }}"
+              alt="{{ product.title | escape }}"
+              loading="lazy"
+            >
+          </div>
+        {%- else -%}
+          <div class="messi-showcase__orbit-wrap">
+            <div class="messi-showcase__placeholder-shoe"></div>
+          </div>
+        {%- endif -%}
+
+        <!-- ambient rings -->
+        <div class="messi-showcase__ring messi-showcase__ring--1"></div>
+        <div class="messi-showcase__ring messi-showcase__ring--2"></div>
+        <span class="messi-showcase__label">{{ section.settings.badge_text | default: 'Signature Edition' }}</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: product info -->
+    <div class="messi-showcase__content">
+      <p class="messi-showcase__kicker">{{ section.settings.kicker | default: 'MESSI COLLECTION' }}</p>
+
+      {%- if product != blank -%}
+        <h2 class="messi-showcase__heading">{{ product.title }}</h2>
+        <div class="messi-showcase__desc">{{ product.description | strip_html | truncate: 220 }}</div>
+
+        <div class="messi-showcase__price">
+          {%- if product.compare_at_price > product.price -%}
+            <s class="messi-showcase__price--was">{{ product.compare_at_price | money }}</s>
+          {%- endif -%}
+          <span class="messi-showcase__price--now">{{ product.price | money }}</span>
+          {%- if product.compare_at_price > product.price -%}
+            {%- assign pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+            <span class="messi-showcase__badge-sale">-{{ pct }}%</span>
+          {%- endif -%}
+        </div>
+
+        {%- if product.available -%}
+          <form method="post" action="/cart/add" class="messi-showcase__form">
+            {%- assign first_variant = product.selected_or_first_available_variant -%}
+            <div class="messi-showcase__sizes">
+              <span class="messi-showcase__sizes-label">Size</span>
+              <div class="messi-showcase__size-btns">
+                {%- for variant in product.variants limit: 10 -%}
+                  <label class="messi-showcase__size {% unless variant.available %}messi-showcase__size--soldout{% endunless %}">
+                    <input
+                      type="radio"
+                      name="id"
+                      value="{{ variant.id }}"
+                      {% if forloop.first %}checked{% endif %}
+                      {% unless variant.available %}disabled{% endunless %}
+                    >
+                    <span>{{ variant.title | replace: 'Default Title', 'OS' }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="messi-showcase__cta">
+              Add to Cart
+            </button>
+          </form>
+        {%- else -%}
+          <a href="{{ product.url }}" class="messi-showcase__cta messi-showcase__cta--outline">View Product</a>
+        {%- endif -%}
+
+        <a href="{{ product.url }}" class="messi-showcase__link">Full details →</a>
+      {%- else -%}
+        <h2 class="messi-showcase__heading">{{ section.settings.fallback_heading | default: 'Adidas Messi Final Tango' }}</h2>
+        <p class="messi-showcase__desc">{{ section.settings.fallback_desc | default: 'Born on the biggest stage. Designed for the player who changes the game.' }}</p>
+        {%- if section.settings.fallback_link != blank -%}
+          <a href="{{ section.settings.fallback_link }}" class="messi-showcase__cta">Shop Now</a>
+        {%- endif -%}
+      {%- endif -%}
+
+      <div class="messi-showcase__specs">
+        <div class="messi-showcase__spec">
+          <span class="messi-showcase__spec-icon">⚡</span>
+          <span>Speed-optimised stud pattern</span>
+        </div>
+        <div class="messi-showcase__spec">
+          <span class="messi-showcase__spec-icon">🎯</span>
+          <span>Precision touch upper</span>
+        </div>
+        <div class="messi-showcase__spec">
+          <span class="messi-showcase__spec-icon">🏆</span>
+          <span>Signature Messi edition</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .messi-showcase {
+    background: {{ section.settings.bg_color | default: '#050505' }};
+    padding: {{ section.settings.padding_y | default: 80 }}px {{ section.settings.padding_x | default: 24 }}px;
+    overflow: hidden;
+  }
+
+  .messi-showcase__inner {
+    max-width: {{ section.settings.max_width | default: 1280 }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  /* ── Media side ── */
+  .messi-showcase__media {
+    display: flex;
+    justify-content: center;
+  }
+
+  .messi-showcase__media-frame {
+    position: relative;
+    width: min(520px, 100%);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .messi-showcase__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 3D orbit animation for static image */
+  .messi-showcase__orbit-wrap {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: messi-float 4s ease-in-out infinite;
+    filter: drop-shadow(0 32px 48px rgba(0, 120, 255, 0.28)) drop-shadow(0 0 80px rgba(255, 200, 0, 0.12));
+  }
+
+  .messi-showcase__orbit-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: messi-tilt 8s ease-in-out infinite;
+  }
+
+  @keyframes messi-float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-18px); }
+  }
+
+  @keyframes messi-tilt {
+    0%   { transform: perspective(600px) rotateY(-12deg) rotateX(4deg); }
+    33%  { transform: perspective(600px) rotateY(12deg)  rotateX(-4deg); }
+    66%  { transform: perspective(600px) rotateY(0deg)   rotateX(6deg); }
+    100% { transform: perspective(600px) rotateY(-12deg) rotateX(4deg); }
+  }
+
+  /* Ambient rings */
+  .messi-showcase__ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    z-index: 1;
+    animation: messi-ring-pulse 3s ease-in-out infinite;
+  }
+
+  .messi-showcase__ring--1 {
+    width: 88%;
+    aspect-ratio: 1/1;
+    border-color: rgba(255, 200, 0, 0.14);
+    animation-delay: 0s;
+  }
+
+  .messi-showcase__ring--2 {
+    width: 110%;
+    aspect-ratio: 1/1;
+    border-color: rgba(0, 100, 255, 0.1);
+    animation-delay: 1s;
+  }
+
+  @keyframes messi-ring-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.03); }
+  }
+
+  /* Floating label */
+  .messi-showcase__label {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #D4AF37, #FFD700);
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 999px;
+    white-space: nowrap;
+    z-index: 3;
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.45);
+  }
+
+  /* ── Content side ── */
+  .messi-showcase__content {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .messi-showcase__kicker {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #D4AF37;
+    font-weight: 700;
+  }
+
+  .messi-showcase__heading {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+
+  .messi-showcase__desc {
+    font-size: 0.97rem;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.65);
+    max-width: 42ch;
+  }
+
+  .messi-showcase__price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .messi-showcase__price--was {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .messi-showcase__price--now {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  .messi-showcase__badge-sale {
+    padding: 3px 10px;
+    background: #D4AF37;
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Sizes */
+  .messi-showcase__sizes-label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+
+  .messi-showcase__size-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .messi-showcase__size input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .messi-showcase__size span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+  }
+
+  .messi-showcase__size input:checked + span {
+    background: #ffffff;
+    color: #000;
+    border-color: #ffffff;
+    font-weight: 700;
+  }
+
+  .messi-showcase__size--soldout span {
+    opacity: 0.3;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .messi-showcase__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 340px;
+    height: 56px;
+    border: 0;
+    background: linear-gradient(135deg, #D4AF37, #FFD700);
+    color: #000;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+  }
+
+  .messi-showcase__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(212, 175, 55, 0.45);
+  }
+
+  .messi-showcase__cta--outline {
+    background: transparent;
+    border: 1px solid #D4AF37;
+    color: #D4AF37;
+    box-shadow: none;
+  }
+
+  .messi-showcase__link {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.82rem;
+    text-decoration: none;
+    margin-top: -8px;
+  }
+
+  .messi-showcase__link:hover { color: #fff; }
+
+  /* Spec pills */
+  .messi-showcase__specs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .messi-showcase__spec {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.65);
+  }
+
+  .messi-showcase__spec-icon {
+    font-size: 1rem;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .messi-showcase__inner {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+
+    .messi-showcase__media {
+      order: -1;
+    }
+
+    .messi-showcase__media-frame {
+      width: min(380px, 100%);
+    }
+
+    .messi-showcase__cta {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .messi-showcase {
+      padding: 60px 16px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Messi Tango Showcase",
+  "settings": [
+    { "type": "product",   "id": "product",          "label": "Product (leave blank to auto-find Messi Tango)" },
+    { "type": "video",     "id": "showcase_video",   "label": "3D Showcase video (Higgsfield MP4)" },
+    { "type": "text",      "id": "kicker",            "label": "Kicker line",        "default": "MESSI COLLECTION" },
+    { "type": "text",      "id": "badge_text",        "label": "Floating badge",     "default": "Signature Edition" },
+    { "type": "text",      "id": "fallback_heading",  "label": "Heading (if no product)", "default": "Adidas Messi Final Tango" },
+    { "type": "textarea",  "id": "fallback_desc",     "label": "Desc (if no product)", "default": "Born on the biggest stage. Designed for the player who changes the game." },
+    { "type": "url",       "id": "fallback_link",     "label": "CTA link (if no product)" },
+    { "type": "header",    "content": "Layout" },
+    { "type": "color",     "id": "bg_color",          "label": "Background",         "default": "#050505" },
+    { "type": "range",     "id": "max_width",         "label": "Max width",          "min": 800, "max": 1600, "step": 40, "unit": "px", "default": 1280 },
+    { "type": "range",     "id": "padding_y",         "label": "Vertical padding",   "min": 40,  "max": 160,  "step": 8,  "unit": "px", "default": 80 },
+    { "type": "range",     "id": "padding_x",         "label": "Horizontal padding", "min": 12,  "max": 64,   "step": 4,  "unit": "px", "default": 24 }
+  ],
+  "presets": [{ "name": "Messi Tango Showcase" }]
+}
+{% endschema %}
