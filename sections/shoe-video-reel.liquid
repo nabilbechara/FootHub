@@ -16,16 +16,17 @@
           <div class="shoe-reel__player">
 
             {%- if block.settings.video != blank -%}
+              <div class="shoe-reel__shimmer" aria-hidden="true"></div>
               <video
                 class="shoe-reel__video"
-                autoplay
                 muted
                 loop
                 playsinline
-                preload="auto"
+                preload="none"
+                data-autoload="true"
               >
                 {%- for source in block.settings.video.sources -%}
-                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                  <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
                 {%- endfor -%}
               </video>
             {%- else -%}
@@ -127,11 +128,47 @@
     overflow: hidden;
   }
 
+  /* shimmer while buffering */
+  .shoe-reel__shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      #1a1a1a 30%,
+      #2a2a2a 50%,
+      #1a1a1a 70%
+    );
+    background-size: 200% 100%;
+    animation: reel-shimmer 1.4s linear infinite;
+    border-radius: 14px;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .shoe-reel__shimmer.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes reel-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   .shoe-reel__video {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 2;
+  }
+
+  .shoe-reel__video.is-ready {
+    opacity: 1;
   }
 
   .shoe-reel__empty {
@@ -208,10 +245,50 @@
 
 <script>
 (function () {
-  var track = document.getElementById('shoe-reel-track-{{ section.id }}');
+  var section = document.getElementById('shoe-reel-{{ section.id }}');
+  var track   = document.getElementById('shoe-reel-track-{{ section.id }}');
   if (!track) return;
 
-  /* drag to scroll */
+  /* ── lazy-load videos via IntersectionObserver ── */
+  function activateVideo(video) {
+    if (video.dataset.loaded) return;
+    video.dataset.loaded = 'true';
+
+    var shimmer = video.parentElement.querySelector('.shoe-reel__shimmer');
+
+    /* move data-src → src so the browser starts fetching */
+    video.querySelectorAll('source[data-src]').forEach(function (s) {
+      s.setAttribute('src', s.dataset.src);
+      s.removeAttribute('data-src');
+    });
+
+    video.load();
+
+    var onReady = function () {
+      video.classList.add('is-ready');
+      if (shimmer) shimmer.classList.add('is-hidden');
+      video.play().catch(function(){});
+    };
+
+    if (video.readyState >= 3) {
+      onReady();
+    } else {
+      video.addEventListener('canplay', onReady, { once: true });
+    }
+  }
+
+  /* observe section with 400px margin so loading starts before scrolling into view */
+  var sectionObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      sectionObserver.disconnect();
+      track.querySelectorAll('video[data-autoload]').forEach(activateVideo);
+    });
+  }, { rootMargin: '400px 0px' });
+
+  sectionObserver.observe(section);
+
+  /* ── drag to scroll ── */
   var dragging = false, startX = 0, scrollStart = 0;
   track.addEventListener('mousedown', function (e) {
     dragging = true; startX = e.pageX; scrollStart = track.scrollLeft;
@@ -226,11 +303,11 @@
     track.scrollLeft = scrollStart - (e.pageX - startX);
   });
 
-  /* arrow buttons */
-  var reel = '{{ section.id }}';
-  document.querySelectorAll('.shoe-reel__arrow[data-reel="' + reel + '"]').forEach(function (btn) {
+  /* ── arrow buttons ── */
+  var reelId = '{{ section.id }}';
+  document.querySelectorAll('.shoe-reel__arrow[data-reel="' + reelId + '"]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var dir = btn.classList.contains('shoe-reel__arrow--prev') ? -1 : 1;
+      var dir  = btn.classList.contains('shoe-reel__arrow--prev') ? -1 : 1;
       var card = track.querySelector('.shoe-reel__card');
       track.scrollBy({ left: dir * ((card ? card.offsetWidth : 280) + 16), behavior: 'smooth' });
     });
