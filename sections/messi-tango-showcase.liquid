@@ -1,6 +1,12 @@
 {%- assign product = section.settings.product -%}
-{%- if product == blank -%}
-  {%- assign product = all_products['adidas-messi-final-tango'] -%}
+{%- assign showcase_img = section.settings.showcase_image -%}
+
+{%- comment -%} Resolve display image: picker > product featured image {%- endcomment -%}
+{%- assign display_img = nil -%}
+{%- if showcase_img != blank -%}
+  {%- assign display_img = showcase_img -%}
+{%- elsif product != blank and product.id != blank and product.featured_image != blank -%}
+  {%- assign display_img = product.featured_image -%}
 {%- endif -%}
 
 <section class="messi-showcase">
@@ -17,20 +23,27 @@
             muted
             loop
             playsinline
-            poster="{% if product and product.featured_image %}{{ product.featured_image | image_url: width: 1200 }}{% endif %}"
+            poster="{% if display_img %}{{ display_img | image_url: width: 1200 }}{% endif %}"
           ></video>
-        {%- elsif product and product.featured_image -%}
+        {%- elsif display_img != nil -%}
           <div class="messi-showcase__orbit-wrap">
             <img
               class="messi-showcase__orbit-img"
-              src="{{ product.featured_image | image_url: width: 900 }}"
-              alt="{{ product.title | escape }}"
+              src="{{ display_img | image_url: width: 900 }}"
+              alt="{{ product.title | default: section.settings.fallback_heading | escape }}"
               loading="lazy"
             >
           </div>
         {%- else -%}
-          <div class="messi-showcase__orbit-wrap">
-            <div class="messi-showcase__placeholder-shoe"></div>
+          <div class="messi-showcase__orbit-wrap messi-showcase__orbit-wrap--placeholder">
+            <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="messi-showcase__placeholder-svg">
+              <ellipse cx="100" cy="120" rx="70" ry="14" fill="rgba(212,175,55,0.08)"/>
+              <path d="M40 100 Q55 60 90 55 Q110 52 130 65 L155 85 Q165 95 158 108 Q150 118 135 115 L55 112 Q38 110 40 100Z" fill="rgba(212,175,55,0.15)" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+              <path d="M90 55 Q105 40 125 48 L150 70 Q160 80 155 85 L130 65 Q110 52 90 55Z" fill="rgba(212,175,55,0.25)" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
+              <circle cx="68" cy="112" r="10" fill="rgba(212,175,55,0.2)" stroke="rgba(212,175,55,0.5)" stroke-width="1.5"/>
+              <circle cx="120" cy="114" r="10" fill="rgba(212,175,55,0.2)" stroke="rgba(212,175,55,0.5)" stroke-width="1.5"/>
+              <text x="100" y="148" text-anchor="middle" fill="rgba(212,175,55,0.5)" font-size="9" font-family="sans-serif" letter-spacing="2">SET IMAGE IN THEME EDITOR</text>
+            </svg>
           </div>
         {%- endif -%}
 
@@ -155,6 +168,17 @@
     border-radius: 16px;
     position: relative;
     z-index: 2;
+  }
+
+  .messi-showcase__orbit-wrap--placeholder {
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .messi-showcase__placeholder-svg {
+    width: 70%;
+    height: auto;
+    animation: messi-float 4s ease-in-out infinite;
   }
 
   /* 3D orbit animation for static image */
@@ -445,8 +469,9 @@
 {
   "name": "Messi Tango Showcase",
   "settings": [
-    { "type": "product",   "id": "product",          "label": "Product (leave blank to auto-find Messi Tango)" },
-    { "type": "video",     "id": "showcase_video",   "label": "3D Showcase video (Higgsfield MP4)" },
+    { "type": "product",      "id": "product",         "label": "Product" },
+    { "type": "image_picker", "id": "showcase_image",  "label": "Shoe image (overrides product image)" },
+    { "type": "video",        "id": "showcase_video",  "label": "3D Showcase video (MP4 — overrides image)" },
     { "type": "text",      "id": "kicker",            "label": "Kicker line",        "default": "MESSI COLLECTION" },
     { "type": "text",      "id": "badge_text",        "label": "Floating badge",     "default": "Signature Edition" },
     { "type": "text",      "id": "fallback_heading",  "label": "Heading (if no product)", "default": "Adidas Messi Final Tango" },
