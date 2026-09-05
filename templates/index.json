@@ -161,18 +161,6 @@
         "radius": 16
       }
     },
-    "messi_tango_showcase_v1": {
-      "type": "messi-tango-showcase",
-      "name": "Messi Tango Showcase",
-      "settings": {
-        "kicker": "MESSI COLLECTION",
-        "badge_text": "Signature Edition",
-        "bg_color": "#050505",
-        "max_width": 1280,
-        "padding_y": 80,
-        "padding_x": 24
-      }
-    },
     "pro_best_sellers_kjk8TK": {
       "type": "pro-best-sellers",
       "name": "Pro Best Sellers",
@@ -450,38 +438,33 @@
     },
     "shoe_video_reel_v1": {
       "type": "shoe-video-reel",
-      "name": "Shoe Video Reel",
       "blocks": {
         "reel_card_1": {
           "type": "video_card",
           "settings": {
-            "video_type": "youtube",
-            "label": "Adidas Messi F50 El Ultimo Tango",
-            "video_id": "2FCpVo-SiSE"
+            "label": "",
+            "product_link": ""
           }
         },
         "reel_card_2": {
           "type": "video_card",
           "settings": {
-            "video_type": "youtube",
-            "label": "Nike Mercurial Superfly 11",
-            "video_id": "yu4XecZWFuE"
+            "label": "",
+            "product_link": ""
           }
         },
         "reel_card_3": {
           "type": "video_card",
           "settings": {
-            "video_type": "youtube",
-            "label": "Adidas Predator 26 Elite",
-            "video_id": "Qqef-jfDLmU"
+            "label": "",
+            "product_link": ""
           }
         },
         "reel_card_4": {
           "type": "video_card",
           "settings": {
-            "video_type": "youtube",
-            "label": "Nike Phantom GX2 Elite",
-            "video_id": "DrrQ9_At1KU"
+            "label": "",
+            "product_link": ""
           }
         }
       },
@@ -491,6 +474,7 @@
         "reel_card_3",
         "reel_card_4"
       ],
+      "name": "Shoe Video Reel",
       "settings": {
         "heading": "On the pitch. On camera.",
         "subheading": "The boots that move the game — in motion.",
@@ -540,7 +524,6 @@
     "jersey_showcase_hero",
     "pro_trust_bar_after_hero",
     "pro_category_grid_6ndeMt",
-    "messi_tango_showcase_v1",
     "pro_best_sellers_kjk8TK",
     "pro_brand_statement_midpage",
     "collection_switcher_mTHVfB",
