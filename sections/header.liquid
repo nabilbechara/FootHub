@@ -132,7 +132,7 @@
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M2.5 2.5H4.167l2.416 10.816a1.667 1.667 0 0 0 1.667 1.35h7.5a1.667 1.667 0 0 0 1.667-1.35l1.25-7.483H5.417M7.5 17.5a.833.833 0 1 0 0-1.667.833.833 0 0 0 0 1.667ZM15.833 17.5a.833.833 0 1 0 0-1.667.833.833 0 0 0 0 1.667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="header-cart-count" data-cart-count" aria-label="Items in bag">
+        <span class="header-cart-count" data-cart-count aria-label="Items in bag">
           {{- cart.item_count -}}
         </span>
       </button>
@@ -203,7 +203,7 @@
     <div style="margin-top:auto;padding-top:2rem;border-top:1px solid var(--color-border)">
       {%- if shop.customer_accounts_enabled -%}
         <a href="{{ routes.account_url }}" class="btn btn--outline btn--full" style="margin-bottom:0.75rem">
-          {{ customer ? 'My Account' : 'Log In' }}
+          {%- if customer -%}My Account{%- else -%}Log In{%- endif -%}
         </a>
       {%- endif -%}
       <button class="btn btn--primary btn--full" data-cart-trigger>

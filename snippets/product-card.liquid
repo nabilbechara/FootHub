@@ -6,7 +6,9 @@
     assign savings = first_variant.compare_at_price | minus: first_variant.price | times: 100 | divided_by: first_variant.compare_at_price
   endif
   assign color_option = product.options_with_values | where: 'name', 'Colour' | first
-  assign color_option = color_option | default: (product.options_with_values | where: 'name', 'Color' | first)
+  unless color_option
+    assign color_option = product.options_with_values | where: 'name', 'Color' | first
+  endunless
 -%}
 
 <article class="product-card fade-up" aria-label="{{ product.title | escape }}">

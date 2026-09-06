@@ -1,5 +1,8 @@
 {%- liquid
-  assign is_reverse = section.settings.layout == 'image_right'
+  assign is_reverse = false
+  if section.settings.layout == 'image_right'
+    assign is_reverse = true
+  endif
   assign bg_class = ''
   if section.settings.bg == 'dark'
     assign bg_class = 'split-section__content--dark'

@@ -74,6 +74,39 @@
         {%- endif -%}
       </div>
 
+      <!-- Mobile Gallery (swipeable, hidden on desktop) -->
+      <div class="mobile-gallery" id="mobile-gallery" aria-label="Product images">
+        <div class="mobile-gallery__track" id="mobile-gallery-track">
+          {%- for media in product.media limit: 10 -%}
+            <div class="mobile-gallery__slide">
+              <img
+                src="{{ media.preview_image | image_url: width: 800 }}"
+                srcset="
+                  {{ media.preview_image | image_url: width: 600 }} 600w,
+                  {{ media.preview_image | image_url: width: 800 }} 800w
+                "
+                sizes="100vw"
+                alt="{{ media.alt | escape | default: product.title }}"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                draggable="false"
+              >
+            </div>
+          {%- else -%}
+            <div class="mobile-gallery__slide" style="background:var(--color-gray-100);display:flex;align-items:center;justify-content:center">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray-300)" stroke-width="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+          {%- endfor -%}
+        </div>
+        <div class="mobile-gallery__dots" id="mobile-gallery-dots" aria-hidden="true"></div>
+        {%- if product.media.size > 1 -%}
+          <span class="mobile-gallery__counter" id="mobile-gallery-counter" aria-hidden="true">1 / {{ product.media.size }}</span>
+        {%- endif -%}
+        {%- if product.compare_at_price_max > product.price -%}
+          {%- assign savings = product.compare_at_price_max | minus: product.price | times: 100 | divided_by: product.compare_at_price_max -%}
+          <div style="position:absolute;top:14px;left:14px;z-index:2"><span class="badge badge--sale">Save {{ savings }}%</span></div>
+        {%- endif -%}
+      </div>
+
       <!-- Product Info -->
       <div class="product-info" id="product-info">
 
@@ -168,7 +201,7 @@
                           class="variant-btn{% if option.selected_value == value %} is-active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
                           data-option-index="{{ forloop.parentloop.index0 }}"
                           data-value="{{ value }}"
-                          aria-pressed="{{ option.selected_value == value }}"
+                          aria-pressed="{% if option.selected_value == value %}true{% else %}false{% endif %}"
                           {% unless is_available %}aria-label="{{ value }} - out of stock"{% endunless %}
                         >
                           {{ value }}
@@ -394,7 +427,7 @@
     <div class="sticky-atc__price" id="sticky-atc-price">{{ current_variant.price | money }}</div>
   </div>
   <button class="btn btn--accent sticky-atc__btn" id="sticky-atc-btn" {% unless current_variant.available %}disabled{% endunless %}>
-    {{ current_variant.available ? 'Add to Bag' : 'Sold Out' }}
+    {%- if current_variant.available -%}Add to Bag{%- else -%}Sold Out{%- endif -%}
   </button>
 </div>
 

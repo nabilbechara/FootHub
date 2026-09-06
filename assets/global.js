@@ -159,3 +159,156 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     }
   });
 });
+
+// ── Mobile gallery: build from product-gallery thumbnails ──
+function initMobileGallery() {
+  const gallery = document.querySelector('.mobile-gallery');
+  if (!gallery) return;
+
+  const track = gallery.querySelector('.mobile-gallery__track');
+  const dotsContainer = gallery.querySelector('.mobile-gallery__dots');
+  const counter = gallery.querySelector('.mobile-gallery__counter');
+  if (!track) return;
+
+  const slides = track.querySelectorAll('.mobile-gallery__slide');
+  const total = slides.length;
+  if (total === 0) return;
+
+  let current = 0;
+  let startX = 0;
+  let startY = 0;
+  let isDragging = false;
+  let diffX = 0;
+
+  // Build dots
+  if (dotsContainer) {
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'mobile-gallery__dot' + (i === 0 ? ' is-active' : '');
+      dot.setAttribute('aria-label', `View image ${i + 1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function updateCounter() {
+    if (counter) counter.textContent = `${current + 1} / ${total}`;
+  }
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94)';
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dotsContainer?.querySelectorAll('.mobile-gallery__dot').forEach((d, i) => {
+      d.classList.toggle('is-active', i === current);
+    });
+    updateCounter();
+  }
+
+  // Touch swipe
+  track.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    diffX = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  track.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    diffX = e.touches[0].clientX - startX;
+    const diffY = e.touches[0].clientY - startY;
+    if (Math.abs(diffX) < Math.abs(diffY)) return;
+    track.style.transform = `translateX(calc(-${current * 100}% + ${diffX}px))`;
+  }, { passive: true });
+
+  track.addEventListener('touchend', () => {
+    isDragging = false;
+    if (Math.abs(diffX) > 50) {
+      goTo(diffX < 0 ? current + 1 : current - 1);
+    } else {
+      goTo(current);
+    }
+  });
+
+  updateCounter();
+}
+initMobileGallery();
+
+// ── Bottom nav: highlight current section ──
+function initBottomNav() {
+  const nav = document.querySelector('.bottom-nav');
+  if (!nav) return;
+  const path = window.location.pathname;
+  nav.querySelectorAll('.bottom-nav__item[href]').forEach(item => {
+    const href = item.getAttribute('href');
+    if (!href) return;
+    if (href === path || (href !== '/' && path.startsWith(href))) {
+      item.classList.add('is-active');
+    }
+  });
+
+  // Keep cart count in sync
+  const cartBadge = nav.querySelector('[data-bottom-cart-count]');
+  if (cartBadge) {
+    const sync = () => {
+      const count = document.querySelector('[data-cart-count]')?.textContent?.trim() || '0';
+      cartBadge.textContent = count;
+      cartBadge.style.display = count === '0' ? 'none' : 'flex';
+    };
+    sync();
+    document.addEventListener('cart:updated', sync);
+  }
+}
+initBottomNav();
+
+// ── Filter bottom sheet ──
+function initFilterSheet() {
+  const sheet = document.getElementById('filter-sheet');
+  if (!sheet) return;
+  const overlay = sheet.querySelector('.filter-sheet__overlay');
+  const closeBtn = sheet.querySelector('.filter-sheet__close');
+  const openBtns = document.querySelectorAll('[data-filter-open]');
+
+  function open() {
+    sheet.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    sheet.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  openBtns.forEach(btn => btn.addEventListener('click', open));
+  overlay?.addEventListener('click', close);
+  closeBtn?.addEventListener('click', close);
+
+  // Panel drag to dismiss
+  const panel = sheet.querySelector('.filter-sheet__panel');
+  if (panel) {
+    let startY = 0;
+    panel.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+    panel.addEventListener('touchend', e => {
+      if (e.changedTouches[0].clientY - startY > 80) close();
+    });
+  }
+}
+initFilterSheet();
+
+// ── Hero slider: add touch swipe ──
+const heroSliderEl = document.querySelector('.hero-slider');
+if (heroSliderEl) {
+  let hStartX = 0;
+  heroSliderEl.addEventListener('touchstart', e => { hStartX = e.touches[0].clientX; }, { passive: true });
+  heroSliderEl.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - hStartX;
+    if (Math.abs(diff) > 60) {
+      const slides = heroSliderEl.querySelectorAll('.hero-slider__slide');
+      if (slides.length > 1) {
+        const evt = new CustomEvent('hero:swipe', { detail: { direction: diff < 0 ? 'next' : 'prev' } });
+        heroSliderEl.dispatchEvent(evt);
+      }
+    }
+  });
+}

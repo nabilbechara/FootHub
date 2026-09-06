@@ -53,12 +53,17 @@ const CartDrawer = (() => {
     const count = cart.item_count;
     if (countEl) countEl.textContent = count;
 
-    // Update all header counts
+    // Update all header + bottom nav counts
     headerCartCounts.forEach(el => {
       el.textContent = count || '';
       if (count) el.classList.add('bump');
       setTimeout(() => el.classList.remove('bump'), 400);
     });
+    document.querySelectorAll('[data-bottom-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'flex' : 'none';
+    });
+    document.dispatchEvent(new CustomEvent('cart:updated', { detail: { count } }));
 
     if (count === 0) {
       itemsContainer.innerHTML = `
