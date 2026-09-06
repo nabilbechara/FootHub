@@ -3038,14 +3038,9 @@ svg { display: block; }
   padding-bottom: var(--space-10);
 }
 
-/* On desktop: align tier picker under the product-info column */
-@media (min-width: 901px) {
-  .bundle-tier-section .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-12);
-  }
-  .bundle-tier-picker { grid-column: 2; }
+/* When moved inline, picker sits between variants and trust badges */
+.bundle-tier-picker {
+  margin-bottom: var(--space-6);
 }
 
 .bundle-tier-picker__heading {

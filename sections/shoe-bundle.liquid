@@ -271,11 +271,23 @@
 </div>
 
 <script>
-  // Hide the main product form ATC when this tier picker is present
   (function() {
-    const atcRow = document.querySelector('.product-atc');
+    var picker = document.querySelector('.bundle-tier-picker');
+    var trustBadges = document.querySelector('.trust-badges');
+    var bundleSection = document.getElementById('section-{{ section.id }}');
+
+    // Move picker inline — right before trust badges, inside product-info
+    if (picker && trustBadges) {
+      trustBadges.parentNode.insertBefore(picker, trustBadges);
+    }
+
+    // Hide the now-empty bundle section container
+    if (bundleSection) bundleSection.style.display = 'none';
+
+    // Hide the original ATC row (picker has its own button)
+    var atcRow = document.querySelector('.product-atc');
     if (atcRow) atcRow.style.display = 'none';
-    const buyNow = document.getElementById('buy-now-btn');
+    var buyNow = document.getElementById('buy-now-btn');
     if (buyNow) buyNow.style.display = 'none';
   })();
 </script>

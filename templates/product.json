@@ -15,7 +15,7 @@
         "trust_1": {
           "type": "trust_badge",
           "settings": {
-            "heading": "Free Shipping",
+            "heading": "Free Delivery",
             "text": "On orders over £100",
             "icon": "shipping"
           }

@@ -84,9 +84,9 @@ document.querySelectorAll('.accordion-trigger').forEach(trigger => {
   });
 });
 
-// Sticky ATC visibility
+// Sticky ATC visibility — observe bundle tier btn if present, else main ATC
 const stickyAtc = document.querySelector('.sticky-atc');
-const atcBtn = document.querySelector('.btn--atc');
+const atcBtn = document.querySelector('.bundle-tier-add-btn') || document.querySelector('.btn--atc');
 if (stickyAtc && atcBtn) {
   const atcObserver = new IntersectionObserver(([entry]) => {
     stickyAtc.classList.toggle('is-visible', !entry.isIntersecting);
