@@ -29,6 +29,16 @@
         "free_shipping_threshold": 100
       }
     },
+    "bundle": {
+      "type": "shoe-bundle",
+      "settings": {
+        "enabled": true,
+        "show_on_all": true,
+        "eyebrow": "Bundle & Save",
+        "heading": "Complete Your Kit",
+        "subheading": "Pair your boots with matching gear and save more."
+      }
+    },
     "recommendations": {
       "type": "product-recommendations",
       "settings": {
@@ -38,5 +48,5 @@
       }
     }
   },
-  "order": ["main", "recommendations"]
+  "order": ["main", "bundle", "recommendations"]
 }

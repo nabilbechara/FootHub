@@ -160,6 +160,64 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
   });
 });
 
+// ── Quick-size chips on product cards ──
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.qs-chip[data-variant-id]');
+  if (!chip) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const variantId = chip.dataset.variantId;
+  const title = chip.dataset.productTitle || 'Item';
+  if (!variantId) return;
+  chip.disabled = true;
+  chip.textContent = '✓';
+  window.addToCart
+    ? window.addToCart(variantId, 1)
+        .then(() => { setTimeout(() => { chip.disabled = false; chip.textContent = chip.dataset.origText || chip.textContent; }, 1200); })
+        .catch(() => { chip.disabled = false; })
+    : fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: 1 })
+      }).then(r => r.json()).then(() => {
+        window.showToast?.(`Added to bag`, 'success');
+        window.openCartDrawer?.();
+        setTimeout(() => { chip.disabled = false; }, 1200);
+      }).catch(() => { chip.disabled = false; });
+});
+
+// ── Bundle add to cart ──
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.bundle-add-btn');
+  if (!btn) return;
+  const mainId = btn.dataset.bundleMain;
+  const addonId = btn.dataset.bundleAddon;
+  const label = btn.dataset.bundleLabel || 'Bundle';
+  if (!mainId || !addonId) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block"></span>';
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: [{ id: Number(mainId), quantity: 1 }, { id: Number(addonId), quantity: 1 }] })
+  })
+    .then(r => r.json())
+    .then(() => {
+      btn.innerHTML = '✓ Added to Bag';
+      window.showToast?.(`${label} added to bag!`, 'success');
+      window.openCartDrawer?.();
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Add Bundle to Bag';
+      }, 2500);
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.innerHTML = 'Add Bundle to Bag';
+      window.showToast?.('Could not add bundle — try again', 'error');
+    });
+});
+
 // ── Mobile gallery: build from product-gallery thumbnails ──
 function initMobileGallery() {
   const gallery = document.querySelector('.mobile-gallery');
