@@ -3041,6 +3041,9 @@ svg { display: block; }
 /* When moved inline, picker sits between variants and trust badges */
 .bundle-tier-picker {
   margin-bottom: var(--space-6);
+  /* Prevent any child (jersey grid, etc.) from stretching the picker wider */
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .bundle-tier-picker__heading {
@@ -3060,6 +3063,8 @@ svg { display: block; }
   flex-direction: column;
   gap: var(--space-2);
   margin-bottom: var(--space-4);
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .bundle-tier-option {
@@ -3069,6 +3074,7 @@ svg { display: block; }
   transition: border-color 0.15s, background 0.15s;
   overflow: hidden;
   display: block;
+  min-width: 0;
 }
 .bundle-tier-option:hover { border-color: var(--color-gray-400); }
 .bundle-tier-option.is-selected {
@@ -3077,7 +3083,7 @@ svg { display: block; }
 }
 .bundle-tier-radio { display: none; }
 
-.bundle-tier-option__body { padding: var(--space-3) var(--space-4); }
+.bundle-tier-option__body { padding: var(--space-3) var(--space-4); min-width: 0; }
 
 .bundle-tier-option__row {
   display: flex;

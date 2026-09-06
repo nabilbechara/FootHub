@@ -226,6 +226,16 @@ function updateBundlePrice(body) {
 
 document.querySelectorAll('.bundle-tier-option__body[data-bundle-block]').forEach(updateBundlePrice);
 
+// Init sticky ATC label to match the pre-selected tier
+(function() {
+  const picker = document.querySelector('.bundle-tier-picker');
+  const preChecked = picker?.querySelector('.bundle-tier-radio:checked');
+  const stickyBtn = document.getElementById('sticky-atc-btn');
+  if (stickyBtn && preChecked && preChecked.value !== 'solo') {
+    stickyBtn.textContent = 'Add Bundle to Bag';
+  }
+})();
+
 // Tier radio change (shoes-only vs bundle)
 document.addEventListener('change', e => {
   const radio = e.target.closest('.bundle-tier-radio');
@@ -234,6 +244,8 @@ document.addEventListener('change', e => {
   if (!picker) return;
   picker.querySelectorAll('.bundle-tier-option').forEach(opt => opt.classList.remove('is-selected'));
   radio.closest('.bundle-tier-option')?.classList.add('is-selected');
+  // Clear all jersey picker hints on tier switch
+  picker.querySelectorAll('.bundle-jersey-picker__hint').forEach(h => h.textContent = '');
   const stickyBtn = document.getElementById('sticky-atc-btn');
   if (stickyBtn) stickyBtn.textContent = radio.value === 'solo' ? 'Add to Bag' : 'Add Bundle to Bag';
 });
@@ -358,7 +370,24 @@ document.addEventListener('click', e => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items })
   }).then(r => r.json()).then(() => {
-    if (discountCode) return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {});
+    // Apply discount code to cart session
+    const applyDiscount = discountCode
+      ? fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {})
+      : Promise.resolve();
+    return applyDiscount.then(() => {
+      // Save bundle item IDs in cart attributes for integrity checking
+      const variantIds = items.map(i => i.id).join(',');
+      return fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attributes: {
+            _bundle_item_ids: variantIds,
+            _bundle_discount: discountCode || ''
+          }
+        })
+      }).catch(() => {});
+    });
   }).then(() => {
     btn.innerHTML = '✓ Bundle Added!';
     window.showToast?.('Bundle added to bag!', 'success');

@@ -147,6 +147,31 @@ const CartDrawer = (() => {
     });
   }
 
+  async function checkBundleIntegrity(cart) {
+    const savedIds = cart.attributes?._bundle_item_ids;
+    if (!savedIds) return;
+
+    const bundleIds = savedIds.split(',').map(Number).filter(Boolean);
+    const cartVariantIds = cart.items.map(i => i.variant_id);
+    const allPresent = bundleIds.every(id => cartVariantIds.includes(id));
+    if (allPresent) return;
+
+    // Bundle is broken — clear attributes and void discount
+    const discountCode = cart.attributes?._bundle_discount;
+    window.showToast?.('Bundle discount removed — not all bundle items are in your bag', 'error');
+
+    await fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ attributes: { _bundle_item_ids: '', _bundle_discount: '' } })
+    }).catch(() => {});
+
+    // Clear the discount from the cart session by applying an empty one
+    if (discountCode) {
+      await fetch('/discount/', { credentials: 'include' }).catch(() => {});
+    }
+  }
+
   async function updateItem(key, qty) {
     itemsContainer.style.opacity = '0.5';
     itemsContainer.style.pointerEvents = 'none';
@@ -157,6 +182,7 @@ const CartDrawer = (() => {
         body: JSON.stringify({ id: key, quantity: qty })
       });
       cartData = await res.json();
+      await checkBundleIntegrity(cartData);
       renderCart(cartData);
     } catch (e) {
       window.showToast?.('Something went wrong', 'error');
