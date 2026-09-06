@@ -3858,6 +3858,13 @@ svg { display: block; }
   .grid--5 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .grid--2 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 
+  /* Orphan fix: when an odd number of collection cards fills a 2-col grid,
+     the last lonely card spans full width and switches to a landscape ratio */
+  .collection-grid-section .grid--3 > .collection-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 7;
+  }
+
   .product-card__media { aspect-ratio: 1 / 1; }
   .product-card__img, .product-card__img--alt { padding: 5%; }
   .product-card__body { padding: var(--space-2) var(--space-2) var(--space-3); }
