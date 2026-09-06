@@ -217,35 +217,59 @@
               <!-- Jersey / choice picker (visible only when this tier is selected) -->
               {%- if choice_col != blank and choice_col.products.size > 0 -%}
                 <div class="bundle-tier-option__picker">
-                  <p class="bundle-picker__label">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    {{ block.settings.choice_label | default: 'Choose your jersey' }}
-                  </p>
-                  <div class="bundle-picker__grid" role="radiogroup" aria-label="{{ block.settings.choice_label | default: 'Choose your jersey' }}">
-                    {%- for choice_product in choice_col.products limit: 8 -%}
-                      {%- assign choice_variant = choice_product.selected_or_first_available_variant -%}
-                      <label
-                        class="bundle-picker__option{% if forloop.first %} is-selected{% endif %}"
-                        data-price="{{ choice_variant.price }}"
-                        title="{{ choice_product.title }}"
-                      >
-                        <input
-                          type="radio"
-                          name="bundle-choice-{{ block.id }}"
-                          value="{{ choice_variant.id }}"
-                          {% if forloop.first %}checked{% endif %}
-                          class="bundle-picker__radio"
-                          aria-label="{{ choice_product.title }}"
+                  <div class="bundle-jersey-picker" data-block="{{ block.id }}">
+
+                    <!-- Step 1: pick jersey -->
+                    <p class="bundle-jersey-picker__step-label">
+                      <span class="bundle-jersey-step-num">1</span>
+                      {{ block.settings.choice_label | default: 'Choose your jersey' }}
+                    </p>
+                    <div class="bundle-jersey-picker__grid" role="listbox" aria-label="{{ block.settings.choice_label | default: 'Choose your jersey' }}">
+                      {%- for choice_product in choice_col.products limit: 8 -%}
+                        <button
+                          class="bundle-jersey-card"
+                          type="button"
+                          data-product-idx="{{ forloop.index0 }}"
+                          data-product-title="{{ choice_product.title | escape }}"
+                          aria-pressed="false"
+                          aria-label="{{ choice_product.title | escape }}"
                         >
-                        {%- if choice_product.featured_image -%}
-                          <img src="{{ choice_product.featured_image | image_url: width: 160 }}" alt="{{ choice_product.title | escape }}" width="70" height="70" loading="lazy">
-                        {%- else -%}
-                          <div class="bundle-picker__no-img">?</div>
-                        {%- endif -%}
-                        <span class="bundle-picker__option-name">{{ choice_product.title | truncate: 18 }}</span>
-                        <span class="bundle-picker__option-price">{{ choice_variant.price | money }}</span>
-                      </label>
+                          {%- if choice_product.featured_image -%}
+                            <img src="{{ choice_product.featured_image | image_url: width: 200 }}" alt="{{ choice_product.title | escape }}" width="72" height="72" loading="lazy">
+                          {%- else -%}
+                            <div class="bundle-jersey-card__placeholder">?</div>
+                          {%- endif -%}
+                          <span class="bundle-jersey-card__name">{{ choice_product.title | truncate: 22 }}</span>
+                          <span class="bundle-jersey-card__price">{{ choice_product.price_min | money }}</span>
+                        </button>
+                      {%- endfor -%}
+                    </div>
+
+                    <!-- Step 2: size panels (one per jersey, toggled by JS) -->
+                    {%- for choice_product in choice_col.products limit: 8 -%}
+                      <div class="bundle-size-panel" data-for-idx="{{ forloop.index0 }}" hidden>
+                        <p class="bundle-size-panel__label">
+                          <span class="bundle-jersey-step-num">2</span>
+                          Select size —
+                          <strong>{{ choice_product.title | truncate: 28 }}</strong>
+                        </p>
+                        <div class="bundle-size-panel__grid">
+                          {%- for variant in choice_product.variants -%}
+                            <button
+                              class="bundle-size-btn"
+                              type="button"
+                              data-variant-id="{{ variant.id }}"
+                              data-price="{{ variant.price }}"
+                              {% unless variant.available %}disabled aria-label="{{ variant.title }} — sold out"{% endunless %}
+                            >{{ variant.title }}</button>
+                          {%- endfor -%}
+                        </div>
+                      </div>
                     {%- endfor -%}
+
+                    <!-- Stores the final chosen variant ID -->
+                    <input type="hidden" class="bundle-choice-variant" value="">
+                    <p class="bundle-jersey-picker__hint" aria-live="polite" aria-atomic="true"></p>
                   </div>
                 </div>
               {%- endif -%}
