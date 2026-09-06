@@ -3041,7 +3041,10 @@ svg { display: block; }
 /* When moved inline, picker sits between variants and trust badges */
 .bundle-tier-picker {
   margin-bottom: var(--space-6);
-  /* Prevent any child (jersey grid, etc.) from stretching the picker wider */
+  /* Lock width to parent — prevents jersey cards from blowing out the container */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   min-width: 0;
   overflow-x: hidden;
 }
@@ -3063,6 +3066,9 @@ svg { display: block; }
   flex-direction: column;
   gap: var(--space-2);
   margin-bottom: var(--space-4);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   min-width: 0;
   overflow-x: hidden;
 }
@@ -3074,6 +3080,9 @@ svg { display: block; }
   transition: border-color 0.15s, background 0.15s;
   overflow: hidden;
   display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   min-width: 0;
 }
 .bundle-tier-option:hover { border-color: var(--color-gray-400); }
@@ -3083,7 +3092,13 @@ svg { display: block; }
 }
 .bundle-tier-radio { display: none; }
 
-.bundle-tier-option__body { padding: var(--space-3) var(--space-4); min-width: 0; }
+.bundle-tier-option__body {
+  padding: var(--space-3) var(--space-4);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
 
 .bundle-tier-option__row {
   display: flex;
@@ -3199,6 +3214,11 @@ svg { display: block; }
   border-top: 1px solid var(--color-border);
   padding-top: var(--space-3);
   margin-top: var(--space-3);
+  /* Contain the jersey card grid so it never escapes this column */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* ── Jersey + Size Picker ── */
@@ -3229,6 +3249,13 @@ svg { display: block; }
 }
 
 /* Scrollable jersey card row */
+.bundle-jersey-picker {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
 .bundle-jersey-picker__grid {
   display: flex;
   gap: var(--space-2);
@@ -3237,6 +3264,10 @@ svg { display: block; }
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Must have explicit width or it will overflow the parent on mobile */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .bundle-jersey-picker__grid::-webkit-scrollbar { display: none; }
 
