@@ -12,16 +12,25 @@
 
   assign size_option = product.options_with_values | where: 'name', 'Size' | first
   unless size_option
-    assign size_option = product.options_with_values | where: 'name', 'UK Size' | first
+    assign size_option = product.options_with_values | where: 'name', 'Shoe size' | first
   endunless
   unless size_option
     assign size_option = product.options_with_values | where: 'name', 'Shoe Size' | first
+  endunless
+  unless size_option
+    assign size_option = product.options_with_values | where: 'name', 'UK Size' | first
+  endunless
+  unless size_option
+    assign size_option = product.options_with_values | where: 'name', 'uk size' | first
+  endunless
+  unless size_option
+    assign size_option = product.options_with_values | where: 'name', 'EU Size' | first
   endunless
 
   assign size_position = 0
   for option in product.options
     assign option_down = option | downcase
-    if option_down == 'size' or option_down == 'uk size' or option_down == 'shoe size'
+    if option_down contains 'size'
       assign size_position = forloop.index
     endif
   endfor
