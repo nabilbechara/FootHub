@@ -63,6 +63,7 @@
     "hero": {
       "type": "hero",
       "settings": {
+        "image": "shopify://shop_images/baa7f426225f.jpg",
         "video_url": "",
         "preload_video": "metadata",
         "eyebrow": "New Season",
@@ -146,7 +147,7 @@
         "image": "shopify://shop_images/83712ea6448c.webp",
         "video_url": "",
         "eyebrow": "Our Story",
-        "heading": "Built For TheBeautiful Game",
+        "heading": "Built For The\nBeautiful Game",
         "text": "<p>We exist for one reason: to give every footballer access to the gear worn by the best in the world. Authentic. Premium. Delivered fast.</p><p>From Champions League kits to World Cup boots — FootHub has it all.</p>",
         "button_label": "Our Story",
         "button_link": "/pages/about",
