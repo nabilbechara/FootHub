@@ -1431,7 +1431,14 @@ svg { display: block; }
 }
 
 /* Product Info */
-.product-info { padding-right: var(--space-4); }
+.product-info {
+  padding-right: var(--space-4);
+  /* Grid children default to min-width:auto — this lets content (e.g. jersey
+     card rows) push the cell wider than the viewport. Force it to respect its
+     grid track so inline-moved pickers never cause page-level overflow. */
+  min-width: 0;
+  overflow-x: hidden;
+}
 
 @media (max-width: 900px) { .product-info { padding-right: 0; } }
 
