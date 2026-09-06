@@ -186,24 +186,92 @@ document.addEventListener('click', e => {
       }).catch(() => { chip.disabled = false; });
 });
 
+// ── Bundle: live price update when jersey is chosen ──
+document.addEventListener('change', e => {
+  const radio = e.target.closest('.bundle-picker__radio');
+  if (!radio) return;
+  const card = radio.closest('.bundle-card');
+  if (!card) return;
+
+  // Highlight selected option
+  card.querySelectorAll('.bundle-picker__option').forEach(o => o.classList.remove('is-selected'));
+  radio.closest('.bundle-picker__option')?.classList.add('is-selected');
+
+  updateBundlePrice(card);
+});
+
+function updateBundlePrice(card) {
+  const discount = Number(card.dataset.discount || 0);
+  const basePrice = Number(card.dataset.basePrice || 0);
+  const fixedTotal = Number(card.dataset.fixedTotal || 0);
+
+  const selectedChoice = card.querySelector('.bundle-picker__radio:checked');
+  const choicePrice = selectedChoice
+    ? Number(selectedChoice.closest('.bundle-picker__option')?.dataset.price || 0)
+    : 0;
+
+  const original = basePrice + fixedTotal + choicePrice;
+  const saving = Math.round(original * discount / 100);
+  const bundlePrice = original - saving;
+
+  const fmt = p => window.formatMoney ? window.formatMoney(p) : `£${(p / 100).toFixed(2)}`;
+
+  const wasEl = card.querySelector('[data-bundle-original]');
+  const nowEl = card.querySelector('[data-bundle-price]');
+  if (wasEl) wasEl.textContent = fmt(original);
+  if (nowEl) nowEl.textContent = fmt(bundlePrice);
+}
+
+// Init prices on page load
+document.querySelectorAll('.bundle-card').forEach(updateBundlePrice);
+
 // ── Bundle add to cart ──
 document.addEventListener('click', e => {
   const btn = e.target.closest('.bundle-add-btn');
   if (!btn) return;
-  const mainId = btn.dataset.bundleMain;
-  const addonId = btn.dataset.bundleAddon;
-  const label = btn.dataset.bundleLabel || 'Bundle';
-  if (!mainId || !addonId) return;
+
+  const card = btn.closest('.bundle-card');
+  if (!card) return;
+
+  const mainVariantId = Number(card.dataset.mainVariant);
+  const discountCode = card.dataset.discountCode?.trim();
+  const label = card.querySelector('.bundle-card__name')?.textContent?.trim() || 'Bundle';
+
+  // Collect all items
+  const items = [];
+  if (mainVariantId) items.push({ id: mainVariantId, quantity: 1 });
+
+  card.querySelectorAll('.bundle-fixed-variant').forEach(input => {
+    const id = Number(input.value);
+    if (id) items.push({ id, quantity: 1 });
+  });
+
+  const chosenRadio = card.querySelector('.bundle-picker__radio:checked');
+  if (chosenRadio) {
+    const id = Number(chosenRadio.value);
+    if (id) items.push({ id, quantity: 1 });
+  }
+
+  if (items.length === 0) return;
+
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block"></span>';
+  btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;margin:0 auto"></span>';
+
   fetch('/cart/add.js', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items: [{ id: Number(mainId), quantity: 1 }, { id: Number(addonId), quantity: 1 }] })
+    body: JSON.stringify({ items })
   })
     .then(r => r.json())
     .then(() => {
-      btn.innerHTML = '✓ Added to Bag';
+      // Apply discount code to cart session so it pre-fills at checkout
+      if (discountCode) {
+        return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' })
+          .catch(() => {});
+      }
+    })
+    .then(() => {
+      btn.innerHTML = '✓ Bundle Added!';
       window.showToast?.(`${label} added to bag!`, 'success');
       window.openCartDrawer?.();
       setTimeout(() => {

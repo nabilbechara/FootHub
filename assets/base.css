@@ -2852,13 +2852,183 @@ svg { display: block; }
   letter-spacing: -0.03em;
   color: var(--color-text);
 }
-.bundle-card__desc {
+.bundle-card__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+.bundle-card__name {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+}
+.bundle-card__items {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+.bundle-card__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  flex: 0 0 auto;
+  max-width: 90px;
+}
+.bundle-card__item img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-border);
+  padding: 4px;
+}
+.bundle-card__item-name {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+.bundle-card__item-price {
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+.bundle-card__plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1.1rem;
+  font-weight: var(--weight-bold);
+  color: var(--color-gray-400);
+  margin-top: 28px;
+  flex-shrink: 0;
+}
+
+/* Jersey / choice picker */
+.bundle-picker { margin-bottom: var(--space-5); }
+.bundle-picker__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+.bundle-picker__grid {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.bundle-picker__option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 80px;
+  padding: var(--space-2);
+  border: 2px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.bundle-picker__option:hover { border-color: var(--color-gray-400); }
+.bundle-picker__option.is-selected {
+  border-color: var(--color-black);
+  background: var(--color-gray-50);
+}
+.bundle-picker__option.is-selected::after {
+  content: '✓';
+  position: absolute;
+  top: 3px; right: 4px;
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--color-white);
+  background: var(--color-black);
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.bundle-picker__radio { display: none; }
+.bundle-picker__option img {
+  width: 60px; height: 60px;
+  object-fit: contain;
+}
+.bundle-picker__no-img {
+  width: 60px; height: 60px;
+  background: var(--color-gray-100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-400);
+  font-size: 1.2rem;
+}
+.bundle-picker__option-name {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+.bundle-picker__option-price {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+/* Pricing summary */
+.bundle-pricing {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.bundle-pricing__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+.bundle-pricing__label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.bundle-pricing__was {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+.bundle-pricing__row--total .bundle-pricing__label {
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+.bundle-pricing__now {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-black);
+  letter-spacing: -0.03em;
+  color: var(--color-accent);
+}
+.bundle-pricing__code-note {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
-  letter-spacing: 0.04em;
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-gray-50);
+  border-left: 3px solid var(--color-accent);
 }
+
 @media (max-width: 768px) {
   .bundle-options { grid-template-columns: 1fr; }
+  .bundle-card__items { gap: var(--space-2); }
+  .bundle-picker__grid { gap: var(--space-1); }
+  .bundle-picker__option { width: 70px; }
 }
 
 /* About Us Page
