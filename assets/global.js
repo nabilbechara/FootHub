@@ -196,14 +196,16 @@ function updateBundlePrice(body) {
   const basePrice     = Number(body.dataset.basePrice || 0);
   const fixedTotal    = Number(body.dataset.fixedTotal || 0);
 
-  // Choice price: from new jersey size picker or legacy radio
-  const selectedSizeBtn = body.querySelector('.bundle-size-btn.is-selected');
-  const selectedRadio   = body.querySelector('.bundle-picker__radio:checked');
+  // Choice price: from selected jersey size, legacy radio, or the first jersey
+  // price from Liquid (so the initial JS render matches the Liquid-rendered price)
+  const selectedSizeBtn    = body.querySelector('.bundle-size-btn.is-selected');
+  const selectedRadio      = body.querySelector('.bundle-picker__radio:checked');
+  const firstChoicePrice   = Number(body.dataset.firstChoicePrice || 0);
   const choicePrice = selectedSizeBtn
     ? Number(selectedSizeBtn.dataset.price || 0)
     : selectedRadio
       ? Number(selectedRadio.closest('.bundle-picker__option')?.dataset.price || 0)
-      : 0;
+      : firstChoicePrice;
 
   const original    = basePrice + fixedTotal + choicePrice;
   const bundlePrice = priceOverride > 0
