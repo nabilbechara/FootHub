@@ -15,7 +15,7 @@
           {%- assign link_title_down = link.title | downcase -%}
           {%- assign is_sale = false -%}
           {%- assign is_new = false -%}
-          {%- if link_title_down == 'sale' or link_title_down == 'outlet' -%}
+          {%- if link_title_down contains 'sale' or link_title_down contains 'outlet' -%}
             {%- assign is_sale = true -%}
           {%- endif -%}
           {%- if link_title_down == 'new' or link_title_down == 'new in' or link_title_down == 'new arrivals' -%}
