@@ -186,76 +186,118 @@ document.addEventListener('click', e => {
       }).catch(() => { chip.disabled = false; });
 });
 
-// ── Bundle: live price update when jersey is chosen ──
-document.addEventListener('change', e => {
-  const radio = e.target.closest('.bundle-picker__radio');
-  if (!radio) return;
-  const card = radio.closest('.bundle-card');
-  if (!card) return;
+// ── Bundle Tier Picker ──
 
-  // Highlight selected option
-  card.querySelectorAll('.bundle-picker__option').forEach(o => o.classList.remove('is-selected'));
-  radio.closest('.bundle-picker__option')?.classList.add('is-selected');
+// Recalculate price for a bundle body element
+function updateBundlePrice(body) {
+  const discount   = Number(body.dataset.discount || 0);
+  const basePrice  = Number(body.dataset.basePrice || 0);
+  const fixedTotal = Number(body.dataset.fixedTotal || 0);
 
-  updateBundlePrice(card);
-});
-
-function updateBundlePrice(card) {
-  const discount = Number(card.dataset.discount || 0);
-  const basePrice = Number(card.dataset.basePrice || 0);
-  const fixedTotal = Number(card.dataset.fixedTotal || 0);
-
-  const selectedChoice = card.querySelector('.bundle-picker__radio:checked');
+  const selectedChoice = body.querySelector('.bundle-picker__radio:checked');
   const choicePrice = selectedChoice
     ? Number(selectedChoice.closest('.bundle-picker__option')?.dataset.price || 0)
     : 0;
 
-  const original = basePrice + fixedTotal + choicePrice;
-  const saving = Math.round(original * discount / 100);
+  const original   = basePrice + fixedTotal + choicePrice;
+  const saving     = Math.round(original * discount / 100);
   const bundlePrice = original - saving;
 
   const fmt = p => window.formatMoney ? window.formatMoney(p) : `£${(p / 100).toFixed(2)}`;
 
-  const wasEl = card.querySelector('[data-bundle-original]');
-  const nowEl = card.querySelector('[data-bundle-price]');
+  const wasEl = body.querySelector('[data-bundle-original]');
+  const nowEl = body.querySelector('[data-bundle-price]');
   if (wasEl) wasEl.textContent = fmt(original);
   if (nowEl) nowEl.textContent = fmt(bundlePrice);
 }
 
 // Init prices on page load
-document.querySelectorAll('.bundle-card').forEach(updateBundlePrice);
+document.querySelectorAll('.bundle-tier-option__body[data-bundle-block]').forEach(updateBundlePrice);
 
-// ── Bundle add to cart ──
+// Tier radio change — update selected state + show correct jersey picker
+document.addEventListener('change', e => {
+  const radio = e.target.closest('.bundle-tier-radio');
+  if (!radio) return;
+  const picker = radio.closest('.bundle-tier-picker');
+  if (!picker) return;
+
+  picker.querySelectorAll('.bundle-tier-option').forEach(opt => opt.classList.remove('is-selected'));
+  radio.closest('.bundle-tier-option')?.classList.add('is-selected');
+
+  // Update sticky ATC label
+  const stickyBtn = document.getElementById('sticky-atc-btn');
+  if (stickyBtn) {
+    stickyBtn.textContent = radio.value === 'solo' ? 'Add to Bag' : 'Add Bundle to Bag';
+  }
+});
+
+// Jersey choice change — update price + highlight selected
+document.addEventListener('change', e => {
+  const radio = e.target.closest('.bundle-picker__radio');
+  if (!radio) return;
+  const body = radio.closest('.bundle-tier-option__body[data-bundle-block]');
+  if (!body) return;
+  body.querySelectorAll('.bundle-picker__option').forEach(o => o.classList.remove('is-selected'));
+  radio.closest('.bundle-picker__option')?.classList.add('is-selected');
+  updateBundlePrice(body);
+});
+
+// Unified Add to Bag (tier picker)
 document.addEventListener('click', e => {
-  const btn = e.target.closest('.bundle-add-btn');
+  const btn = e.target.closest('.bundle-tier-add-btn');
   if (!btn) return;
 
-  const card = btn.closest('.bundle-card');
-  if (!card) return;
+  const picker = btn.closest('.bundle-tier-picker');
+  if (!picker) return;
 
-  const mainVariantId = Number(card.dataset.mainVariant);
-  const discountCode = card.dataset.discountCode?.trim();
-  const label = card.querySelector('.bundle-card__name')?.textContent?.trim() || 'Bundle';
+  const selectedRadio = picker.querySelector('.bundle-tier-radio:checked');
+  const isSolo = !selectedRadio || selectedRadio.value === 'solo';
 
-  // Collect all items
-  const items = [];
-  if (mainVariantId) items.push({ id: mainVariantId, quantity: 1 });
+  // Read current selected variant from the product form (updates with size selection)
+  const mainVariantId = Number(document.getElementById('variant-id')?.value || picker.dataset.mainVariant);
+  if (!mainVariantId) return;
 
-  card.querySelectorAll('.bundle-fixed-variant').forEach(input => {
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;margin:0 auto"></span>';
+
+  if (isSolo) {
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: mainVariantId, quantity: 1 })
+    })
+      .then(r => r.json())
+      .then(() => {
+        btn.innerHTML = '✓ Added!';
+        window.showToast?.('Added to bag', 'success');
+        window.openCartDrawer?.();
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Add to Bag'; }, 2500);
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Add to Bag';
+        window.showToast?.('Could not add — try again', 'error');
+      });
+    return;
+  }
+
+  // Bundle mode
+  const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
+  if (!body) return;
+
+  const discountCode = body.dataset.discountCode?.trim();
+  const items = [{ id: mainVariantId, quantity: 1 }];
+
+  body.querySelectorAll('.bundle-fixed-variant').forEach(input => {
     const id = Number(input.value);
     if (id) items.push({ id, quantity: 1 });
   });
 
-  const chosenRadio = card.querySelector('.bundle-picker__radio:checked');
+  const chosenRadio = body.querySelector('.bundle-picker__radio:checked');
   if (chosenRadio) {
     const id = Number(chosenRadio.value);
     if (id) items.push({ id, quantity: 1 });
   }
-
-  if (items.length === 0) return;
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;margin:0 auto"></span>';
 
   fetch('/cart/add.js', {
     method: 'POST',
@@ -264,26 +306,27 @@ document.addEventListener('click', e => {
   })
     .then(r => r.json())
     .then(() => {
-      // Apply discount code to cart session so it pre-fills at checkout
       if (discountCode) {
-        return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' })
-          .catch(() => {});
+        return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {});
       }
     })
     .then(() => {
       btn.innerHTML = '✓ Bundle Added!';
-      window.showToast?.(`${label} added to bag!`, 'success');
+      window.showToast?.('Bundle added to bag!', 'success');
       window.openCartDrawer?.();
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.innerHTML = 'Add Bundle to Bag';
-      }, 2500);
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Add to Bag'; }, 2500);
     })
     .catch(() => {
       btn.disabled = false;
-      btn.innerHTML = 'Add Bundle to Bag';
+      btn.innerHTML = 'Add to Bag';
       window.showToast?.('Could not add bundle — try again', 'error');
     });
+});
+
+// Sticky ATC should also use tier picker if present
+document.getElementById('sticky-atc-btn')?.addEventListener('click', () => {
+  const tierBtn = document.querySelector('.bundle-tier-add-btn');
+  if (tierBtn) tierBtn.click();
 });
 
 // ── Mobile gallery: build from product-gallery thumbnails ──

@@ -3031,6 +3031,188 @@ svg { display: block; }
   .bundle-picker__option { width: 70px; }
 }
 
+/* ── Bundle Tier Picker
+   ─────────────────────────── */
+.bundle-tier-section {
+  padding-top: 0;
+  padding-bottom: var(--space-10);
+}
+
+/* On desktop: align tier picker under the product-info column */
+@media (min-width: 901px) {
+  .bundle-tier-section .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+  }
+  .bundle-tier-picker { grid-column: 2; }
+}
+
+.bundle-tier-picker__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.bundle-tier-picker__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.bundle-tier-option {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+  display: block;
+}
+.bundle-tier-option:hover { border-color: var(--color-gray-400); }
+.bundle-tier-option.is-selected {
+  border-color: var(--color-black);
+  background: var(--color-gray-50);
+}
+.bundle-tier-radio { display: none; }
+
+.bundle-tier-option__body { padding: var(--space-3) var(--space-4); }
+
+.bundle-tier-option__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bundle-tier-option__check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.bundle-tier-option.is-selected .bundle-tier-option__check {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: #fff;
+}
+
+.bundle-tier-option__info { flex: 1; min-width: 0; }
+
+.bundle-tier-option__name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  display: block;
+}
+
+.bundle-tier-option__badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: var(--weight-bold);
+  background: var(--color-accent);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+}
+
+.bundle-tier-option__prices { text-align: right; flex-shrink: 0; }
+.bundle-tier-option__was {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+.bundle-tier-option__now {
+  display: block;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+}
+.bundle-tier-option__price {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  flex-shrink: 0;
+}
+
+.bundle-tier-option__items {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.bundle-tier-item {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bundle-tier-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+}
+.bundle-tier-item--choice {
+  flex-direction: column;
+  background: var(--color-gray-100);
+  gap: 2px;
+  font-size: 0.55rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.2;
+  padding: 2px;
+}
+.bundle-tier-item__plus {
+  font-size: 0.85rem;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* Jersey picker — shown only when parent option is selected */
+.bundle-tier-option__picker { display: none; }
+.bundle-tier-option.is-selected .bundle-tier-option__picker {
+  display: block;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.bundle-tier-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .bundle-tier-section { padding-bottom: var(--space-6); }
+  .bundle-tier-item { width: 42px; height: 42px; }
+}
+
 /* About Us Page
    ─────────────────────────── */
 .about-hero {
