@@ -3346,17 +3346,13 @@ svg { display: block; }
   .qs-chip { height: 26px; min-width: 28px; font-size: 9px; padding: 0 4px; }
 }
 
-/* ── Single column on very small phones (≤ 400px) ── */
+/* ── Very small phones still keep 2 columns ── */
 @media (max-width: 400px) {
+  .container { padding-inline: var(--space-2); }
   .grid--3,
   .grid--4,
   .grid--5,
-  .grid--2 { grid-template-columns: 1fr; gap: var(--space-4); }
-
-  .product-card__media { aspect-ratio: 4 / 3; }
-  .product-card__img, .product-card__img--alt { padding: 4%; }
-  .product-card__title { font-size: var(--text-sm); -webkit-line-clamp: unset; }
-  .size-pip { height: 20px; min-width: 24px; font-size: 9px; }
+  .grid--2 { grid-template-columns: repeat(2, 1fr); gap: 6px; }
 }
 
 /* ── Mobile product page ── */

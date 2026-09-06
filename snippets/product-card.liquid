@@ -114,7 +114,7 @@
       <div class="product-card__quick-sizes" role="group" aria-label="Quick add by size">
         <p class="product-card__quick-sizes-label">Quick Add</p>
         <div class="product-card__quick-sizes-grid">
-          {%- for size_val in size_option.values limit: 10 -%}
+          {%- for size_val in size_option.values -%}
             {%- assign size_avail = false -%}
             {%- assign size_variant_id = '' -%}
             {%- for variant in product.variants -%}
@@ -180,7 +180,7 @@
 
     {%- if size_option -%}
       <div class="product-card__size-row" aria-label="Available sizes">
-        {%- for size_val in size_option.values limit: 9 -%}
+        {%- for size_val in size_option.values -%}
           {%- assign size_avail = false -%}
           {%- for variant in product.variants -%}
             {%- if variant.available -%}
@@ -195,9 +195,6 @@
           {%- endfor -%}
           <span class="size-pip{% unless size_avail %} size-pip--sold{% endunless %}" title="{% if size_avail %}Size {{ size_val }}{% else %}Size {{ size_val }} — Sold Out{% endif %}">{{ size_val }}</span>
         {%- endfor -%}
-        {%- if size_option.values.size > 9 -%}
-          <span class="size-pip size-pip--more">+{{ size_option.values.size | minus: 9 }}</span>
-        {%- endif -%}
       </div>
     {%- elsif color_option and color_option.values.size > 1 -%}
       <div class="product-card__colors" aria-label="Colours available">
