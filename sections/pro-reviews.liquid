@@ -1,434 +1,103 @@
-{% comment %}
-  Pro Reviews – Premium Social Proof with Stars & Verified Badges
-{% endcomment %}
-
-{%- assign avg_rating = section.settings.average_rating | default: "4.9" -%}
-{%- assign total_reviews = section.settings.review_count | default: 200 -%}
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": {{ shop.name | json }},
-  "url": {{ request.origin | json }},
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": {{ avg_rating | json }},
-    "reviewCount": {{ total_reviews }},
-    "bestRating": "5",
-    "worstRating": "1"
-  }
-}
-</script>
-
-<section class="pro-reviews">
-  <div class="pro-reviews__inner">
-
-    {% if section.settings.heading != blank %}
-      <header class="pro-reviews__header">
-        <h2>{{ section.settings.heading }}</h2>
-        <div class="pro-reviews__aggregate">
-          <span class="pro-reviews__aggregate-stars" aria-hidden="true">★★★★★</span>
-          <span class="pro-reviews__aggregate-text">{{ avg_rating }} / 5 &middot; {{ total_reviews }}+ verified reviews</span>
-        </div>
-        {% if section.settings.subheading != blank %}
-          <p>{{ section.settings.subheading }}</p>
-        {% endif %}
-      </header>
-    {% endif %}
-
-    <div class="pro-reviews__grid">
-      {% for block in section.blocks %}
-        {%- assign card_rating = block.settings.star_rating | default: 5 -%}
-        <div class="pro-reviews__card" {{ block.shopify_attributes }}>
-
-          <div class="pro-reviews__card-top">
-            <div class="pro-reviews__stars" aria-label="{{ card_rating }} out of 5 stars">
-              {% for i in (1..5) %}
-                <span class="pro-reviews__star{% if i <= card_rating %} pro-reviews__star--filled{% endif %}" aria-hidden="true">★</span>
-              {% endfor %}
+<section class="section" id="section-{{ section.id }}" style="{% if section.settings.bg == 'dark' %}background:var(--color-gray-900);{% else %}background:var(--color-gray-50);{% endif %}">
+  <div class="container">
+    <div class="section-header section-header--centered">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section-header__eyebrow fade-up">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="section-header__title fade-up" style="{% if section.settings.bg == 'dark' %}color:#fff{% endif %}">
+          {{ section.settings.heading | default: 'Real Reviews. Real Fans.' }}
+        </h2>
+        {%- if section.settings.show_aggregate -%}
+          <div class="fade-up" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-top:1.25rem">
+            <div class="stars" aria-label="4.9 out of 5">
+              {%- for i in (1..5) -%}
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="#f59e0b" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"/></svg>
+              {%- endfor -%}
             </div>
-            <span class="pro-reviews__verified">&#10003; Verified Buyer</span>
+            <span style="font-size:1.125rem;font-weight:700;{% if section.settings.bg == 'dark' %}color:#fff{% endif %}">{{ section.settings.aggregate_rating | default: '4.9' }}</span>
+            <span style="font-size:0.875rem;color:var(--color-text-muted)">from {{ section.settings.review_count | default: '2,400+' }} reviews</span>
           </div>
-
-          <p class="pro-reviews__quote">&ldquo;{{ block.settings.review }}&rdquo;</p>
-
-          <div class="pro-reviews__footer">
-            <span class="pro-reviews__name">{{ block.settings.name }}</span>
-            {% if block.settings.meta != blank %}
-              <span class="pro-reviews__meta">{{ block.settings.meta }}</span>
-            {% endif %}
-          </div>
-        </div>
-      {% endfor %}
+        {%- endif -%}
+      </div>
     </div>
 
+    <div class="testimonials-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'review' -%}
+          <div class="testimonial-card fade-up" {{ block.shopify_attributes }}>
+            <div class="testimonial-card__stars">
+              {%- assign rating = block.settings.rating | default: 5 -%}
+              {%- for i in (1..5) -%}
+                {%- if i <= rating -%}
+                  <svg width="13" height="13" viewBox="0 0 20 20" fill="#f59e0b" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"/></svg>
+                {%- else -%}
+                  <svg width="13" height="13" viewBox="0 0 20 20" fill="var(--color-gray-200)" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"/></svg>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if block.settings.product_name != blank -%}
+              <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">{{ block.settings.product_name }}</p>
+            {%- endif -%}
+            <p class="testimonial-card__text">"{{ block.settings.review_text }}"</p>
+            <div class="testimonial-card__author">
+              {%- if block.settings.avatar != blank -%}
+                <img class="testimonial-card__avatar" src="{{ block.settings.avatar | image_url: width: 88 }}" alt="{{ block.settings.name }}" loading="lazy" width="44" height="44">
+              {%- else -%}
+                <div class="testimonial-card__avatar" style="background:var(--color-gray-200);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--color-gray-600)">
+                  {{ block.settings.name | slice: 0 }}
+                </div>
+              {%- endif -%}
+              <div>
+                <div class="testimonial-card__name">{{ block.settings.name }}</div>
+                {%- if block.settings.location != blank -%}<div class="testimonial-card__location">{{ block.settings.location }}</div>{%- endif -%}
+                {%- if block.settings.verified -%}
+                  <div style="font-size:0.65rem;color:#16a34a;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px">✓ Verified Purchase</div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
   </div>
 </section>
 
-<style>
-  .pro-reviews {
-    padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
-    background: {{ section.settings.background }};
-  }
-
-  .pro-reviews__inner {
-    max-width: {{ section.settings.max_width }}px;
-    margin: 0 auto;
-  }
-
-  .pro-reviews__header {
-    text-align: left;
-    max-width: 720px;
-    margin-bottom: 40px;
-  }
-
-  .pro-reviews__header::after {
-    content: "";
-    display: block;
-    width: 48px;
-    height: 2px;
-    background: #111;
-    margin-top: 16px;
-  }
-
-  .pro-reviews__header h2 {
-    margin: 0 0 6px;
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    color: #111;
-  }
-
-  .pro-reviews__header p {
-    margin: 10px 0 0;
-    font-size: 1rem;
-    color: #6b7280;
-  }
-
-  .pro-reviews__aggregate {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 6px;
-  }
-
-  .pro-reviews__aggregate-stars {
-    color: #f59e0b;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-  }
-
-  .pro-reviews__aggregate-text {
-    font-size: 0.88rem;
-    color: #374151;
-    font-weight: 500;
-  }
-
-  /* GRID */
-  .pro-reviews__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-  }
-
-  /* CARD */
-  .pro-reviews__card {
-    background: #ffffff;
-    border-radius: {{ section.settings.radius }}px;
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-  }
-
-  .pro-reviews__card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .pro-reviews__stars {
-    display: flex;
-    gap: 1px;
-  }
-
-  .pro-reviews__star {
-    font-size: 1rem;
-    color: #d1d5db;
-  }
-
-  .pro-reviews__star--filled {
-    color: #f59e0b;
-  }
-
-  .pro-reviews__verified {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #059669;
-    background: #d1fae5;
-    padding: 3px 9px;
-    border-radius: 100px;
-    white-space: nowrap;
-  }
-
-  .pro-reviews__quote {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: #111;
-    flex: 1;
-  }
-
-  .pro-reviews__footer {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .pro-reviews__name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #111;
-  }
-
-  .pro-reviews__meta {
-    font-size: 0.8rem;
-    color: #6b7280;
-  }
-
-  /* MOBILE */
-  @media (max-width: 1024px) {
-    .pro-reviews__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .pro-reviews {
-      padding-right: 0;
-      padding-left: 0;
-    }
-
-    .pro-reviews__inner {
-      max-width: none;
-    }
-
-    .pro-reviews__header {
-      margin-right: 24px;
-      margin-left: 24px;
-      margin-bottom: 30px;
-    }
-
-    .pro-reviews__aggregate {
-      flex-wrap: wrap;
-      row-gap: 4px;
-    }
-
-    .pro-reviews__grid {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      padding: 0 24px 8px;
-      scroll-snap-type: x mandatory;
-      scroll-padding-left: 24px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    .pro-reviews__grid::-webkit-scrollbar {
-      display: none;
-    }
-
-    .pro-reviews__card {
-      flex: 0 0 min(86vw, 420px);
-      min-height: 300px;
-      padding: 24px;
-      scroll-snap-align: start;
-    }
-
-    .pro-reviews__quote {
-      font-size: 0.98rem;
-      line-height: 1.62;
-    }
-  }
-</style>
-
 {% schema %}
 {
-  "name": "Pro Reviews",
+  "name": "Reviews",
+  "tag": "section",
+  "class": "reviews-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Trusted by players"
-    },
-    {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "Real feedback from footballers who care about performance."
-    },
-    {
-      "type": "text",
-      "id": "average_rating",
-      "label": "Average rating (e.g. 4.9)",
-      "default": "4.9"
-    },
-    {
-      "type": "range",
-      "id": "review_count",
-      "label": "Total review count (for display)",
-      "min": 0,
-      "max": 9900,
-      "step": 100,
-      "default": 200
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "label": "Max width",
-      "min": 800,
-      "max": 1400,
-      "step": 40,
-      "unit": "px",
-      "default": 1200
-    },
-    {
-      "type": "range",
-      "id": "padding_y",
-      "label": "Vertical padding",
-      "min": 40,
-      "max": 140,
-      "step": 4,
-      "unit": "px",
-      "default": 96
-    },
-    {
-      "type": "range",
-      "id": "padding_x",
-      "label": "Horizontal padding",
-      "min": 12,
-      "max": 64,
-      "step": 4,
-      "unit": "px",
-      "default": 24
-    },
-    {
-      "type": "range",
-      "id": "radius",
-      "label": "Card corner radius",
-      "min": 0,
-      "max": 28,
-      "step": 2,
-      "unit": "px",
-      "default": 16
-    },
-    {
-      "type": "color",
-      "id": "background",
-      "label": "Background color",
-      "default": "#f9fafb"
-    }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Trusted by thousands" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Real Reviews. Real Fans." },
+    { "type": "checkbox", "id": "show_aggregate", "label": "Show aggregate rating", "default": true },
+    { "type": "text", "id": "aggregate_rating", "label": "Aggregate rating", "default": "4.9" },
+    { "type": "text", "id": "review_count", "label": "Review count", "default": "2,400+" },
+    { "type": "select", "id": "bg", "label": "Background", "options": [{ "value": "light", "label": "Light" },{ "value": "dark", "label": "Dark" }], "default": "light" }
   ],
   "blocks": [
     {
       "type": "review",
       "name": "Review",
       "settings": [
-        {
-          "type": "range",
-          "id": "star_rating",
-          "label": "Star rating",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "default": 5
-        },
-        {
-          "type": "textarea",
-          "id": "review",
-          "label": "Review text",
-          "default": "The boots arrived fast and the quality exceeded my expectations. Comfort and grip are on another level."
-        },
-        {
-          "type": "text",
-          "id": "name",
-          "label": "Reviewer name",
-          "default": "Alex M."
-        },
-        {
-          "type": "text",
-          "id": "meta",
-          "label": "Role / description",
-          "default": "Semi-pro midfielder"
-        }
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "product_name", "label": "Product name (optional)" },
+        { "type": "textarea", "id": "review_text", "label": "Review", "default": "Absolutely class gear. Arrived fast and quality is unreal." },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Marcus T." },
+        { "type": "text", "id": "location", "label": "Location", "default": "London, UK" },
+        { "type": "checkbox", "id": "verified", "label": "Verified purchase badge", "default": true }
       ]
     }
   ],
-  "max_blocks": 6,
   "presets": [
     {
-      "name": "Pro Reviews",
+      "name": "Reviews",
       "blocks": [
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Ordered a pair of Predators and they arrived the next day. Pitch-ready straight out of the box — quality is elite.",
-            "name": "Jordan K.",
-            "meta": "Amateur striker"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "The boots arrived fast and the quality exceeded my expectations. Comfort and grip are on another level.",
-            "name": "Alex M.",
-            "meta": "Semi-pro midfielder"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Tried a lot of kits over the years — the fit and fabric here feel match-ready straight out of the box.",
-            "name": "Daniel R.",
-            "meta": "Sunday league captain"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Everything from packaging to performance feels professional. You can tell this store understands football.",
-            "name": "Chris L.",
-            "meta": "Youth academy coach"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Bought a full kit for my five-a-side team here. Everyone was impressed — quality-to-price ratio is unreal.",
-            "name": "Marcus T.",
-            "meta": "Five-a-side team captain"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "As a coach I need gear that lasts. FootHub delivers — durable, well-made, and looks sharp. Ordering for the whole squad next season.",
-            "name": "Liam A.",
-            "meta": "School football coach"
-          }
-        }
+        { "type": "review", "settings": { "name": "Marcus T.", "location": "London, UK", "review_text": "Absolutely class gear. Arrived fast and the quality is unreal. My son loves his new kit.", "product_name": "Home Jersey 24/25", "rating": 5, "verified": true } },
+        { "type": "review", "settings": { "name": "Sofia R.", "location": "Manchester", "review_text": "Third time ordering and the boots are quality as always. Delivery was next day. Will keep coming back.", "product_name": "Football Boots", "rating": 5, "verified": true } },
+        { "type": "review", "settings": { "name": "James K.", "location": "Birmingham", "review_text": "Best online football store I've found. Huge selection, competitive prices, and fast shipping. Highly recommend.", "rating": 5, "verified": true } }
       ]
     }
   ]

@@ -1,414 +1,148 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "hero_slider_PQjfaH": {
-      "type": "hero-slider",
+    "announcement": {
+      "type": "marquee",
       "blocks": {
-        "slide_RRLpgQ": {
-          "type": "slide",
-          "settings": {
-            "desktop_image": "shopify://shop_images/nike-mercurial-superfly-11-and-vapor-17-release-date-tech-and-how-they_re-different.avif",
-            "mobile_image": "shopify://shop_images/nike-mercurial-superfly-11-and-vapor-17-release-date-tech-and-how-they_re-different.avif",
-            "link": "shopify://collections/all-shoes",
-            "logo": "shopify://shop_images/FoothubLogo.png",
-            "kicker": "",
-            "heading": "No hesitation, just speed",
-            "subheading": "",
-            "button_label": "Shop shoes"
-          }
-        },
-        "slide_JTjEUf": {
-          "type": "slide",
-          "settings": {
-            "desktop_image": "shopify://shop_images/LeoMessi20092010_pic_fcb-arsenal62.jpg",
-            "mobile_image": "shopify://shop_images/FRh7AqJX0AEVMnJ.jpg",
-            "link": "shopify://collections/football-jerseys",
-            "logo": "shopify://shop_images/FoothubLogo.png",
-            "kicker": "",
-            "heading": "Wear the game",
-            "subheading": "",
-            "button_label": "Shop jerseys"
-          }
-        }
+        "item_1": { "type": "item", "settings": { "text": "Free shipping on orders over £100", "icon": "✦" } },
+        "item_2": { "type": "item", "settings": { "text": "Official licensed gear", "icon": "✦" } },
+        "item_3": { "type": "item", "settings": { "text": "30-day free returns", "icon": "✦" } },
+        "item_4": { "type": "item", "settings": { "text": "New drops every week", "icon": "✦" } },
+        "item_5": { "type": "item", "settings": { "text": "Express delivery available", "icon": "✦" } }
       },
-      "block_order": [
-        "slide_RRLpgQ",
-        "slide_JTjEUf"
-      ],
-      "name": "Hero Slider",
-      "settings": {}
+      "block_order": ["item_1", "item_2", "item_3", "item_4", "item_5"]
     },
-    "jersey_showcase_hero": {
-      "type": "pro-best-sellers",
-      "name": "Jersey Showcase",
+    "hero": {
+      "type": "hero",
       "settings": {
-        "heading": "The New Collection",
-        "subheading": "Match-ready jerseys from the world's biggest clubs.",
-        "collection": "football-jerseys",
-        "products_limit": 4,
-        "view_more_link": "shopify://collections/football-jerseys",
-        "view_more_label": "Shop all jerseys",
-        "max_width": 1480,
-        "padding_y": 80,
-        "padding_x": 24,
-        "radius": 12
+        "eyebrow": "New Season",
+        "heading": "Play Without\nLimits",
+        "subheading": "Premium football gear engineered for the elite. Find your edge.",
+        "button_label": "Shop Now",
+        "button_link": "shopify://collections/all",
+        "button_style": "white",
+        "button_2_label": "New Arrivals",
+        "button_2_link": "shopify://collections/new-arrivals",
+        "button_2_style": "outline-white",
+        "height": "full",
+        "overlay_opacity": 40,
+        "show_scroll_indicator": true
       }
     },
-    "pro_trust_bar_after_hero": {
-      "type": "pro-trust-bar",
+    "collection_grid": {
+      "type": "collection-list",
       "blocks": {
-        "trust_shipping": {
-          "type": "trust_item",
-          "settings": {
-            "title": "Fast Shipping",
-            "subtitle": "Processed in 24 hours"
-          }
-        },
-        "trust_checkout": {
-          "type": "trust_item",
-          "settings": {
-            "title": "Secure Checkout",
-            "subtitle": "Encrypted payments"
-          }
-        },
-        "trust_returns": {
-          "type": "trust_item",
-          "settings": {
-            "title": "Size Exchanges",
-            "subtitle": "Quick fit support"
-          }
-        },
-        "trust_players": {
-          "type": "trust_item",
-          "settings": {
-            "title": "Player-Ready",
-            "subtitle": "Curated football gear"
-          }
-        }
+        "col_1": { "type": "collection", "settings": { "cta_text": "Shop Boots" } },
+        "col_2": { "type": "collection", "settings": { "cta_text": "Shop Jerseys" } },
+        "col_3": { "type": "collection", "settings": { "cta_text": "Shop Training" } }
       },
-      "block_order": [
-        "trust_shipping",
-        "trust_checkout",
-        "trust_returns",
-        "trust_players"
-      ],
-      "name": "Pro Trust Bar",
+      "block_order": ["col_1", "col_2", "col_3"],
       "settings": {
-        "heading": "",
-        "subheading": "",
-        "max_width": 1200,
-        "padding_y": 24,
-        "padding_x": 24,
-        "text_color": "#111111",
-        "muted_color": "#6b7280",
-        "divider_color": "#e5e7eb"
-      }
-    },
-    "pro_category_grid_6ndeMt": {
-      "type": "pro-category-grid",
-      "blocks": {
-        "category_aUmpCg": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/IMG_1081.jpg",
-            "title": "Football Shoes",
-            "subtitle": "Speed, control & traction",
-            "link": "shopify://collections/all-shoes",
-            "overlay": 30
-          }
-        },
-        "category_AaFMXE": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/120345833_ronaldo7a.jpg",
-            "title": "Football Jerseys",
-            "subtitle": "Match-ready fabric",
-            "link": "shopify://collections/football-jerseys",
-            "overlay": 30
-          }
-        },
-        "category_CYiYw9": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/SNKRBAG.jpg",
-            "title": "Football Equipment",
-            "subtitle": "Essentials for training & match day",
-            "link": "shopify://collections/football-wquipment",
-            "overlay": 30
-          }
-        }
-      },
-      "block_order": [
-        "category_aUmpCg",
-        "category_AaFMXE",
-        "category_CYiYw9"
-      ],
-      "name": "Pro Category Grid",
-      "settings": {
+        "eyebrow": "Browse",
         "heading": "Shop by Category",
-        "subheading": "",
-        "max_width": 1200,
-        "padding_y": 60,
-        "padding_x": 24,
-        "radius": 16
+        "columns": "3",
+        "centered_header": true,
+        "aspect_ratio": "3/4"
       }
     },
-    "pro_best_sellers_kjk8TK": {
-      "type": "pro-best-sellers",
-      "name": "Pro Best Sellers",
+    "best_sellers": {
+      "type": "featured-collection",
       "settings": {
+        "eyebrow": "This Season",
         "heading": "Best Sellers",
-        "subheading": "Top picks trusted by players.",
-        "collection": "all-shoes",
-        "products_limit": 8,
-        "view_more_link": "shopify://collections/all-shoes",
-        "view_more_label": "View all",
-        "max_width": 1480,
-        "padding_y": 80,
-        "padding_x": 24,
-        "radius": 12
+        "limit": 4,
+        "products_per_row": "4",
+        "show_view_all": true
       }
     },
-    "pro_brand_statement_midpage": {
-      "type": "pro-brand-statement",
-      "name": "Pro Brand Statement",
+    "brand_story": {
+      "type": "media-with-content",
       "settings": {
-        "kicker": "Why FootHub",
-        "heading": "Football gear chosen for match-day performance.",
-        "text": "Boots, kits, and essentials curated for players who care about fit, feel, and every touch.",
-        "background_video_asset": "foothub-field-bg.mp4",
-        "max_width": 920,
-        "padding_y": 64,
-        "padding_x": 24,
-        "background": "#111111",
-        "text_color": "#ffffff",
-        "muted_color": "#d1d5db",
-        "accent_color": "#86efac"
+        "eyebrow": "Our Story",
+        "heading": "Built For The\nBeautiful Game",
+        "text": "<p>We exist for one reason: to give every footballer access to the gear worn by the best in the world. Authentic. Premium. Delivered fast.</p><p>From Champions League kits to World Cup boots — FootHub has it all.</p>",
+        "button_label": "Our Story",
+        "button_link": "/pages/about",
+        "button_style": "primary",
+        "layout": "image_left",
+        "bg": "light"
       }
     },
-    "collection_switcher_mTHVfB": {
-      "type": "collection-switcher",
-      "blocks": {
-        "collection_4cbwBN": {
-          "type": "collection",
-          "settings": {
-            "collection": "football-jerseys",
-            "label": "Kits"
-          }
-        },
-        "collection_hare6q": {
-          "type": "collection",
-          "settings": {
-            "collection": "all-shoes",
-            "label": "Shoes"
-          }
-        },
-        "collection_fArKX3": {
-          "type": "collection",
-          "settings": {
-            "collection": "football-wquipment",
-            "label": "Equipment"
-          }
-        }
-      },
-      "block_order": [
-        "collection_4cbwBN",
-        "collection_hare6q",
-        "collection_fArKX3"
-      ],
-      "name": "Collection Switcher",
+    "new_arrivals": {
+      "type": "featured-collection",
       "settings": {
-        "heading": "Shop Match Essentials",
-        "subheading": "Jump straight into the gear you need most.",
-        "view_more_text": "View more",
-        "show_view_more": true,
-        "products_limit": 4
+        "eyebrow": "Fresh In",
+        "heading": "New Arrivals",
+        "limit": 4,
+        "products_per_row": "4",
+        "show_view_all": true,
+        "centered_header": false
       }
     },
-    "pro_reviews_8rTqWx": {
+    "reviews": {
       "type": "pro-reviews",
       "blocks": {
-        "review_jK1mNp": {
+        "review_1": {
           "type": "review",
           "settings": {
-            "star_rating": 5,
-            "review": "Ordered a pair of Predators and they arrived the next day. Pitch-ready straight out of the box — quality is elite.",
-            "name": "Jordan K.",
-            "meta": "Amateur striker"
-          }
-        },
-        "review_aX2vQr": {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "The boots arrived fast and the quality exceeded my expectations. Comfort and grip are on another level.",
-            "name": "Alex M.",
-            "meta": "Semi-pro midfielder"
-          }
-        },
-        "review_bY3wSt": {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Tried a lot of kits over the years — the fit and fabric here feel match-ready straight out of the box.",
-            "name": "Daniel R.",
-            "meta": "Sunday league captain"
-          }
-        },
-        "review_cZ4xTu": {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Everything from packaging to performance feels professional. You can tell this store understands football.",
-            "name": "Chris L.",
-            "meta": "Youth academy coach"
-          }
-        },
-        "review_dA5yUv": {
-          "type": "review",
-          "settings": {
-            "star_rating": 5,
-            "review": "Bought a full kit for my five-a-side team here. Everyone was impressed — quality-to-price ratio is unreal.",
             "name": "Marcus T.",
-            "meta": "Five-a-side team captain"
+            "location": "London, UK",
+            "review_text": "Absolutely class gear. Arrived fast and the quality is unreal. My son loves his new kit.",
+            "product_name": "Home Jersey 24/25",
+            "rating": 5,
+            "verified": true
           }
         },
-        "review_eB6zVw": {
+        "review_2": {
           "type": "review",
           "settings": {
-            "star_rating": 5,
-            "review": "As a coach I need gear that lasts. FootHub delivers — durable, well-made, and looks sharp. Ordering for the whole squad next season.",
-            "name": "Liam A.",
-            "meta": "School football coach"
+            "name": "Sofia R.",
+            "location": "Manchester",
+            "review_text": "Third time ordering and the boots are quality as always. Delivery was next day. Will keep coming back.",
+            "product_name": "Football Boots",
+            "rating": 5,
+            "verified": true
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "name": "James K.",
+            "location": "Birmingham",
+            "review_text": "Best online football store I've found. Huge selection, competitive prices, and fast shipping.",
+            "rating": 5,
+            "verified": true
           }
         }
       },
-      "block_order": [
-        "review_jK1mNp",
-        "review_aX2vQr",
-        "review_bY3wSt",
-        "review_cZ4xTu",
-        "review_dA5yUv",
-        "review_eB6zVw"
-      ],
-      "name": "Pro Reviews",
+      "block_order": ["review_1", "review_2", "review_3"],
       "settings": {
-        "heading": "Trusted by players",
-        "subheading": "Real feedback from footballers who care about performance.",
-        "average_rating": "4.9",
-        "review_count": 200,
-        "max_width": 1200,
-        "padding_y": 96,
-        "padding_x": 24,
-        "radius": 16,
-        "background": "#f9fafb"
+        "eyebrow": "Trusted by thousands",
+        "heading": "Real Reviews. Real Fans.",
+        "show_aggregate": true,
+        "aggregate_rating": "4.9",
+        "review_count": "2,400+",
+        "bg": "light"
       }
     },
-    "shoe_video_reel_v1": {
-      "type": "shoe-video-reel",
-      "blocks": {
-        "reel_card_4": {
-          "type": "video_card",
-          "settings": {
-            "video": "shopify://files/videos/ssstik.io_1788638220736.mp4",
-            "label": "Adidas Messi Ultimo Tango",
-            "product_link": "shopify://products/adidas-f50-messi-elite-fg-el-ultimo-tango-1"
-          }
-        },
-        "reel_card_1": {
-          "type": "video_card",
-          "settings": {
-            "video": "shopify://files/videos/ssstik.io_@dein_fussballschuh_1781385819497.mp4",
-            "label": "Nike mercurial WC special edition",
-            "product_link": "shopify://products/nike-mercurial-superfly-11-elite"
-          }
-        },
-        "reel_card_2": {
-          "type": "video_card",
-          "settings": {
-            "video": "shopify://files/videos/ssstik.io_1788363012979.mp4",
-            "label": "Nike mercurial CRISTIANO RONALDO",
-            "product_link": "shopify://products/ronaldo-s-2026-world-cup-boots"
-          }
-        },
-        "reel_card_3": {
-          "type": "video_card",
-          "settings": {
-            "video": "shopify://files/videos/ssstik.io_1788638002136.mp4",
-            "label": "Nike Mercurial Scorpion",
-            "product_link": "shopify://products/nike-mercurial-vapor-17-elite-fg-scorpion-blue-red-silver-metallic-limited-edition"
-          }
-        }
-      },
-      "block_order": [
-        "reel_card_4",
-        "reel_card_1",
-        "reel_card_2",
-        "reel_card_3"
-      ],
-      "name": "Shoe Video Reel",
+    "newsletter": {
+      "type": "pro-final-cta",
       "settings": {
-        "heading": "On the pitch. On camera.",
-        "subheading": "The boots that move the game — in motion.",
-        "bg_color": "#0a0a0a",
-        "padding_y": 80
-      }
-    },
-    "premium_faq_8qmKge": {
-      "type": "premium-faq",
-      "blocks": {
-        "faq_E7YeUf": {
-          "type": "faq",
-          "settings": {
-            "question": "How long does shipping take?",
-            "answer": "<p>Orders are processed within 24 hours and typically arrive within 2–3 business days.</p>"
-          }
-        },
-        "faq_HVeP7J": {
-          "type": "faq",
-          "settings": {
-            "question": "Is there an exchange policy?",
-            "answer": "<p>Size exchange is available within the first 2 days of delivery</p>"
-          }
-        },
-        "faq_LgFJmG": {
-          "type": "faq",
-          "settings": {
-            "question": "Should I buy FG cleats or Turf?",
-            "answer": "<p>Depends on what field you play on, if you play on very low grass or on IC courts then we recommend turf. Other than that FG cleats will do the job!</p>"
-          }
-        }
-      },
-      "block_order": [
-        "faq_E7YeUf",
-        "faq_HVeP7J",
-        "faq_LgFJmG"
-      ],
-      "name": "Premium FAQ",
-      "settings": {
-        "heading": "Questions & answers",
-        "color_scheme": "scheme-1"
+        "eyebrow": "Join the community",
+        "heading": "Stay Ahead of the Game",
+        "subheading": "Exclusive drops, early access, and match-day deals straight to your inbox.",
+        "placeholder": "Enter your email",
+        "button_label": "Subscribe"
       }
     }
   },
   "order": [
-    "hero_slider_PQjfaH",
-    "jersey_showcase_hero",
-    "pro_trust_bar_after_hero",
-    "pro_category_grid_6ndeMt",
-    "pro_best_sellers_kjk8TK",
-    "pro_brand_statement_midpage",
-    "collection_switcher_mTHVfB",
-    "pro_reviews_8rTqWx",
-    "shoe_video_reel_v1",
-    "premium_faq_8qmKge"
+    "announcement",
+    "hero",
+    "collection_grid",
+    "best_sellers",
+    "brand_story",
+    "new_arrivals",
+    "reviews",
+    "newsletter"
   ]
 }

@@ -1,0 +1,44 @@
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <span class="breadcrumb__item">
+    <a class="breadcrumb__link" href="{{ routes.root_url }}">Home</a>
+    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+  </span>
+
+  {%- if request.page_type == 'product' -%}
+    {%- if product.collections.size > 0 -%}
+      <span class="breadcrumb__item">
+        <a class="breadcrumb__link" href="{{ product.collections.first.url }}">
+          {{ product.collections.first.title }}
+        </a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      </span>
+    {%- endif -%}
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__current">{{ product.title | truncate: 40 }}</span>
+    </span>
+
+  {%- elsif request.page_type == 'collection' -%}
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__current">{{ collection.title }}</span>
+    </span>
+
+  {%- elsif request.page_type == 'article' -%}
+    <span class="breadcrumb__item">
+      <a class="breadcrumb__link" href="{{ blog.url }}">{{ blog.title }}</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+    </span>
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__current">{{ article.title | truncate: 50 }}</span>
+    </span>
+
+  {%- elsif request.page_type == 'blog' -%}
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__current">{{ blog.title }}</span>
+    </span>
+
+  {%- elsif request.page_type == 'page' -%}
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__current">{{ page.title }}</span>
+    </span>
+  {%- endif -%}
+</nav>

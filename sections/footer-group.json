@@ -1,56 +1,32 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
-  "name": "Footer",
+  "name": "Footer group",
   "sections": {
-    "pro_footer_JhieAh": {
-      "type": "pro-footer",
+    "footer_main": {
+      "type": "footer",
       "blocks": {
-        "menu_rfgbHU": {
-          "type": "menu",
-          "settings": {
-            "heading": "Shop",
-            "menu": "main-menu"
-          }
+        "col_shop": {
+          "type": "link_list",
+          "settings": { "heading": "Shop", "menu": "main-menu" }
         },
-        "menu_bDqmh6": {
-          "type": "menu",
-          "settings": {
-            "heading": "Support",
-            "menu": "customer-account-main-menu"
-          }
+        "col_support": {
+          "type": "link_list",
+          "settings": { "heading": "Support", "menu": "footer" }
         },
-        "menu_iWKzqF": {
-          "type": "menu",
-          "settings": {
-            "heading": "Company",
-            "menu": ""
-          }
+        "col_company": {
+          "type": "link_list",
+          "settings": { "heading": "Company", "menu": "footer" }
         }
       },
-      "block_order": [
-        "menu_rfgbHU",
-        "menu_bDqmh6",
-        "menu_iWKzqF"
-      ],
-      "name": "Pro Footer",
+      "block_order": ["col_shop", "col_support", "col_company"],
       "settings": {
-        "brand_name": "FOOTHUB",
-        "brand_text": "Professional football shoes, jerseys, and equipment built for match day performance.",
-        "privacy_link": "shopify://policies/privacy-policy",
-        "terms_link": "shopify://policies/terms-of-service"
+        "brand_description": "Professional football shoes, jerseys, and equipment built for match day performance.",
+        "show_newsletter": true,
+        "newsletter_heading": "Stay Updated",
+        "newsletter_text": "Exclusive drops, match-day offers and new arrivals.",
+        "show_powered_by": false
       }
     }
   },
-  "order": [
-    "pro_footer_JhieAh"
-  ]
+  "order": ["footer_main"]
 }

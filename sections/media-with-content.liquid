@@ -1,432 +1,126 @@
-
-
-{% liquid
-  assign media_class_modifier = 'media-with-content--' | append: section.settings.media_width
-
-  if section.settings.extend_media and section.settings.section_width == 'page-width'
-    assign media_class_modifier = media_class_modifier | append: ' media-with-content--media-extend'
+{%- liquid
+  assign is_reverse = section.settings.layout == 'image_right'
+  assign bg_class = ''
+  if section.settings.bg == 'dark'
+    assign bg_class = 'split-section__content--dark'
   endif
+-%}
 
-  if section.settings.media_position == 'right'
-    assign media_class_modifier = media_class_modifier | append: ' media-with-content--media-right'
-  endif
-%}
+<section class="split-section{% if is_reverse %} split-section--reverse{% endif %}" id="section-{{ section.id }}">
+  <div class="split-section__media">
+    {%- if section.settings.video_url != blank -%}
+      <video
+        style="width:100%;height:100%;object-fit:cover"
+        autoplay muted loop playsinline preload="metadata"
+        aria-hidden="true"
+      >
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      </video>
+    {%- elsif section.settings.image != blank -%}
+      <img
+        class="split-section__img"
+        src="{{ section.settings.image | image_url: width: 1000 }}"
+        srcset="{{ section.settings.image | image_url: width: 600 }} 600w, {{ section.settings.image | image_url: width: 900 }} 900w, {{ section.settings.image | image_url: width: 1200 }} 1200w"
+        sizes="(max-width:768px) 100vw, 50vw"
+        alt="{{ section.settings.image.alt | escape | default: section.settings.heading }}"
+        loading="lazy"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.height }}"
+      >
+    {%- else -%}
+      <div style="width:100%;height:100%;min-height:500px;background:var(--color-gray-200);display:flex;align-items:center;justify-content:center;color:var(--color-gray-400)">
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </div>
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div
-  class="section section--{{ section.settings.section_width }} disable-section-top-offset media-with-content color-{{ section.settings.color_scheme }} spacing-style {{ media_class_modifier }}"
-  data-testid="media-with-content"
-  style="
-    {%- render 'spacing-style', settings: section.settings %}
-    {% render 'border-override', settings: section.settings %}
-    --media-height: {{ section.settings.media_height }};
-    {%- case section.settings.media_height %}
-      {% when '50svh' %}
-        --media-height-mobile: 30svh;
-      {% when '60svh' %}
-        --media-height-mobile: 50svh;
-      {% when '80svh' %}
-        --media-height-mobile: 70svh;
-      {% when '100svh' %}
-        --media-height-mobile: 100svh;
-      {% else %}
-        --media-height-mobile: auto;
-    {% endcase -%}
-
-    {% if section.settings.media_height != 'auto' %}
-     --section-preview-height: 600px;
-     {% endif %}
-  "
-  {% if request.visual_preview_mode %}
-    data-shopify-visual-preview
-  {% endif %}
->
-  {% content_for 'block', type: '_media-without-appearance', id: 'media' %}
-
-  {% content_for 'block', type: '_content-without-appearance', id: 'content' %}
-</div>
-
-{% stylesheet %}
-  .section--page-width {
-    &.media-with-content {
-      grid-template-areas: 'margin-left media margin-right' 'margin-left content margin-right';
-
-      @media screen and (min-width: 750px) {
-        /* Wide proportion is media 3.5 parts, content 2.5 parts. Which equals 7|5. So divide the central column by 7+5 and multiply accordingly */
-        --media-with-content-grid-columns: var(--full-page-grid-margin)
-          calc((var(--full-page-grid-central-column-width) / 12) * 7)
-          calc((var(--full-page-grid-central-column-width) / 12) * 5) var(--full-page-grid-margin);
-
-        grid-template-areas: 'margin-left media content margin-right';
-      }
-    }
-
-    &.media-with-content--media-right {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: var(--full-page-grid-margin)
-          calc((var(--full-page-grid-central-column-width) / 12) * 5)
-          calc((var(--full-page-grid-central-column-width) / 12) * 7) var(--full-page-grid-margin);
-
-        grid-template-areas: 'margin-left content media margin-right';
-      }
-    }
-
-    &.media-with-content--medium {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: var(--full-page-grid-margin)
-          repeat(2, calc(var(--full-page-grid-central-column-width) / 2)) var(--full-page-grid-margin);
-      }
-    }
-
-    &.media-with-content--narrow.media-with-content--media-right {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: var(--full-page-grid-margin)
-          calc((var(--full-page-grid-central-column-width) / 3) * 2)
-          calc(var(--full-page-grid-central-column-width) / 3) var(--full-page-grid-margin);
-      }
-    }
-
-    &.media-with-content--narrow {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: var(--full-page-grid-margin)
-          calc(var(--full-page-grid-central-column-width) / 3)
-          calc((var(--full-page-grid-central-column-width) / 3) * 2) var(--full-page-grid-margin);
-      }
-    }
-  }
-
-  .section--full-width {
-    &.media-with-content--media-right {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: 2.5fr 3.5fr;
-
-        grid-template-areas: 'content media';
-      }
-    }
-
-    &.media-with-content--medium {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: 1fr 1fr;
-      }
-    }
-
-    &.media-with-content--narrow {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: 2fr 4fr;
-      }
-    }
-
-    &.media-with-content--narrow.media-with-content--media-right {
-      @media screen and (min-width: 750px) {
-        --media-with-content-grid-columns: 4fr 2fr;
-      }
-    }
-  }
-
-  /* Keep the CSS specificity lower assuming that liquid won't assign this class with a full width section */
-  .media-with-content.media-with-content--media-extend {
-    grid-template-columns: var(--media-with-content-grid-columns);
-    grid-template-areas: 'media media media' 'margin-left content margin-right';
-
-    @media screen and (min-width: 750px) {
-      grid-template-areas: 'media media content margin-right';
-    }
-  }
-
-  .media-with-content--media-extend.media-with-content--media-right {
-    @media screen and (min-width: 750px) {
-      grid-template-areas: 'margin-left content media media';
-    }
-  }
-
-  .media-with-content--media-right {
-    @media screen and (min-width: 750px) {
-      grid-template-areas: 'margin-left content media media';
-    }
-  }
-
-  .media-with-content {
-    --media-with-content-grid-columns: var(--full-page-grid-with-margins);
-
-    grid-template-columns: var(--media-with-content-grid-columns);
-    grid-template-areas: 'media media media' 'content content content';
-
-    @media screen and (min-width: 750px) {
-      --media-with-content-grid-columns: 3.5fr 2.5fr;
-
-      /* Default desktop layout is wide media, on the left, in full page section */
-      grid-template-areas: 'media content';
-    }
-
-    .media-block {
-      grid-area: media;
-    }
-
-    .media-with-content__content {
-      grid-area: content;
-    }
-
-    /* Inner blocks spacing */
-    .media-with-content__content > .group-block-content {
-      padding-inline: var(--page-margin);
-      padding-block: calc(2 * var(--page-margin));
-
-      @media screen and (min-width: 750px) {
-        padding-block: var(--page-margin);
-      }
-    }
-
-    &.section--page-width .media-with-content__content > .group-block-content {
-      padding-inline: 0;
-
-      @media screen and (min-width: 750px) {
-        padding-inline-start: var(--page-margin);
-      }
-    }
-
-    &.section--page-width.media-with-content--media-right .media-with-content__content > .group-block-content {
-      padding-inline-end: var(--page-margin);
-      padding-inline-start: 0;
-    }
-  }
-
-  .media-with-content[data-shopify-visual-preview] {
-    --hero-min-height: 500px;
-
-    min-height: 500px;
-  }
-{% endstylesheet %}
+  <div class="split-section__content {{ bg_class }}">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="section-header__eyebrow fade-up">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-header__title fade-up" style="margin-bottom:1.25rem">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="rte fade-up" style="{% if section.settings.bg == 'dark' %}color:rgba(255,255,255,0.7){% endif %}">
+        {{ section.settings.text }}
+      </div>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a
+        class="btn btn--{{ section.settings.button_style }} fade-up"
+        href="{{ section.settings.button_link | default: '#' }}"
+        style="margin-top:2rem;display:inline-flex"
+      >
+        {{ section.settings.button_label }}
+      </a>
+    {%- endif -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'stat' -%}
+        <div class="fade-up" style="display:flex;gap:2.5rem;margin-top:2.5rem;flex-wrap:wrap" {{ block.shopify_attributes }}>
+          {%- if block.settings.stat_1_value != blank -%}
+            <div>
+              <p style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;letter-spacing:-0.05em;color:{% if section.settings.bg == 'dark' %}#fff{% else %}var(--color-text){% endif %}">{{ block.settings.stat_1_value }}</p>
+              <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-muted)">{{ block.settings.stat_1_label }}</p>
+            </div>
+          {%- endif -%}
+          {%- if block.settings.stat_2_value != blank -%}
+            <div>
+              <p style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;letter-spacing:-0.05em;color:{% if section.settings.bg == 'dark' %}#fff{% else %}var(--color-text){% endif %}">{{ block.settings.stat_2_value }}</p>
+              <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-muted)">{{ block.settings.stat_2_label }}</p>
+            </div>
+          {%- endif -%}
+          {%- if block.settings.stat_3_value != blank -%}
+            <div>
+              <p style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;letter-spacing:-0.05em;color:{% if section.settings.bg == 'dark' %}#fff{% else %}var(--color-text){% endif %}">{{ block.settings.stat_3_value }}</p>
+              <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-muted)">{{ block.settings.stat_3_label }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
 
 {% schema %}
 {
-  "name": "t:names.media_with_text",
-  "disabled_on": {
-    "groups": ["header"]
-  },
+  "name": "Image with Text",
+  "tag": "section",
+  "class": "split-section-wrapper",
   "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "video_url", "label": "Video URL (.mp4)", "info": "Overrides image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Story" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Built For The Beautiful Game" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>We exist for one reason: to give every footballer access to the gear worn by the best in the world. Authentic. Premium. Delivered fast.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "select", "id": "button_style", "label": "Button style", "options": [{ "value": "primary", "label": "Black" },{ "value": "accent", "label": "Red" },{ "value": "outline", "label": "Outline" }], "default": "primary" },
+    { "type": "select", "id": "layout", "label": "Image position", "options": [{ "value": "image_left", "label": "Image left" },{ "value": "image_right", "label": "Image right" }], "default": "image_left" },
+    { "type": "select", "id": "bg", "label": "Content background", "options": [{ "value": "light", "label": "Light" },{ "value": "dark", "label": "Dark" }], "default": "light" }
+  ],
+  "blocks": [
     {
-      "type": "select",
-      "id": "media_position",
-      "label": "t:settings.media_position",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "select",
-      "id": "media_width",
-      "label": "t:settings.media_width",
-      "options": [
-        {
-          "value": "narrow",
-          "label": "t:options.narrow"
-        },
-        {
-          "value": "medium",
-          "label": "t:options.medium"
-        },
-        {
-          "value": "wide",
-          "label": "t:options.wide"
-        }
-      ],
-      "default": "wide"
-    },
-    {
-      "type": "select",
-      "id": "media_height",
-      "label": "t:settings.media_height",
-      "options": [
-        {
-          "value": "auto",
-          "label": "t:options.auto"
-        },
-        {
-          "value": "50svh",
-          "label": "t:options.small"
-        },
-        {
-          "value": "60svh",
-          "label": "t:options.medium"
-        },
-        {
-          "value": "80svh",
-          "label": "t:options.large"
-        },
-        {
-          "value": "100svh",
-          "label": "t:options.full_screen"
-        }
-      ],
-      "default": "80svh"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.section_width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "full-width"
-    },
-    {
-      "type": "checkbox",
-      "id": "extend_media",
-      "label": "t:settings.extend_media_to_screen_edge",
-      "default": true,
-      "visible_if": "{{ section.settings.section_width == 'page-width' }}"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-3"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
+      "type": "stat",
+      "name": "Stats row",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "10K+" },
+        { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Kits Sold" },
+        { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "50+" },
+        { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Brands" },
+        { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "4.9★" },
+        { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Avg Rating" }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "t:names.editorial",
-      "category": "t:categories.storytelling",
+      "name": "Image with Text",
       "settings": {
-        "media_width": "medium",
-        "media_height": "60svh",
-        "color_scheme": "scheme-4"
-      },
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "space-between"
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "t:names.caption",
-              "settings": {
-                "text": "t:html_defaults.bestseller",
-                "type_preset": "h6"
-              }
-            },
-            "group": {
-              "type": "group",
-              "settings": {
-                "height": "fit"
-              },
-              "blocks": {
-                "heading": {
-                  "type": "text",
-                  "name": "t:names.heading",
-                  "settings": {
-                    "text": "t:html_defaults.signature_products",
-                    "type_preset": "h3"
-                  }
-                },
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "t:html_defaults.made_with_care_extended",
-                    "max_width": "narrow",
-                    "type_preset": "rte"
-                  }
-                }
-              },
-              "block_order": ["heading", "text"]
-            },
-            "button": {
-              "type": "button",
-              "settings": {
-                "label": "t:text_defaults.shop_now_button_label",
-                "link": "shopify://collections/all",
-                "style_class": "link"
-              }
-            }
-          },
-          "block_order": ["caption", "group", "button"]
-        }
-      }
-    },
-    {
-      "name": "t:names.editorial_jumbo_text",
-      "category": "t:categories.storytelling",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "color_scheme": "scheme-3"
-      },
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "flex-end"
-          },
-          "blocks": {
-            "caption": {
-              "type": "jumbo-text",
-              "name": "t:names.jumbo_text",
-              "settings": {
-                "text": "t:text_defaults.up_the_ante",
-                "font": "heading",
-                "alignment": "right",
-                "line_height": "0.8",
-                "letter_spacing": "-0.03em",
-                "case": "uppercase"
-              }
-            }
-          },
-          "block_order": ["caption"]
-        }
+        "eyebrow": "Our Story",
+        "heading": "Built For The Beautiful Game",
+        "layout": "image_left"
       }
     }
   ]

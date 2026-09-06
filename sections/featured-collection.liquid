@@ -1,0 +1,148 @@
+{%- liquid
+  assign collection = section.settings.collection
+  assign products_per_row = section.settings.products_per_row | default: 4
+  assign limit = section.settings.limit | default: 8
+  assign show_view_all = section.settings.show_view_all
+-%}
+
+<section class="section" id="section-{{ section.id }}" style="{% if section.settings.bg != blank %}background:{{ section.settings.bg }};{% endif %}">
+  <div class="container">
+
+    <div class="section-header{% if section.settings.centered_header %} section-header--centered{% endif %}">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section-header__eyebrow fade-up">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section-header__title fade-up">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="section-header__subtitle fade-up">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+      {%- if show_view_all and collection != blank -%}
+        <a class="section-header__link fade-up" href="{{ collection.url }}">
+          View All
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+            <path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="grid grid--{{ products_per_row }}">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: limit -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      {%- elsif collection == blank -%}
+        {%- for i in (1..limit) -%}
+          {%- render 'product-card-placeholder', index: i -%}
+        {%- endfor -%}
+      {%- else -%}
+        <p style="grid-column:1/-1;text-align:center;color:var(--color-text-muted);padding:3rem 0">
+          No products in this collection yet.
+        </p>
+      {%- endif -%}
+    </div>
+
+    {%- if show_view_all and collection != blank and collection.products_count > limit -%}
+      <div style="text-align:center;margin-top:3rem">
+        <a class="btn btn--outline btn--lg" href="{{ collection.url }}">
+          View All {{ section.settings.heading | default: collection.title }}
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "featured-collection-section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Featured"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "checkbox",
+      "id": "centered_header",
+      "label": "Center header",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Number of products",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "products_per_row",
+      "label": "Products per row",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" },
+        { "value": "5", "label": "5" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background colour"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection",
+      "settings": {
+        "eyebrow": "This Season",
+        "heading": "Best Sellers",
+        "limit": 4,
+        "products_per_row": "4",
+        "show_view_all": true
+      }
+    }
+  ]
+}
+{% endschema %}

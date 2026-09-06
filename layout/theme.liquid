@@ -1,117 +1,305 @@
 <!doctype html>
-<html
-  {% if request.design_mode %}
-    class="shopify-design-mode"
-  {% endif %}
-  lang="{{ request.locale.iso_code }}"
->
-  <head>
-    {%- if settings.favicon != blank -%}
-      <link
-        rel="icon"
-        type="image/png"
-        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
-      >
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta name="theme-color" content="#000000">
+
+  {%- if canonical_url != blank -%}
+    <link rel="canonical" href="{{ canonical_url }}">
+  {%- endif -%}
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {%- if page_description -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- if request.page_type == 'product' -%}
+    <meta property="og:type" content="product">
+    <meta property="og:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+    <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+    {%- if product.featured_image -%}
+      <meta property="og:image" content="https:{{ product.featured_image | image_url: width: 1200 }}">
     {%- endif -%}
+  {%- else -%}
+    <meta property="og:type" content="website">
+  {%- endif -%}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
+  {%- if page_description -%}
+    <meta name="twitter:description" content="{{ page_description | escape }}">
+  {%- endif -%}
 
-    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
-    {% if settings.transition_to_main_product or settings.page_transition_enabled %}
-      <link
-        rel="expect"
-        href="#MainContent"
-        blocking="render"
-        id="view-transition-render-blocker"
-      >
-    {% endif %}
+  {{ content_for_header }}
 
-    {%- render 'meta-tags' -%}
-    {%- render 'stylesheets' -%}
-    {%- render 'fonts' -%}
-    {%- render 'scripts' -%}
-    {%- render 'theme-styles-variables' -%}
-    {%- render 'color-schemes' -%}
+  {%- comment -%}Cart drawer CSS is included in base.css{%- endcomment -%}
 
-    {% if request.design_mode %}
-      {%- render 'theme-editor' -%}
-    {% endif %}
+  {% style %}
+    :root {
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-accent: #CC0001;
+      --color-accent-dark: #a30001;
+      --color-accent-light: #e60002;
+      --color-gray-50:  #fafafa;
+      --color-gray-100: #f5f5f5;
+      --color-gray-200: #e5e5e5;
+      --color-gray-300: #d4d4d4;
+      --color-gray-400: #a3a3a3;
+      --color-gray-500: #737373;
+      --color-gray-600: #525252;
+      --color-gray-700: #404040;
+      --color-gray-800: #262626;
+      --color-gray-900: #0a0a0a;
+      --color-background: var(--color-white);
+      --color-text: var(--color-gray-900);
+      --color-text-muted: var(--color-gray-500);
+      --color-border: var(--color-gray-200);
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.25rem;
+      --text-5xl: 3rem;
+      --text-6xl: 3.75rem;
+      --text-7xl: 4.5rem;
+      --text-8xl: 6rem;
+      --text-hero: clamp(4rem, 10vw, 10rem);
+      --weight-light: 300;
+      --weight-regular: 400;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --weight-bold: 700;
+      --weight-extrabold: 800;
+      --weight-black: 900;
+      --tracking-tighter: -0.05em;
+      --tracking-tight: -0.025em;
+      --tracking-normal: 0em;
+      --tracking-wide: 0.05em;
+      --tracking-wider: 0.1em;
+      --tracking-widest: 0.2em;
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+      --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
+      --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --space-14: 3.5rem; --space-16: 4rem; --space-20: 5rem;
+      --space-24: 6rem; --space-32: 8rem;
+      --page-width: 1440px;
+      --page-width-narrow: 960px;
+      --grid-gutter: 1.5rem;
+      --section-padding-v: clamp(3rem, 6vw, 6rem);
+      --header-height: 68px;
+      --header-height-mobile: 60px;
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,0.2);
+      --z-dropdown: 100;
+      --z-sticky: 200;
+      --z-overlay: 300;
+      --z-modal: 400;
+    }
+  {% endstyle %}
 
-    {{ content_for_header }}
-  </head>
+  {{ 'base.css' | asset_url | stylesheet_tag }}
 
-  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
-    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
-    <div id="header-group">
-      {% sections 'header-group' %}
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    window.__FOOTHUB__ = {
+      shopUrl: '{{ shop.url }}',
+      cartUrl: '{{ routes.cart_url }}',
+      searchUrl: '{{ routes.search_url }}',
+      currency: '{{ cart.currency.iso_code }}',
+      moneyFormat: {{ shop.money_format | json }},
+      locale: '{{ request.locale.iso_code }}'
+    };
+  </script>
+
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ shop.url | append: '/cdn/shop/files/FoothubLogo.png' | json }}
+    }
+  }
+  </script>
+
+  {%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": {{ shop.url | append: '/search?q={search_term_string}&type=product' | json }}
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  {%- endif -%}
+
+  {%- if request.page_type == 'product' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncatewords: 200 | json }},
+    "url": {{ canonical_url | json }},
+    "image": [
+      {%- for image in product.images limit: 5 -%}
+        "https:{{ image | image_url: width: 1200 }}"{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "lowPrice": {{ product.price_min | divided_by: 100.0 }},
+      "highPrice": {{ product.price_max | divided_by: 100.0 }},
+      "offerCount": {{ product.variants.size }},
+      "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+    }
+  }
+  </script>
+  {%- endif -%}
+</head>
+
+<body id="body" class="page-type--{{ request.page_type }}{% if request.page_type == 'index' %} page-type--home{% endif %}">
+  <a class="skip-link visually-hidden" href="#MainContent">Skip to content</a>
+
+  {%- sections 'header-group' -%}
+
+  <main id="MainContent" class="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {%- sections 'footer-group' -%}
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer" id="cart-drawer" aria-modal="true" role="dialog" aria-label="Shopping bag" aria-hidden="true">
+    <div class="cart-drawer__overlay" id="cart-drawer-overlay"></div>
+    <div class="cart-drawer__panel">
+      <div class="cart-drawer__header">
+        <h2 class="cart-drawer__title">Your Bag
+          <span class="cart-drawer__count" id="cart-drawer-count"></span>
+        </h2>
+        <button class="cart-drawer__close icon-btn" id="cart-drawer-close" aria-label="Close bag">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M1 1L15 15M15 1L1 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cart-drawer__items" id="cart-drawer-items">
+        <div class="cart-drawer__loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+      <div class="cart-drawer__footer" id="cart-drawer-footer">
+        <!-- Injected by JS -->
+      </div>
     </div>
+  </div>
 
-    <script>
-      // Inline header height calculation to prevent layout shift
-      // Note: Updates in calculateHeaderGroupHeight() and updateTransparentHeaderOffset()utilities.js should be kept in sync with this function
-      (function setHeaderHeighCustomProperties() {
-        /*
-         * Header calculation functions for maintaining CSS variables
-         * Mimic calculateHeaderGroupHeight() in utilities.js
-         */
-        const header = document.querySelector('header-component');
-        const headerGroup = document.querySelector('#header-group');
-        const hasHeaderSection = headerGroup?.querySelector('.header-section');
+  <!-- Search Overlay -->
+  <div class="search-overlay" id="search-overlay" aria-modal="true" role="dialog" aria-label="Search" aria-hidden="true">
+    <div class="search-overlay__backdrop" id="search-overlay-backdrop"></div>
+    <div class="search-overlay__inner">
+      <form class="search-overlay__form" action="{{ routes.search_url }}" method="get">
+        <input type="hidden" name="type" value="product,collection,article">
+        <div class="search-overlay__input-wrap">
+          <svg class="search-overlay__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M17.5 17.5L13.875 13.875M15.833 9.167A6.667 6.667 0 1 1 2.5 9.167a6.667 6.667 0 0 1 13.333 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input
+            class="search-overlay__input"
+            type="search"
+            name="q"
+            id="search-overlay-input"
+            placeholder="Search jerseys, boots, brands..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="none"
+            spellcheck="false"
+            aria-label="Search"
+          >
+          <button class="search-overlay__clear" id="search-overlay-clear" type="button" aria-label="Clear search" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button class="search-overlay__close" id="search-overlay-close" type="button" aria-label="Close search">
+          Cancel
+        </button>
+      </form>
+      <div class="search-overlay__results" id="search-overlay-results">
+        <div class="search-overlay__trending">
+          <p class="search-overlay__label">Trending</p>
+          <div class="search-overlay__tags">
+            <a href="{{ routes.search_url }}?q=football+boots&type=product" class="search-tag">Football Boots</a>
+            <a href="{{ routes.search_url }}?q=jerseys&type=product" class="search-tag">Jerseys</a>
+            <a href="{{ routes.search_url }}?q=goalkeeper&type=product" class="search-tag">Goalkeeper</a>
+            <a href="{{ routes.search_url }}?q=training&type=product" class="search-tag">Training</a>
+            <a href="{{ routes.search_url }}?q=sale&type=product" class="search-tag">Sale</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        if (!header || !headerGroup) return;
+  <!-- Toast Notification -->
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true" role="status"></div>
 
-        const headerHeight = header.offsetHeight;
-
-        // Calculate the total height of the header group
-        let headerGroupHeight = 0;
-        const children = headerGroup.children;
-        for (let i = 0; i < children.length; i++) {
-          const element = children[i];
-          if (element === header || !(element instanceof HTMLElement)) continue;
-          headerGroupHeight += element.offsetHeight;
-        }
-
-        // Check for transparent header special case
-        if (header.hasAttribute('transparent') && header.parentElement?.nextElementSibling) {
-          headerGroupHeight += headerHeight;
-        }
-
-        // Set CSS variables
-        document.body.style.setProperty('--header-height', `${headerHeight}px`);
-        document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
-
-        /**
-         * Updates CSS custom properties for transparent header offset calculation
-         * Mimic updateTransparentHeaderOffset() in utilities.js
-         */
-
-        if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
-          document.body.style.setProperty('--transparent-header-offset-boolean', '0');
-          return;
-        }
-
-        const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
-
-        const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
-        document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
-      })();
-    </script>
-
-    <main
-      id="MainContent"
-      class="content-for-layout"
-      role="main"
-      data-page-transition-enabled="{{ settings.page_transition_enabled }}"
-      data-product-transition="{{ settings.transition_to_main_product }}"
-      data-template="{{ template }}"
-    >
-      {{ content_for_layout }}
-    </main>
-
-    {% sections 'footer-group' %}
-
-    {% render 'search-modal' %}
-
-    {% if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add-modal' %}
-    {% endif %}
-  </body>
+  <script src="{{ 'global.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+  <script src="{{ 'search-overlay.js' | asset_url }}" defer></script>
+  {%- if request.page_type == 'product' -%}
+    <script src="{{ 'product.js' | asset_url }}" defer></script>
+  {%- endif -%}
+  {%- if request.page_type == 'collection' -%}
+    <script src="{{ 'facets.js' | asset_url }}" defer></script>
+  {%- endif -%}
+</body>
 </html>

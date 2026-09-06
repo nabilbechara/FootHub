@@ -1,75 +1,188 @@
-import { DialogComponent, DialogOpenEvent } from '@theme/dialog';
-import { CartAddEvent } from '@theme/events';
+/* FootHub Pro — Cart Drawer
+   ========================== */
 
-class CartDrawerComponent extends DialogComponent {
-  #summaryThreshold = 0.5;
+const CartDrawer = (() => {
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-drawer-overlay');
+  const closeBtn = document.getElementById('cart-drawer-close');
+  const itemsContainer = document.getElementById('cart-drawer-items');
+  const footerContainer = document.getElementById('cart-drawer-footer');
+  const countEl = document.getElementById('cart-drawer-count');
 
-  connectedCallback() {
-    super.connectedCallback();
+  const headerCartBtn = document.querySelectorAll('[data-cart-trigger]');
+  const headerCartCounts = document.querySelectorAll('[data-cart-count]');
 
-    // Normal Dwell add-to-cart
-    document.addEventListener(CartAddEvent.eventName, this.#handleCartAdd);
+  let isOpen = false;
+  let cartData = null;
 
-    // Bundle add: wait for cart, THEN open
-    document.addEventListener('bundle:added', this.#handleBundleAdd);
-
-    this.addEventListener(DialogOpenEvent.eventName, this.#updateStickyState);
+  function open() {
+    isOpen = true;
+    drawer?.classList.add('is-open');
+    drawer?.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    fetchCart();
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener(CartAddEvent.eventName, this.#handleCartAdd);
-    document.removeEventListener('bundle:added', this.#handleBundleAdd);
-    this.removeEventListener(DialogOpenEvent.eventName, this.#updateStickyState);
+  function close() {
+    isOpen = false;
+    drawer?.classList.remove('is-open');
+    drawer?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
 
-  #handleCartAdd = () => {
-    if (this.hasAttribute('auto-open')) {
-      this.showDialog();
+  window.openCartDrawer = open;
+  window.closeCartDrawer = close;
+
+  async function fetchCart() {
+    try {
+      const res = await fetch('/cart.js');
+      cartData = await res.json();
+      renderCart(cartData);
+    } catch (e) {
+      console.error('Cart fetch error:', e);
     }
-  };
-
-  #handleBundleAdd = async () => {
-    if (!this.hasAttribute('auto-open')) return;
-
-    // 🔑 Force a clean cart state before rendering
-    await fetch('/cart.js').then(r => r.json());
-
-    // Now it is SAFE to open the drawer
-    this.showDialog();
-  };
-
-  open() {
-    this.showDialog();
   }
 
-  close() {
-    this.closeDialog();
+  function formatMoney(cents) {
+    return window.formatMoney ? window.formatMoney(cents) : `£${(cents / 100).toFixed(2)}`;
   }
 
-  #updateStickyState() {
-    const { dialog } = this.refs;
-    if (!dialog) return;
+  function renderCart(cart) {
+    if (!itemsContainer || !footerContainer) return;
 
-    const content = dialog.querySelector('.cart-drawer__content');
-    const summary = dialog.querySelector('.cart-drawer__summary');
+    const count = cart.item_count;
+    if (countEl) countEl.textContent = count;
 
-    if (!content || !summary) {
-      dialog.setAttribute('cart-summary-sticky', 'false');
+    // Update all header counts
+    headerCartCounts.forEach(el => {
+      el.textContent = count || '';
+      if (count) el.classList.add('bump');
+      setTimeout(() => el.classList.remove('bump'), 400);
+    });
+
+    if (count === 0) {
+      itemsContainer.innerHTML = `
+        <div class="cart-empty">
+          <svg class="cart-empty__icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <h3 class="cart-empty__title">Your bag is empty</h3>
+          <p class="cart-empty__text">Looks like you haven't added anything yet.</p>
+          <button class="btn btn--primary" onclick="window.closeCartDrawer()">
+            <a href="/collections/all" style="color:inherit;text-decoration:none">Shop Now</a>
+          </button>
+        </div>`;
+      footerContainer.innerHTML = '';
       return;
     }
 
-    const ratio =
-      summary.getBoundingClientRect().height /
-      dialog.getBoundingClientRect().height;
+    const itemsHtml = cart.items.map(item => `
+      <div class="cart-item" data-line-key="${item.key}">
+        <a class="cart-item__img-wrap" href="${item.url}">
+          <img class="cart-item__img" src="${item.image ? item.image.replace('.jpg', '_120x.jpg') : ''}"
+            alt="${item.product_title}" loading="lazy" width="80" height="96">
+        </a>
+        <div class="cart-item__info">
+          <div class="cart-item__vendor">${item.vendor || ''}</div>
+          <a class="cart-item__name" href="${item.url}">${item.product_title}</a>
+          <div class="cart-item__variant">${item.variant_title !== 'Default Title' ? item.variant_title : ''}</div>
+          <div class="cart-item__qty-row">
+            <div class="cart-item__qty">
+              <button class="cart-item__qty-btn" data-action="decrease" data-key="${item.key}" aria-label="Decrease quantity">−</button>
+              <span class="cart-item__qty-num">${item.quantity}</span>
+              <button class="cart-item__qty-btn" data-action="increase" data-key="${item.key}" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="cart-item__remove" data-key="${item.key}" aria-label="Remove item">Remove</button>
+          </div>
+        </div>
+        <div class="cart-item__price">${item.line_price !== item.original_line_price
+          ? `<s style="color:var(--color-text-muted);font-size:0.8em">${formatMoney(item.original_line_price)}</s><br>${formatMoney(item.line_price)}`
+          : formatMoney(item.line_price)
+        }</div>
+      </div>
+    `).join('');
 
-    dialog.setAttribute(
-      'cart-summary-sticky',
-      ratio > this.#summaryThreshold ? 'false' : 'true'
-    );
+    itemsContainer.innerHTML = itemsHtml;
+
+    footerContainer.innerHTML = `
+      <div class="cart-subtotal">
+        <span class="cart-subtotal__label">Subtotal</span>
+        <span class="cart-subtotal__amount">${formatMoney(cart.total_price)}</span>
+      </div>
+      ${cart.total_price < 10000 ? `<p class="cart-note-text" style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.75rem;">
+        Add <strong>${formatMoney(10000 - cart.total_price)}</strong> more for free shipping
+      </p>` : `<p class="cart-note-text" style="font-size:0.75rem;color:#16a34a;margin-bottom:0.75rem;">✓ You qualify for free shipping!</p>`}
+      <a href="/checkout" class="cart-checkout-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Checkout — ${formatMoney(cart.total_price)}
+      </a>
+      <a class="cart-view-all" href="/cart">View full bag</a>
+      <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:0.75rem;opacity:0.4">
+        <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="8" fill="#333">VISA</text></svg>
+        <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="7" fill="#333">MC</text></svg>
+        <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="7" fill="#333">AMEX</text></svg>
+        <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="7" fill="#333">PAYPAL</text></svg>
+      </div>
+    `;
+
+    // Attach qty/remove events
+    itemsContainer.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.key;
+        const item = cart.items.find(i => i.key === key);
+        if (!item) return;
+        const qty = btn.dataset.action === 'increase' ? item.quantity + 1 : item.quantity - 1;
+        updateItem(key, qty);
+      });
+    });
+
+    itemsContainer.querySelectorAll('.cart-item__remove').forEach(btn => {
+      btn.addEventListener('click', () => updateItem(btn.dataset.key, 0));
+    });
   }
-}
 
-if (!customElements.get('cart-drawer-component')) {
-  customElements.define('cart-drawer-component', CartDrawerComponent);
-}
+  async function updateItem(key, qty) {
+    itemsContainer.style.opacity = '0.5';
+    itemsContainer.style.pointerEvents = 'none';
+    try {
+      const res = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: qty })
+      });
+      cartData = await res.json();
+      renderCart(cartData);
+    } catch (e) {
+      window.showToast?.('Something went wrong', 'error');
+    } finally {
+      itemsContainer.style.opacity = '';
+      itemsContainer.style.pointerEvents = '';
+    }
+  }
+
+  async function addToCart(variantId, qty = 1, properties = {}) {
+    try {
+      const res = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: qty, properties })
+      });
+      if (!res.ok) throw new Error('Failed to add');
+      open();
+      return await res.json();
+    } catch (e) {
+      window.showToast?.('Could not add to bag', 'error');
+      throw e;
+    }
+  }
+
+  window.addToCart = addToCart;
+
+  // Trigger buttons
+  headerCartBtn.forEach(btn => btn.addEventListener('click', open));
+  closeBtn?.addEventListener('click', close);
+  overlay?.addEventListener('click', close);
+
+  return { open, close, fetchCart, addToCart };
+})();
