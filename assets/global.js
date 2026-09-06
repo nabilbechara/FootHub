@@ -190,18 +190,22 @@ document.addEventListener('click', e => {
 
 // Recalculate price for a bundle body element
 function updateBundlePrice(body) {
-  const discount   = Number(body.dataset.discount || 0);
-  const basePrice  = Number(body.dataset.basePrice || 0);
-  const fixedTotal = Number(body.dataset.fixedTotal || 0);
+  const discount       = Number(body.dataset.discount || 0);
+  const priceOverride  = Number(body.dataset.priceOverride || 0);
+  const basePrice      = Number(body.dataset.basePrice || 0);
+  const fixedTotal     = Number(body.dataset.fixedTotal || 0);
 
   const selectedChoice = body.querySelector('.bundle-picker__radio:checked');
   const choicePrice = selectedChoice
     ? Number(selectedChoice.closest('.bundle-picker__option')?.dataset.price || 0)
     : 0;
 
-  const original   = basePrice + fixedTotal + choicePrice;
-  const saving     = Math.round(original * discount / 100);
-  const bundlePrice = original - saving;
+  const original = basePrice + fixedTotal + choicePrice;
+
+  // Price override takes priority over discount %
+  const bundlePrice = priceOverride > 0
+    ? priceOverride
+    : original - Math.round(original * discount / 100);
 
   const fmt = p => window.formatMoney ? window.formatMoney(p) : `£${(p / 100).toFixed(2)}`;
 
@@ -209,6 +213,18 @@ function updateBundlePrice(body) {
   const nowEl = body.querySelector('[data-bundle-price]');
   if (wasEl) wasEl.textContent = fmt(original);
   if (nowEl) nowEl.textContent = fmt(bundlePrice);
+
+  // Recalculate the savings badge %
+  const badgeEl = body.closest('.bundle-tier-option')?.querySelector('.bundle-tier-option__badge');
+  if (badgeEl && original > 0) {
+    const pct = Math.round((original - bundlePrice) * 100 / original);
+    if (pct > 0) {
+      badgeEl.textContent = `Save ${pct}%`;
+      badgeEl.style.display = '';
+    } else {
+      badgeEl.style.display = 'none';
+    }
+  }
 }
 
 // Init prices on page load

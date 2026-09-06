@@ -66,8 +66,9 @@
 
         {%- for block in section.blocks -%}
           {%- liquid
-            assign discount      = block.settings.discount | default: 10
-            assign discount_code = block.settings.discount_code
+            assign discount               = block.settings.discount | default: 0
+            assign discount_code          = block.settings.discount_code
+            assign bundle_price_override  = block.settings.bundle_price_override | default: 0
             assign fi1 = all_products[block.settings.fixed_item_1]
             assign fi2 = all_products[block.settings.fixed_item_2]
             assign fi3 = all_products[block.settings.fixed_item_3]
@@ -97,9 +98,17 @@
               assign first_choice_price = choice_col.products.first.price
             endif
 
-            assign base_total      = product.price | plus: fixed_total | plus: first_choice_price
-            assign discounted_amt  = base_total | times: discount | divided_by: 100
-            assign bundle_price_lq = base_total | minus: discounted_amt
+            assign base_total = product.price | plus: fixed_total | plus: first_choice_price
+
+            if bundle_price_override > 0
+              assign bundle_price_lq  = bundle_price_override | times: 100
+              assign savings_amount   = base_total | minus: bundle_price_lq
+              assign display_pct      = savings_amount | times: 100 | divided_by: base_total
+            else
+              assign discounted_amt   = base_total | times: discount | divided_by: 100
+              assign bundle_price_lq  = base_total | minus: discounted_amt
+              assign display_pct      = discount
+            endif
           -%}
 
           {%- if fi1 != blank or choice_col != blank -%}
@@ -119,6 +128,7 @@
               class="bundle-tier-option__body"
               data-bundle-block="{{ block.id }}"
               data-discount="{{ discount }}"
+              data-price-override="{{ bundle_price_override | times: 100 }}"
               data-discount-code="{{ discount_code | escape }}"
               data-base-price="{{ product.price }}"
               data-fixed-total="{{ fixed_total }}"
@@ -129,7 +139,7 @@
                 </span>
                 <div class="bundle-tier-option__info">
                   <span class="bundle-tier-option__name">{{ block.settings.label | default: 'Bundle Deal' }}</span>
-                  <span class="bundle-tier-option__badge">Save {{ discount }}%</span>
+                  <span class="bundle-tier-option__badge">Save {{ display_pct }}%</span>
                 </div>
                 <div class="bundle-tier-option__prices">
                   <span class="bundle-tier-option__was" data-bundle-original>{{ base_total | money }}</span>
@@ -341,13 +351,21 @@
           "default": "Boot + Jersey Bundle"
         },
         {
-          "type": "range",
+          "type": "header",
+          "content": "Pricing — use one of the two options below"
+        },
+        {
+          "type": "number",
           "id": "discount",
-          "label": "Discount %",
-          "min": 5,
-          "max": 40,
-          "step": 5,
+          "label": "Discount % (any value, e.g. 11 or 12)",
+          "info": "Enter any whole number. Leave at 0 if using 'Set exact bundle price' instead.",
           "default": 10
+        },
+        {
+          "type": "number",
+          "id": "bundle_price_override",
+          "label": "Set exact bundle price (£)",
+          "info": "Enter the final price in pounds, e.g. 95. When set, overrides the discount % above and the % badge is calculated automatically. Leave at 0 to use discount % instead."
         },
         {
           "type": "text",
