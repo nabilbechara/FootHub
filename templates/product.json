@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -5,22 +14,43 @@
       "blocks": {
         "trust_1": {
           "type": "trust_badge",
-          "settings": { "heading": "Free Shipping", "text": "On orders over £100", "icon": "shipping" }
+          "settings": {
+            "heading": "Free Shipping",
+            "text": "On orders over £100",
+            "icon": "shipping"
+          }
         },
         "trust_2": {
           "type": "trust_badge",
-          "settings": { "heading": "Free Returns", "text": "30-day hassle-free", "icon": "returns" }
+          "settings": {
+            "heading": "Free Returns",
+            "text": "30-day hassle-free",
+            "icon": "returns"
+          }
         },
         "trust_3": {
           "type": "trust_badge",
-          "settings": { "heading": "Secure Payment", "text": "Encrypted checkout", "icon": "secure" }
+          "settings": {
+            "heading": "Secure Payment",
+            "text": "Encrypted checkout",
+            "icon": "secure"
+          }
         },
         "trust_4": {
           "type": "trust_badge",
-          "settings": { "heading": "100% Authentic", "text": "Official licensed products", "icon": "authentic" }
+          "settings": {
+            "heading": "100% Authentic",
+            "text": "Official licensed products",
+            "icon": "authentic"
+          }
         }
       },
-      "block_order": ["trust_1", "trust_2", "trust_3", "trust_4"],
+      "block_order": [
+        "trust_1",
+        "trust_2",
+        "trust_3",
+        "trust_4"
+      ],
       "settings": {
         "show_rating": true,
         "show_quantity": false,
@@ -31,8 +61,29 @@
     },
     "bundle": {
       "type": "shoe-bundle",
+      "blocks": {
+        "bundle_LXdiW3": {
+          "type": "bundle",
+          "settings": {
+            "label": "Boot + Accessories",
+            "discount": 10,
+            "discount_code": "",
+            "fixed_item_1": "standard-grip-socks",
+            "fixed_item_2": "standard-cut-socks",
+            "fixed_item_3": "standard-shin-pads",
+            "choice_collection": "",
+            "choice_label": "Choose your jersey"
+          }
+        }
+      },
+      "block_order": [
+        "bundle_LXdiW3"
+      ],
       "settings": {
         "enabled": true,
+        "collection_1": "all-shoes",
+        "collection_2": "",
+        "collection_3": "",
         "show_on_all": false,
         "eyebrow": "Bundle & Save",
         "heading": "Complete Your Kit",
@@ -43,10 +94,14 @@
       "type": "product-recommendations",
       "settings": {
         "heading": "You May Also Like",
-        "products_per_row": "4",
-        "limit": 4
+        "limit": 4,
+        "products_per_row": "4"
       }
     }
   },
-  "order": ["main", "bundle", "recommendations"]
+  "order": [
+    "main",
+    "bundle",
+    "recommendations"
+  ]
 }
