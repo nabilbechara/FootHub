@@ -1,19 +1,70 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "announcement": {
       "type": "marquee",
       "blocks": {
-        "item_1": { "type": "item", "settings": { "text": "Free shipping on orders over £100", "icon": "✦" } },
-        "item_2": { "type": "item", "settings": { "text": "Official licensed gear", "icon": "✦" } },
-        "item_3": { "type": "item", "settings": { "text": "30-day free returns", "icon": "✦" } },
-        "item_4": { "type": "item", "settings": { "text": "New drops every week", "icon": "✦" } },
-        "item_5": { "type": "item", "settings": { "text": "Express delivery available", "icon": "✦" } }
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Free shipping on orders over £100",
+            "icon": "✦"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "Official licensed gear",
+            "icon": "✦"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "30-day free returns",
+            "icon": "✦"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "New drops every week",
+            "icon": "✦"
+          }
+        },
+        "item_5": {
+          "type": "item",
+          "settings": {
+            "text": "Express delivery available",
+            "icon": "✦"
+          }
+        }
       },
-      "block_order": ["item_1", "item_2", "item_3", "item_4", "item_5"]
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5"
+      ],
+      "settings": {
+        "bg_color": "",
+        "text_color": ""
+      }
     },
     "hero": {
       "type": "hero",
       "settings": {
+        "video_url": "",
+        "preload_video": "metadata",
         "eyebrow": "New Season",
         "heading": "Play Without\nLimits",
         "subheading": "Premium football gear engineered for the elite. Find your edge.",
@@ -24,6 +75,7 @@
         "button_2_link": "shopify://collections/new-arrivals",
         "button_2_style": "outline-white",
         "height": "full",
+        "content_alignment": "",
         "overlay_opacity": 40,
         "show_scroll_indicator": true
       }
@@ -31,34 +83,70 @@
     "collection_grid": {
       "type": "collection-list",
       "blocks": {
-        "col_1": { "type": "collection", "settings": { "cta_text": "Shop Boots" } },
-        "col_2": { "type": "collection", "settings": { "cta_text": "Shop Jerseys" } },
-        "col_3": { "type": "collection", "settings": { "cta_text": "Shop Training" } }
+        "col_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "all-shoes",
+            "image": "shopify://shop_images/baa7f426225f.jpg",
+            "label": "",
+            "cta_text": "Shop Boots"
+          }
+        },
+        "col_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-jerseys",
+            "image": "shopify://shop_images/FRh7AqJX0AEVMnJ.jpg",
+            "label": "",
+            "cta_text": "Shop Jerseys"
+          }
+        },
+        "col_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-wquipment",
+            "image": "shopify://shop_images/SNKRBAG.jpg",
+            "label": "",
+            "cta_text": "Shop Training"
+          }
+        }
       },
-      "block_order": ["col_1", "col_2", "col_3"],
+      "block_order": [
+        "col_1",
+        "col_2",
+        "col_3"
+      ],
       "settings": {
+        "collection_list": [],
         "eyebrow": "Browse",
         "heading": "Shop by Category",
-        "columns": "3",
         "centered_header": true,
-        "aspect_ratio": "3/4"
+        "columns": "3",
+        "aspect_ratio": "3/4",
+        "bg_dark": false
       }
     },
     "best_sellers": {
       "type": "featured-collection",
       "settings": {
+        "collection": "all-shoes",
         "eyebrow": "This Season",
         "heading": "Best Sellers",
+        "subheading": "",
+        "centered_header": false,
+        "show_view_all": true,
         "limit": 4,
         "products_per_row": "4",
-        "show_view_all": true
+        "bg": ""
       }
     },
     "brand_story": {
       "type": "media-with-content",
       "settings": {
+        "image": "shopify://shop_images/83712ea6448c.webp",
+        "video_url": "",
         "eyebrow": "Our Story",
-        "heading": "Built For The\nBeautiful Game",
+        "heading": "Built For TheBeautiful Game",
         "text": "<p>We exist for one reason: to give every footballer access to the gear worn by the best in the world. Authentic. Premium. Delivered fast.</p><p>From Champions League kits to World Cup boots — FootHub has it all.</p>",
         "button_label": "Our Story",
         "button_link": "/pages/about",
@@ -70,12 +158,15 @@
     "new_arrivals": {
       "type": "featured-collection",
       "settings": {
+        "collection": "football-jerseys",
         "eyebrow": "Fresh In",
         "heading": "New Arrivals",
+        "subheading": "",
+        "centered_header": false,
+        "show_view_all": true,
         "limit": 4,
         "products_per_row": "4",
-        "show_view_all": true,
-        "centered_header": false
+        "bg": ""
       }
     },
     "reviews": {
@@ -84,37 +175,42 @@
         "review_1": {
           "type": "review",
           "settings": {
+            "rating": 5,
+            "product_name": "Home Jersey 24/25",
+            "review_text": "Absolutely class gear. Arrived fast and the quality is unreal. My son loves his new kit.",
             "name": "Marcus T.",
             "location": "London, UK",
-            "review_text": "Absolutely class gear. Arrived fast and the quality is unreal. My son loves his new kit.",
-            "product_name": "Home Jersey 24/25",
-            "rating": 5,
             "verified": true
           }
         },
         "review_2": {
           "type": "review",
           "settings": {
+            "rating": 5,
+            "product_name": "Football Boots",
+            "review_text": "Third time ordering and the boots are quality as always. Delivery was next day. Will keep coming back.",
             "name": "Sofia R.",
             "location": "Manchester",
-            "review_text": "Third time ordering and the boots are quality as always. Delivery was next day. Will keep coming back.",
-            "product_name": "Football Boots",
-            "rating": 5,
             "verified": true
           }
         },
         "review_3": {
           "type": "review",
           "settings": {
+            "rating": 5,
+            "product_name": "",
+            "review_text": "Best online football store I've found. Huge selection, competitive prices, and fast shipping.",
             "name": "James K.",
             "location": "Birmingham",
-            "review_text": "Best online football store I've found. Huge selection, competitive prices, and fast shipping.",
-            "rating": 5,
             "verified": true
           }
         }
       },
-      "block_order": ["review_1", "review_2", "review_3"],
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
       "settings": {
         "eyebrow": "Trusted by thousands",
         "heading": "Real Reviews. Real Fans.",
@@ -131,7 +227,13 @@
         "heading": "Stay Ahead of the Game",
         "subheading": "Exclusive drops, early access, and match-day deals straight to your inbox.",
         "placeholder": "Enter your email",
-        "button_label": "Subscribe"
+        "button_label": "Subscribe",
+        "privacy_text": "",
+        "show_cta_buttons": false,
+        "btn1_label": "",
+        "btn1_link": "",
+        "btn2_label": "",
+        "btn2_link": ""
       }
     }
   },
