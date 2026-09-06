@@ -1,18 +1,28 @@
 {%- liquid
   assign bundle_enabled = section.settings.enabled
-  assign is_shoe = false
-  for tag in product.tags
-    assign tag_down = tag | downcase
-    if tag_down == 'boots' or tag_down == 'shoes' or tag_down == 'cleats' or tag_down == 'football boots'
-      assign is_shoe = true
-    endif
-  endfor
+  assign show_bundle = false
+
   if section.settings.show_on_all
-    assign is_shoe = true
+    assign show_bundle = true
+  else
+    assign col1 = section.settings.collection_1
+    assign col2 = section.settings.collection_2
+    assign col3 = section.settings.collection_3
+    for col in product.collections
+      if col1 != blank and col.handle == col1.handle
+        assign show_bundle = true
+      endif
+      if col2 != blank and col.handle == col2.handle
+        assign show_bundle = true
+      endif
+      if col3 != blank and col.handle == col3.handle
+        assign show_bundle = true
+      endif
+    endfor
   endif
 -%}
 
-{%- if bundle_enabled and is_shoe and section.blocks.size > 0 -%}
+{%- if bundle_enabled and show_bundle and section.blocks.size > 0 -%}
 <div class="section bundle-section" id="section-{{ section.id }}">
   <div class="container">
     <div class="bundle-header fade-up">
@@ -109,9 +119,28 @@
       "default": true
     },
     {
+      "type": "header",
+      "content": "Show bundle for products in these collections"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection 1 (e.g. Football Boots)"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection 2 (optional)"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection 3 (optional)"
+    },
+    {
       "type": "checkbox",
       "id": "show_on_all",
-      "label": "Show on all products (not just tagged 'boots')",
+      "label": "Show on ALL products regardless of collection",
       "default": false
     },
     {
