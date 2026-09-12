@@ -230,12 +230,13 @@ const CartDrawer = (() => {
     itemsContainer.style.opacity = '0.5';
     itemsContainer.style.pointerEvents = 'none';
     try {
-      const res = await fetch('/cart/change.js', {
+      await fetch('/cart/change.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: key, quantity: qty })
       });
-      cartData = await res.json();
+      const freshRes = await fetch('/cart.js');
+      cartData = await freshRes.json();
       await checkBundleIntegrity(cartData);
       renderCart(cartData);
     } catch (e) {
