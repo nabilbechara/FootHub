@@ -82,8 +82,9 @@
           "type": "bundle",
           "settings": {
             "label": "Boot + Jersey Bundle",
-            "discount": 10,
-            "discount_code": "Jersey88",
+            "discount": 0,
+            "discount_fixed_amount": 10,
+            "discount_code": "",
             "fixed_item_1": "",
             "fixed_item_2": "",
             "fixed_item_3": "",

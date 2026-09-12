@@ -69,6 +69,7 @@
             assign discount               = block.settings.discount | default: 0
             assign discount_code          = block.settings.discount_code
             assign bundle_price_override  = block.settings.bundle_price_override | default: 0
+            assign discount_fixed_amount  = block.settings.discount_fixed_amount | default: 0
             assign fi1 = all_products[block.settings.fixed_item_1]
             assign fi2 = all_products[block.settings.fixed_item_2]
             assign fi3 = all_products[block.settings.fixed_item_3]
@@ -104,6 +105,14 @@
               assign bundle_price_lq  = bundle_price_override | times: 100
               assign savings_amount   = base_total | minus: bundle_price_lq
               assign display_pct      = savings_amount | times: 100 | divided_by: base_total
+            elsif discount_fixed_amount > 0
+              assign discounted_amt   = discount_fixed_amount | times: 100
+              assign bundle_price_lq  = base_total | minus: discounted_amt
+              assign display_pct      = discounted_amt | times: 100 | divided_by: base_total
+            elsif discount_code != blank
+              assign discounted_amt   = first_choice_price | times: discount | divided_by: 100
+              assign bundle_price_lq  = base_total | minus: discounted_amt
+              assign display_pct      = discounted_amt | times: 100 | divided_by: base_total
             else
               assign discounted_amt   = base_total | times: discount | divided_by: 100
               assign bundle_price_lq  = base_total | minus: discounted_amt
@@ -130,6 +139,7 @@
               data-discount="{{ discount }}"
               data-price-override="{{ bundle_price_override | times: 100 }}"
               data-discount-code="{{ discount_code | escape }}"
+              data-discount-fixed-amount="{{ discount_fixed_amount | times: 100 }}"
               data-base-price="{{ product.price }}"
               data-fixed-total="{{ fixed_total }}"
               data-first-choice-price="{{ first_choice_price }}"
@@ -391,6 +401,12 @@
           "id": "bundle_price_override",
           "label": "Set exact bundle price (£)",
           "info": "Enter the final price in pounds, e.g. 95. When set, overrides the discount % above and the % badge is calculated automatically. Leave at 0 to use discount % instead."
+        },
+        {
+          "type": "number",
+          "id": "discount_fixed_amount",
+          "label": "Fixed discount amount ($) — for automatic discounts",
+          "info": "Use when Shopify has an automatic discount (e.g. $10 off jerseys). Enter the fixed dollar amount so the bundle price preview is accurate. Leave at 0 if using discount % or exact price instead."
         },
         {
           "type": "text",

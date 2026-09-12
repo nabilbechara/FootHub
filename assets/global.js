@@ -207,10 +207,16 @@ function updateBundlePrice(body) {
       ? Number(selectedRadio.closest('.bundle-picker__option')?.dataset.price || 0)
       : firstChoicePrice;
 
+  const discountCode        = body.dataset.discountCode?.trim();
+  const discountFixedAmount = Number(body.dataset.discountFixedAmount || 0);
   const original    = basePrice + fixedTotal + choicePrice;
   const bundlePrice = priceOverride > 0
     ? priceOverride
-    : original - Math.round(original * discount / 100);
+    : discountFixedAmount > 0
+      ? original - discountFixedAmount
+      : discountCode
+        ? original - Math.round(choicePrice * discount / 100)
+        : original - Math.round(original * discount / 100);
 
   const fmt = p => window.formatMoney ? window.formatMoney(p) : `£${(p / 100).toFixed(2)}`;
   const wasEl = body.querySelector('[data-bundle-original]');
@@ -353,7 +359,8 @@ document.addEventListener('click', e => {
   const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
   if (!body) return;
 
-  const discountCode = body.dataset.discountCode?.trim();
+  const discountCode        = body.dataset.discountCode?.trim();
+  const discountFixedAmount = Number(body.dataset.discountFixedAmount || 0);
 
   const priceOverride = Number(body.dataset.priceOverride || 0);
   const basePrice = Number(body.dataset.basePrice || 0);
@@ -365,11 +372,16 @@ document.addEventListener('click', e => {
   const baseTotalCents = basePrice + fixedTotal + choicePrice;
   const bundlePriceCents = priceOverride > 0
     ? priceOverride
-    : baseTotalCents - Math.round(baseTotalCents * discount / 100);
+    : discountFixedAmount > 0
+      ? baseTotalCents - discountFixedAmount
+      : discountCode
+        ? baseTotalCents - Math.round(choicePrice * discount / 100)
+        : baseTotalCents - Math.round(baseTotalCents * discount / 100);
   const savingCents = Math.max(0, baseTotalCents - bundlePriceCents);
 
   const mainProps = {};
   if (savingCents > 0) mainProps['_bundle_saving'] = savingCents;
+  if (bundlePriceCents > 0) mainProps['_bundle_price'] = bundlePriceCents;
   if (discountCode) mainProps['_bundle_code'] = discountCode;
   // Build child items first so we can store their IDs on the main boot
   const childItems = [];
@@ -397,20 +409,16 @@ document.addEventListener('click', e => {
   }).then(() => {
     return fetch('/cart.js').then(r => r.json()).catch(() => ({ attributes: {} }));
   }).then(currentCart => {
-    const variantIds = items.map(i => i.id).join(',');
-    const existingIds = currentCart.attributes?._bundle_item_ids || '';
-    const mergedIds = [existingIds, variantIds].filter(Boolean).join(',');
     const existingCodes = currentCart.attributes?._bundle_discounts || '';
     const codeSet = new Set([...existingCodes.split(','), ...(discountCode ? [discountCode] : [])].filter(Boolean));
+    const existingSaving = Number(currentCart.attributes?._bundle_saving || 0);
     return fetch('/cart/update.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         attributes: {
-          _bundle_item_ids: mergedIds,
           _bundle_discounts: [...codeSet].join(','),
-          _bundle_saving: String(savingCents),
-          _bundle_price: String(bundlePriceCents)
+          _bundle_saving: String(existingSaving + savingCents)
         }
       })
     }).catch(() => {});

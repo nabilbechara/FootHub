@@ -82,16 +82,13 @@ const CartDrawer = (() => {
       return;
     }
 
-    const hasShopifyDiscount = (cart.cart_level_discount_applications?.length > 0) ||
-      cart.items.some(item => item.line_level_discount_allocations?.length > 0);
-
     // Build variant→quantity map for per-bundle integrity validation
     const variantQtyMap = {};
     cart.items.forEach(item => {
       variantQtyMap[item.variant_id] = (variantQtyMap[item.variant_id] || 0) + item.quantity;
     });
 
-    // Only count a boot's saving if all its bundle children are still in the cart
+    // Check each bundle's integrity independently via its own _bundle_children list
     const validatedItems = cart.items.map(item => {
       const saving = Number(item.properties?._bundle_saving || 0);
       if (!saving) return { ...item, _bundleValid: false };
@@ -101,18 +98,15 @@ const CartDrawer = (() => {
       return { ...item, _bundleValid: valid };
     });
 
-    const bundleSaving = !hasShopifyDiscount
-      ? validatedItems.reduce((sum, item) => {
-          if (!item._bundleValid) return sum;
-          return sum + Number(item.properties?._bundle_saving || 0) * item.quantity;
-        }, 0)
-      : 0;
-
+    // cart.total_discount is the source of truth — Shopify has already applied all
+    // discounts (both automatic like Jersey88 and code-based like BOOTS88) to
+    // cart.total_price. We display it directly; never subtract from total_price again.
+    const cartDiscount = cart.total_discount || 0;
+    const hasAnyValidBundle = validatedItems.some(item => item._bundleValid);
     const hasBrokenBundle = validatedItems.some(item =>
       Number(item.properties?._bundle_saving || 0) > 0 && !item._bundleValid
     );
-
-    const displayTotal = bundleSaving > 0 ? Math.max(0, cart.total_price - bundleSaving) : cart.total_price;
+    const displayTotal = cart.total_price;
     const lineItemCodes = cart.items.map(item => item.properties?._bundle_code?.trim()).filter(Boolean);
     const attrCodes = (cart.attributes?._bundle_discounts || '').split(',').filter(Boolean);
     const allBundleCodes = [...new Set([...lineItemCodes, ...attrCodes])];
@@ -155,10 +149,10 @@ const CartDrawer = (() => {
         <span class="cart-subtotal__label">Subtotal</span>
         <span class="cart-subtotal__amount">${formatMoney(cart.total_price)}</span>
       </div>
-      ${bundleSaving > 0 ? `
+      ${cartDiscount > 0 && hasAnyValidBundle ? `
       <div class="cart-subtotal">
         <span class="cart-subtotal__label" style="color:#16a34a">Bundle Saving</span>
-        <span class="cart-subtotal__amount" style="color:#16a34a">-${formatMoney(bundleSaving)}</span>
+        <span class="cart-subtotal__amount" style="color:#16a34a">-${formatMoney(cartDiscount)}</span>
       </div>
       <div class="cart-subtotal" style="font-weight:700;border-top:1px solid var(--color-border);padding-top:0.5rem;margin-top:0.25rem">
         <span class="cart-subtotal__label">Total</span>
@@ -166,7 +160,7 @@ const CartDrawer = (() => {
       </div>` : ''}
       ${hasBrokenBundle ? `<p class="cart-note-text" style="font-size:0.72rem;color:#cc0001;margin-bottom:0.5rem;">
         ⚠ A bundle item was removed — bundle price no longer applies.
-      </p>` : hasAnyBundleCode ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
+      </p>` : hasAnyValidBundle && cartDiscount > 0 ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
         ✓ Bundle saving applied at checkout
       </p>` : ''}
       ${displayTotal < 10000 ? `<p class="cart-note-text" style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.75rem;">
@@ -202,28 +196,34 @@ const CartDrawer = (() => {
   }
 
   async function checkBundleIntegrity(cart) {
-    const savedIds = cart.attributes?._bundle_item_ids;
-    if (!savedIds) return;
+    const variantQtyMap = {};
+    cart.items.forEach(item => {
+      variantQtyMap[item.variant_id] = (variantQtyMap[item.variant_id] || 0) + item.quantity;
+    });
 
-    const bundleIds = savedIds.split(',').map(Number).filter(Boolean);
-    const cartVariantIds = cart.items.map(i => i.variant_id);
-    const allPresent = bundleIds.every(id => cartVariantIds.includes(id));
-    if (allPresent) return;
+    // Check each boot independently using its own _bundle_children list
+    const brokenBoots = cart.items.filter(item => {
+      if (!item.properties?._bundle_saving || !item.properties?._bundle_children) return false;
+      const childIds = item.properties._bundle_children.split(',').map(Number).filter(Boolean);
+      return childIds.length > 0 && !childIds.every(id => variantQtyMap[id] >= 1);
+    });
 
-    // Bundle is broken — clear attributes and void discount
-    const discountCode = cart.attributes?._bundle_discount;
-    window.showToast?.('Bundle discount removed — not all bundle items are in your bag', 'error');
+    if (!brokenBoots.length) return;
 
-    await fetch('/cart/update.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ attributes: { _bundle_item_ids: '', _bundle_discounts: '', _bundle_saving: '', _bundle_price: '' } })
-    }).catch(() => {});
+    window.showToast?.('A bundle item was removed — bundle price no longer applies', 'error');
 
-    // Clear the discount from the cart session by applying an empty one
-    if (discountCode) {
-      await fetch('/discount/', { credentials: 'include' }).catch(() => {});
-    }
+    // Clear bundle properties only on the affected boot(s), leaving other bundles intact
+    await Promise.all(brokenBoots.map(boot =>
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: boot.key,
+          quantity: boot.quantity,
+          properties: { ...boot.properties, _bundle_saving: '', _bundle_code: '', _bundle_children: '' }
+        })
+      }).catch(() => {})
+    ));
   }
 
   async function updateItem(key, qty) {
