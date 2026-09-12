@@ -371,18 +371,19 @@ document.addEventListener('click', e => {
   const mainProps = {};
   if (savingCents > 0) mainProps['_bundle_saving'] = savingCents;
   if (discountCode) mainProps['_bundle_code'] = discountCode;
-  const items = [{ id: mainVariantId, quantity: 1, properties: mainProps }];
-
+  // Build child items first so we can store their IDs on the main boot
+  const childItems = [];
   body.querySelectorAll('.bundle-fixed-variant').forEach(input => {
     const id = Number(input.value);
-    if (id) items.push({ id, quantity: 1 });
+    if (id) childItems.push({ id, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } });
   });
-
-  // New jersey picker
   const choiceInput = body.querySelector('.bundle-choice-variant');
   if (choiceInput?.value) {
-    items.push({ id: Number(choiceInput.value), quantity: 1 });
+    childItems.push({ id: Number(choiceInput.value), quantity: 1, properties: { _bundle_parent: String(mainVariantId) } });
   }
+
+  if (childItems.length) mainProps['_bundle_children'] = childItems.map(i => i.id).join(',');
+  const items = [{ id: mainVariantId, quantity: 1, properties: mainProps }, ...childItems];
 
   fetch('/cart/add.js', {
     method: 'POST',

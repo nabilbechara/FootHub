@@ -84,9 +84,34 @@ const CartDrawer = (() => {
 
     const hasShopifyDiscount = (cart.cart_level_discount_applications?.length > 0) ||
       cart.items.some(item => item.line_level_discount_allocations?.length > 0);
+
+    // Build variant→quantity map for per-bundle integrity validation
+    const variantQtyMap = {};
+    cart.items.forEach(item => {
+      variantQtyMap[item.variant_id] = (variantQtyMap[item.variant_id] || 0) + item.quantity;
+    });
+
+    // Only count a boot's saving if all its bundle children are still in the cart
+    const validatedItems = cart.items.map(item => {
+      const saving = Number(item.properties?._bundle_saving || 0);
+      if (!saving) return { ...item, _bundleValid: false };
+      const childrenStr = item.properties?._bundle_children || '';
+      const childIds = childrenStr ? childrenStr.split(',').map(Number).filter(Boolean) : [];
+      const valid = childIds.length === 0 || childIds.every(id => variantQtyMap[id] >= 1);
+      return { ...item, _bundleValid: valid };
+    });
+
     const bundleSaving = !hasShopifyDiscount
-      ? cart.items.reduce((sum, item) => sum + Number(item.properties?._bundle_saving || 0) * item.quantity, 0)
+      ? validatedItems.reduce((sum, item) => {
+          if (!item._bundleValid) return sum;
+          return sum + Number(item.properties?._bundle_saving || 0) * item.quantity;
+        }, 0)
       : 0;
+
+    const hasBrokenBundle = validatedItems.some(item =>
+      Number(item.properties?._bundle_saving || 0) > 0 && !item._bundleValid
+    );
+
     const displayTotal = bundleSaving > 0 ? Math.max(0, cart.total_price - bundleSaving) : cart.total_price;
     const lineItemCodes = cart.items.map(item => item.properties?._bundle_code?.trim()).filter(Boolean);
     const attrCodes = (cart.attributes?._bundle_discounts || '').split(',').filter(Boolean);
@@ -139,7 +164,9 @@ const CartDrawer = (() => {
         <span class="cart-subtotal__label">Total</span>
         <span class="cart-subtotal__amount">${formatMoney(displayTotal)}</span>
       </div>` : ''}
-      ${hasAnyBundleCode ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
+      ${hasBrokenBundle ? `<p class="cart-note-text" style="font-size:0.72rem;color:#cc0001;margin-bottom:0.5rem;">
+        ⚠ A bundle item was removed — bundle price no longer applies.
+      </p>` : hasAnyBundleCode ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
         ✓ Bundle saving applied at checkout
       </p>` : ''}
       ${displayTotal < 10000 ? `<p class="cart-note-text" style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.75rem;">
