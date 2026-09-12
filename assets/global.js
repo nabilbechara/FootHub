@@ -368,7 +368,9 @@ document.addEventListener('click', e => {
     : baseTotalCents - Math.round(baseTotalCents * discount / 100);
   const savingCents = Math.max(0, baseTotalCents - bundlePriceCents);
 
-  const mainProps = savingCents > 0 ? { _bundle_saving: savingCents } : {};
+  const mainProps = {};
+  if (savingCents > 0) mainProps['_bundle_saving'] = savingCents;
+  if (discountCode) mainProps['_bundle_code'] = discountCode;
   const items = [{ id: mainVariantId, quantity: 1, properties: mainProps }];
 
   body.querySelectorAll('.bundle-fixed-variant').forEach(input => {
@@ -387,26 +389,30 @@ document.addEventListener('click', e => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items })
   }).then(r => r.json()).then(() => {
-    // Apply discount code to cart session
     const applyDiscount = discountCode
       ? fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {})
       : Promise.resolve();
-    return applyDiscount.then(() => {
-      // Save bundle item IDs in cart attributes for integrity checking
-      const variantIds = items.map(i => i.id).join(',');
-      return fetch('/cart/update.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          attributes: {
-            _bundle_item_ids: variantIds,
-            _bundle_discount: discountCode || '',
-            _bundle_saving: String(savingCents),
-            _bundle_price: String(bundlePriceCents)
-          }
-        })
-      }).catch(() => {});
-    });
+    return applyDiscount;
+  }).then(() => {
+    return fetch('/cart.js').then(r => r.json()).catch(() => ({ attributes: {} }));
+  }).then(currentCart => {
+    const variantIds = items.map(i => i.id).join(',');
+    const existingIds = currentCart.attributes?._bundle_item_ids || '';
+    const mergedIds = [existingIds, variantIds].filter(Boolean).join(',');
+    const existingCodes = currentCart.attributes?._bundle_discounts || '';
+    const codeSet = new Set([...existingCodes.split(','), ...(discountCode ? [discountCode] : [])].filter(Boolean));
+    return fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        attributes: {
+          _bundle_item_ids: mergedIds,
+          _bundle_discounts: [...codeSet].join(','),
+          _bundle_saving: String(savingCents),
+          _bundle_price: String(bundlePriceCents)
+        }
+      })
+    }).catch(() => {});
   }).then(() => {
     btn.innerHTML = '✓ Bundle Added!';
     window.showToast?.('Bundle added to bag!', 'success');

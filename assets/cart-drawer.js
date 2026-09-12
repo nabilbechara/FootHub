@@ -88,9 +88,13 @@ const CartDrawer = (() => {
       ? cart.items.reduce((sum, item) => sum + Number(item.properties?._bundle_saving || 0) * item.quantity, 0)
       : 0;
     const displayTotal = bundleSaving > 0 ? Math.max(0, cart.total_price - bundleSaving) : cart.total_price;
-    const bundleDiscountCode = cart.attributes?._bundle_discount?.trim() || '';
-    const checkoutUrl = bundleDiscountCode
-      ? `/checkout?discount=${encodeURIComponent(bundleDiscountCode)}`
+    const lineItemCodes = cart.items.map(item => item.properties?._bundle_code?.trim()).filter(Boolean);
+    const attrCodes = (cart.attributes?._bundle_discounts || '').split(',').filter(Boolean);
+    const allBundleCodes = [...new Set([...lineItemCodes, ...attrCodes])];
+    allBundleCodes.forEach(code => fetch(`/discount/${encodeURIComponent(code)}`, { method: 'GET' }).catch(() => {}));
+    const hasAnyBundleCode = allBundleCodes.length > 0;
+    const checkoutUrl = hasAnyBundleCode
+      ? `/checkout?discount=${allBundleCodes.map(encodeURIComponent).join(',')}`
       : '/checkout';
 
     const itemsHtml = cart.items.map(item => `
@@ -135,7 +139,7 @@ const CartDrawer = (() => {
         <span class="cart-subtotal__label">Total</span>
         <span class="cart-subtotal__amount">${formatMoney(displayTotal)}</span>
       </div>` : ''}
-      ${bundleDiscountCode ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
+      ${hasAnyBundleCode ? `<p class="cart-note-text" style="font-size:0.72rem;color:#16a34a;margin-bottom:0.5rem;">
         ✓ Bundle saving applied at checkout
       </p>` : ''}
       ${displayTotal < 10000 ? `<p class="cart-note-text" style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.75rem;">
@@ -145,7 +149,7 @@ const CartDrawer = (() => {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Checkout — ${formatMoney(displayTotal)}
       </a>
-      <a class="cart-view-all" href="${bundleDiscountCode ? `/cart?discount=${encodeURIComponent(bundleDiscountCode)}` : '/cart'}">View full bag</a>
+      <a class="cart-view-all" href="${hasAnyBundleCode ? `/cart?discount=${allBundleCodes.map(encodeURIComponent).join(',')}` : '/cart'}">View full bag</a>
       <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:0.75rem;opacity:0.4">
         <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="8" fill="#333">VISA</text></svg>
         <svg width="32" height="20" viewBox="0 0 38 24" fill="none"><rect width="38" height="24" rx="3" fill="#eee"/><text x="19" y="16" text-anchor="middle" font-size="7" fill="#333">MC</text></svg>
@@ -186,7 +190,7 @@ const CartDrawer = (() => {
     await fetch('/cart/update.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ attributes: { _bundle_item_ids: '', _bundle_discount: '', _bundle_saving: '', _bundle_price: '' } })
+      body: JSON.stringify({ attributes: { _bundle_item_ids: '', _bundle_discounts: '', _bundle_saving: '', _bundle_price: '' } })
     }).catch(() => {});
 
     // Clear the discount from the cart session by applying an empty one
