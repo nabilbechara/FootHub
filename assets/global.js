@@ -354,7 +354,22 @@ document.addEventListener('click', e => {
   if (!body) return;
 
   const discountCode = body.dataset.discountCode?.trim();
-  const items = [{ id: mainVariantId, quantity: 1 }];
+
+  const priceOverride = Number(body.dataset.priceOverride || 0);
+  const basePrice = Number(body.dataset.basePrice || 0);
+  const fixedTotal = Number(body.dataset.fixedTotal || 0);
+  const discount = Number(body.dataset.discount || 0);
+  const firstChoicePrice = Number(body.dataset.firstChoicePrice || 0);
+  const selectedSizeBtn = body.querySelector('.bundle-size-btn.is-selected');
+  const choicePrice = selectedSizeBtn ? Number(selectedSizeBtn.dataset.price || 0) : firstChoicePrice;
+  const baseTotalCents = basePrice + fixedTotal + choicePrice;
+  const bundlePriceCents = priceOverride > 0
+    ? priceOverride
+    : baseTotalCents - Math.round(baseTotalCents * discount / 100);
+  const savingCents = Math.max(0, baseTotalCents - bundlePriceCents);
+
+  const mainProps = savingCents > 0 ? { _bundle_saving: savingCents } : {};
+  const items = [{ id: mainVariantId, quantity: 1, properties: mainProps }];
 
   body.querySelectorAll('.bundle-fixed-variant').forEach(input => {
     const id = Number(input.value);
@@ -385,7 +400,9 @@ document.addEventListener('click', e => {
         body: JSON.stringify({
           attributes: {
             _bundle_item_ids: variantIds,
-            _bundle_discount: discountCode || ''
+            _bundle_discount: discountCode || '',
+            _bundle_saving: String(savingCents),
+            _bundle_price: String(bundlePriceCents)
           }
         })
       }).catch(() => {});

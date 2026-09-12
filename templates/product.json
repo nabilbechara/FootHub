@@ -66,28 +66,44 @@
           "type": "bundle",
           "settings": {
             "label": "Boot + Accessories",
-            "discount": 10,
-            "discount_code": "",
+            "discount": 0,
+            "bundle_price_override": 88,
+            "discount_code": "BOOTS88",
             "fixed_item_1": "standard-grip-socks",
             "fixed_item_2": "standard-cut-socks",
             "fixed_item_3": "standard-shin-pads",
+            "fixed_item_4": "boot-bag",
+            "fixed_item_5": "",
             "choice_collection": "",
+            "choice_label": "Choose your jersey"
+          }
+        },
+        "bundle_Kt3XPp": {
+          "type": "bundle",
+          "settings": {
+            "label": "Boot + Jersey Bundle",
+            "discount": 10,
+            "discount_code": "",
+            "fixed_item_1": "",
+            "fixed_item_2": "",
+            "fixed_item_3": "",
+            "fixed_item_4": "",
+            "fixed_item_5": "",
+            "choice_collection": "football-jerseys",
             "choice_label": "Choose your jersey"
           }
         }
       },
       "block_order": [
-        "bundle_LXdiW3"
+        "bundle_LXdiW3",
+        "bundle_Kt3XPp"
       ],
       "settings": {
         "enabled": true,
         "collection_1": "all-shoes",
         "collection_2": "",
         "collection_3": "",
-        "show_on_all": false,
-        "eyebrow": "Bundle & Save",
-        "heading": "Complete Your Kit",
-        "subheading": "Pair your boots with matching gear and save more."
+        "show_on_all": false
       }
     },
     "recommendations": {
