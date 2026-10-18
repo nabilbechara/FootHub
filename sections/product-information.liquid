@@ -266,15 +266,14 @@
               </button>
             </div>
 
-            {%- if section.settings.show_buy_now -%}
-              <a
-                href="{{ routes.root_url }}cart/{{ current_variant.id }}:1"
-                class="btn btn--outline btn--full"
-                id="buy-now-btn"
-              >
-                Buy It Now
-              </a>
-            {%- endif -%}
+            <button
+              type="button"
+              class="btn btn--outline btn--full"
+              id="buy-now-btn"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              Buy It Now
+            </button>
           </div>
 
           <!-- Availability -->

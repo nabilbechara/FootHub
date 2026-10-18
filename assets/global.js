@@ -393,6 +393,118 @@ document.getElementById('sticky-atc-btn')?.addEventListener('click', () => {
   if (tierBtn) tierBtn.click();
 });
 
+// ── Buy It Now (non-bundle product pages) ──
+document.getElementById('buy-now-btn')?.addEventListener('click', function() {
+  const variantId = Number(document.getElementById('variant-id')?.value);
+  if (!variantId) return;
+  this.disabled = true;
+  this.textContent = '...';
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: variantId, quantity: 1 })
+  }).then(() => {
+    window.location.href = '/checkout';
+  }).catch(() => {
+    this.disabled = false;
+    this.textContent = 'Buy It Now';
+    window.showToast?.('Could not proceed — try again', 'error');
+  });
+});
+
+// ── Buy It Now (bundle picker) ──
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.bundle-tier-buynow-btn');
+  if (!btn) return;
+  const picker = btn.closest('.bundle-tier-picker');
+  if (!picker) return;
+
+  const selectedRadio = picker.querySelector('.bundle-tier-radio:checked');
+  const isSolo = !selectedRadio || selectedRadio.value === 'solo';
+  const mainVariantId = Number(document.getElementById('variant-id')?.value || picker.dataset.mainVariant);
+  if (!mainVariantId) return;
+
+  if (!isSolo) {
+    const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
+    if (body?.dataset.bundleType === 'jersey_bundle') {
+      const jerseyPicker = body.querySelector('.bundle-jersey-picker');
+      if (jerseyPicker) {
+        const choiceVal = jerseyPicker.querySelector('.bundle-choice-variant')?.value;
+        if (!choiceVal) {
+          const hint = jerseyPicker.querySelector('.bundle-jersey-picker__hint');
+          if (hint) hint.textContent = !jerseyPicker.querySelector('.bundle-jersey-card.is-selected')
+            ? 'Please select a jersey first'
+            : 'Please select a size';
+          jerseyPicker.querySelector('.bundle-jersey-picker__grid')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+      }
+    }
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  const addToCart = isSolo
+    ? fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: mainVariantId, quantity: 1 })
+      })
+    : (() => {
+        const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
+        if (!body) return Promise.reject();
+        const bundleType = body.dataset.bundleType;
+
+        if (bundleType === 'shoes_bundle') {
+          const bundleVariantId = Number(body.dataset.bundleProductVariant);
+          if (!bundleVariantId) return Promise.reject(new Error('no-product'));
+          return fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: [
+                { id: mainVariantId, quantity: 1, properties: { _bundle_type: 'shoes_bundle' } },
+                { id: bundleVariantId, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } }
+              ]
+            })
+          });
+        }
+
+        if (bundleType === 'jersey_bundle') {
+          const jerseyPicker = body.querySelector('.bundle-jersey-picker');
+          const choiceVariantId = Number(jerseyPicker?.querySelector('.bundle-choice-variant')?.value);
+          const discountCode = body.dataset.discountCode?.trim();
+          return fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: [
+                { id: mainVariantId, quantity: 1, properties: { _bundle_type: 'jersey_bundle', _bundle_saving: '500' } },
+                { id: choiceVariantId, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } }
+              ]
+            })
+          }).then(r => r.json()).then(() => {
+            if (discountCode) return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {});
+          });
+        }
+
+        return Promise.reject();
+      })();
+
+  addToCart
+    .then(() => { window.location.href = '/checkout'; })
+    .catch(err => {
+      btn.disabled = false;
+      btn.textContent = 'Buy It Now';
+      if (err?.message === 'no-product') {
+        window.showToast?.('Bundle product not configured — check theme settings', 'error');
+      } else {
+        window.showToast?.('Could not proceed — try again', 'error');
+      }
+    });
+});
+
 // ── Mobile gallery: build from product-gallery thumbnails ──
 function initMobileGallery() {
   const gallery = document.querySelector('.mobile-gallery');
