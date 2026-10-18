@@ -65,12 +65,16 @@
         "shoes_bundle_1": {
           "type": "shoes_bundle",
           "settings": {
-            "label": "The Shoes Bundle",
-            "bundle_product": "",
-            "display_title_1": "Shin Pads",
-            "display_title_2": "Training Ball",
-            "display_title_3": "Boot Bag",
-            "display_title_4": "Grip Socks"
+            "label": "Boot + Starter Pack",
+            "bundle_product": "shoes-bundle",
+            "display_image_1": "shopify://shop_images/images_2.jpg",
+            "display_title_1": "Bag",
+            "display_image_2": "shopify://shop_images/Shinpads.webp",
+            "display_title_2": "Shin pads",
+            "display_image_3": "shopify://shop_images/Grip_socks_black.jpg",
+            "display_title_3": "Grip socks",
+            "display_image_4": "shopify://shop_images/Black_Cut_socks.webp",
+            "display_title_4": "Cut socks"
           }
         },
         "jersey_bundle_1": {
@@ -79,7 +83,7 @@
             "label": "Boot + Jersey Bundle",
             "choice_collection": "football-jerseys",
             "choice_label": "Choose your jersey",
-            "discount_code": ""
+            "discount_code": "JERSEY5OFF"
           }
         }
       },
