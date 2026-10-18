@@ -62,42 +62,30 @@
     "bundle": {
       "type": "shoe-bundle",
       "blocks": {
-        "bundle_LXdiW3": {
-          "type": "bundle",
+        "shoes_bundle_1": {
+          "type": "shoes_bundle",
           "settings": {
-            "label": "Boot + Accessories",
-            "discount": 0,
-            "bundle_price_override": 88,
-            "discount_code": "BOOTS88",
-            "fixed_item_1": "standard-grip-socks",
-            "fixed_item_2": "standard-cut-socks",
-            "fixed_item_3": "standard-shin-pads",
-            "fixed_item_4": "boot-bag",
-            "fixed_item_5": "",
-            "choice_collection": "",
-            "choice_label": "Choose your jersey"
+            "label": "The Shoes Bundle",
+            "bundle_product": "",
+            "display_title_1": "Shin Pads",
+            "display_title_2": "Training Ball",
+            "display_title_3": "Boot Bag",
+            "display_title_4": "Grip Socks"
           }
         },
-        "bundle_Kt3XPp": {
-          "type": "bundle",
+        "jersey_bundle_1": {
+          "type": "jersey_bundle",
           "settings": {
             "label": "Boot + Jersey Bundle",
-            "discount": 0,
-            "discount_fixed_amount": 10,
-            "discount_code": "",
-            "fixed_item_1": "",
-            "fixed_item_2": "",
-            "fixed_item_3": "",
-            "fixed_item_4": "",
-            "fixed_item_5": "",
             "choice_collection": "football-jerseys",
-            "choice_label": "Choose your jersey"
+            "choice_label": "Choose your jersey",
+            "discount_code": ""
           }
         }
       },
       "block_order": [
-        "bundle_LXdiW3",
-        "bundle_Kt3XPp"
+        "shoes_bundle_1",
+        "jersey_bundle_1"
       ],
       "settings": {
         "enabled": true,

@@ -65,234 +65,200 @@
         </label>
 
         {%- for block in section.blocks -%}
-          {%- liquid
-            assign discount               = block.settings.discount | default: 0
-            assign discount_code          = block.settings.discount_code
-            assign bundle_price_override  = block.settings.bundle_price_override | default: 0
-            assign discount_fixed_amount  = block.settings.discount_fixed_amount | default: 0
-            assign fi1 = all_products[block.settings.fixed_item_1]
-            assign fi2 = all_products[block.settings.fixed_item_2]
-            assign fi3 = all_products[block.settings.fixed_item_3]
-            assign fi4 = all_products[block.settings.fixed_item_4]
-            assign fi5 = all_products[block.settings.fixed_item_5]
-            assign choice_col = collections[block.settings.choice_collection.handle]
 
-            assign fixed_total = 0
-            if fi1 != blank
-              assign fixed_total = fixed_total | plus: fi1.price
-            endif
-            if fi2 != blank
-              assign fixed_total = fixed_total | plus: fi2.price
-            endif
-            if fi3 != blank
-              assign fixed_total = fixed_total | plus: fi3.price
-            endif
-            if fi4 != blank
-              assign fixed_total = fixed_total | plus: fi4.price
-            endif
-            if fi5 != blank
-              assign fixed_total = fixed_total | plus: fi5.price
-            endif
-
-            assign first_choice_price = 0
-            if choice_col != blank and choice_col.products.size > 0
-              assign first_choice_price = choice_col.products.first.price
-            endif
-
-            assign base_total = product.price | plus: fixed_total | plus: first_choice_price
-
-            if bundle_price_override > 0
-              assign bundle_price_lq  = bundle_price_override | times: 100
-              assign savings_amount   = base_total | minus: bundle_price_lq
-              assign display_pct      = savings_amount | times: 100 | divided_by: base_total
-            elsif discount_fixed_amount > 0
-              assign discounted_amt   = discount_fixed_amount | times: 100
-              assign bundle_price_lq  = base_total | minus: discounted_amt
-              assign display_pct      = discounted_amt | times: 100 | divided_by: base_total
-            elsif discount_code != blank
-              assign discounted_amt   = first_choice_price | times: discount | divided_by: 100
-              assign bundle_price_lq  = base_total | minus: discounted_amt
-              assign display_pct      = discounted_amt | times: 100 | divided_by: base_total
-            else
-              assign discounted_amt   = base_total | times: discount | divided_by: 100
-              assign bundle_price_lq  = base_total | minus: discounted_amt
-              assign display_pct      = discount
-            endif
-          -%}
-
-          {%- if fi1 != blank or choice_col != blank -%}
-          <label
-            class="bundle-tier-option{% if forloop.first %} is-selected{% endif %}"
-            for="tier-bundle-{{ block.id }}"
-          >
-            <input
-              type="radio"
-              id="tier-bundle-{{ block.id }}"
-              name="bundle-tier-{{ section.id }}"
-              value="{{ block.id }}"
-              class="bundle-tier-radio"
-              {% if forloop.first %}checked{% endif %}
-            >
-            <div
-              class="bundle-tier-option__body"
-              data-bundle-block="{{ block.id }}"
-              data-discount="{{ discount }}"
-              data-price-override="{{ bundle_price_override | times: 100 }}"
-              data-discount-code="{{ discount_code | escape }}"
-              data-discount-fixed-amount="{{ discount_fixed_amount | times: 100 }}"
-              data-base-price="{{ product.price }}"
-              data-fixed-total="{{ fixed_total }}"
-              data-first-choice-price="{{ first_choice_price }}"
-            >
-              <div class="bundle-tier-option__row">
-                <span class="bundle-tier-option__check" aria-hidden="true">
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <div class="bundle-tier-option__info">
-                  <span class="bundle-tier-option__name">{{ block.settings.label | default: 'Bundle Deal' }}</span>
-                  <span class="bundle-tier-option__badge">Save {{ display_pct }}%</span>
-                </div>
-                <div class="bundle-tier-option__prices">
-                  <span class="bundle-tier-option__was" data-bundle-original>{{ base_total | money }}</span>
-                  <span class="bundle-tier-option__now" data-bundle-price>{{ bundle_price_lq | money }}</span>
-                </div>
-              </div>
-
-              <!-- Items thumbnail row -->
-              <div class="bundle-tier-option__items">
-                {%- if product.featured_image -%}
-                  <div class="bundle-tier-item" title="{{ product.title | escape }}">
-                    <img src="{{ product.featured_image | image_url: width: 120 }}" alt="{{ product.title | escape }}" width="48" height="48" loading="lazy">
-                  </div>
-                {%- endif -%}
-
-                {%- if fi1 != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item" title="{{ fi1.title | escape }}">
-                    {%- if fi1.featured_image -%}
-                      <img src="{{ fi1.featured_image | image_url: width: 120 }}" alt="{{ fi1.title | escape }}" width="48" height="48" loading="lazy">
-                    {%- endif -%}
-                    <input type="hidden" class="bundle-fixed-variant" value="{{ fi1.selected_or_first_available_variant.id }}">
-                  </div>
-                {%- endif -%}
-
-                {%- if fi2 != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item" title="{{ fi2.title | escape }}">
-                    {%- if fi2.featured_image -%}
-                      <img src="{{ fi2.featured_image | image_url: width: 120 }}" alt="{{ fi2.title | escape }}" width="48" height="48" loading="lazy">
-                    {%- endif -%}
-                    <input type="hidden" class="bundle-fixed-variant" value="{{ fi2.selected_or_first_available_variant.id }}">
-                  </div>
-                {%- endif -%}
-
-                {%- if fi3 != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item" title="{{ fi3.title | escape }}">
-                    {%- if fi3.featured_image -%}
-                      <img src="{{ fi3.featured_image | image_url: width: 120 }}" alt="{{ fi3.title | escape }}" width="48" height="48" loading="lazy">
-                    {%- endif -%}
-                    <input type="hidden" class="bundle-fixed-variant" value="{{ fi3.selected_or_first_available_variant.id }}">
-                  </div>
-                {%- endif -%}
-
-                {%- if fi4 != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item" title="{{ fi4.title | escape }}">
-                    {%- if fi4.featured_image -%}
-                      <img src="{{ fi4.featured_image | image_url: width: 120 }}" alt="{{ fi4.title | escape }}" width="48" height="48" loading="lazy">
-                    {%- endif -%}
-                    <input type="hidden" class="bundle-fixed-variant" value="{{ fi4.selected_or_first_available_variant.id }}">
-                  </div>
-                {%- endif -%}
-
-                {%- if fi5 != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item" title="{{ fi5.title | escape }}">
-                    {%- if fi5.featured_image -%}
-                      <img src="{{ fi5.featured_image | image_url: width: 120 }}" alt="{{ fi5.title | escape }}" width="48" height="48" loading="lazy">
-                    {%- endif -%}
-                    <input type="hidden" class="bundle-fixed-variant" value="{{ fi5.selected_or_first_available_variant.id }}">
-                  </div>
-                {%- endif -%}
-
-                {%- if choice_col != blank -%}
-                  <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
-                  <div class="bundle-tier-item bundle-tier-item--choice" title="{{ block.settings.choice_label | default: 'Your choice' }}">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                    <span>Pick one</span>
-                  </div>
-                {%- endif -%}
-              </div>
-
-              <!-- Jersey / choice picker (visible only when this tier is selected) -->
-              {%- if choice_col != blank and choice_col.products.size > 0 -%}
-                <div class="bundle-tier-option__picker">
-                  <div class="bundle-jersey-picker" data-block="{{ block.id }}">
-
-                    <!-- Step 1: pick jersey -->
-                    <p class="bundle-jersey-picker__step-label">
-                      <span class="bundle-jersey-step-num">1</span>
-                      {{ block.settings.choice_label | default: 'Choose your jersey' }}
-                    </p>
-                    <div class="bundle-jersey-picker__grid" role="listbox" aria-label="{{ block.settings.choice_label | default: 'Choose your jersey' }}">
-                      {%- for choice_product in choice_col.products limit: 8 -%}
-                        <button
-                          class="bundle-jersey-card"
-                          type="button"
-                          data-product-idx="{{ forloop.index0 }}"
-                          data-product-title="{{ choice_product.title | escape }}"
-                          aria-pressed="false"
-                          aria-label="{{ choice_product.title | escape }}"
-                        >
-                          {%- if choice_product.featured_image -%}
-                            <img src="{{ choice_product.featured_image | image_url: width: 200 }}" alt="{{ choice_product.title | escape }}" width="72" height="72" loading="lazy">
-                          {%- else -%}
-                            <div class="bundle-jersey-card__placeholder">?</div>
-                          {%- endif -%}
-                          <span class="bundle-jersey-card__name">{{ choice_product.title | truncate: 22 }}</span>
-                          <span class="bundle-jersey-card__price">{{ choice_product.price_min | money }}</span>
-                        </button>
-                      {%- endfor -%}
+          {%- comment -%}── SHOES BUNDLE: boot + one bundle product, visual thumbnails only ──{%- endcomment -%}
+          {%- if block.type == 'shoes_bundle' -%}
+            {%- liquid
+              assign bp = all_products[block.settings.bundle_product]
+            -%}
+            {%- if bp != blank -%}
+              {%- assign shoes_bundle_total = product.price | plus: bp.price -%}
+              <label
+                class="bundle-tier-option{% if forloop.first %} is-selected{% endif %}"
+                for="tier-bundle-{{ block.id }}"
+              >
+                <input
+                  type="radio"
+                  id="tier-bundle-{{ block.id }}"
+                  name="bundle-tier-{{ section.id }}"
+                  value="{{ block.id }}"
+                  class="bundle-tier-radio"
+                  {% if forloop.first %}checked{% endif %}
+                >
+                <div
+                  class="bundle-tier-option__body"
+                  data-bundle-block="{{ block.id }}"
+                  data-bundle-type="shoes_bundle"
+                  data-bundle-product-variant="{{ bp.selected_or_first_available_variant.id }}"
+                  data-base-price="{{ product.price }}"
+                >
+                  <div class="bundle-tier-option__row">
+                    <span class="bundle-tier-option__check" aria-hidden="true">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <div class="bundle-tier-option__info">
+                      <span class="bundle-tier-option__name">{{ block.settings.label | default: 'The Shoes Bundle' }}</span>
                     </div>
+                    <span class="bundle-tier-option__now">{{ shoes_bundle_total | money }}</span>
+                  </div>
 
-                    <!-- Step 2: size panels (one per jersey, toggled by JS) -->
-                    {%- for choice_product in choice_col.products limit: 8 -%}
-                      <div class="bundle-size-panel" data-for-idx="{{ forloop.index0 }}" hidden>
-                        <p class="bundle-size-panel__label">
-                          <span class="bundle-jersey-step-num">2</span>
-                          Select size —
-                          <strong>{{ choice_product.title | truncate: 28 }}</strong>
+                  <!-- Visual thumbnails — shoe + up to 4 display images (cosmetic only, not added to cart) -->
+                  <div class="bundle-tier-option__items">
+                    {%- if product.featured_image -%}
+                      <div class="bundle-tier-item" title="{{ product.title | escape }}">
+                        <img src="{{ product.featured_image | image_url: width: 120 }}" alt="{{ product.title | escape }}" width="48" height="48" loading="lazy">
+                      </div>
+                    {%- endif -%}
+
+                    {%- for i in (1..4) -%}
+                      {%- liquid
+                        assign img_key = 'display_image_' | append: i
+                        assign title_key = 'display_title_' | append: i
+                        assign disp_img = block.settings[img_key]
+                        assign disp_title = block.settings[title_key]
+                      -%}
+                      {%- if disp_img != blank -%}
+                        <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
+                        <div class="bundle-tier-item" title="{{ disp_title | escape }}">
+                          <img src="{{ disp_img | image_url: width: 120 }}" alt="{{ disp_title | escape }}" width="48" height="48" loading="lazy">
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              </label>
+            {%- endif -%}
+
+          {%- comment -%}── JERSEY BUNDLE: boot + jersey picker, £5 off, once per purchase ──{%- endcomment -%}
+          {%- elsif block.type == 'jersey_bundle' -%}
+            {%- liquid
+              assign choice_col = collections[block.settings.choice_collection.handle]
+              assign first_jersey_price = 0
+              if choice_col != blank and choice_col.products.size > 0
+                assign first_jersey_price = choice_col.products.first.price
+              endif
+              assign jersey_discount_cents = 500
+              assign jersey_original_total = product.price | plus: first_jersey_price
+              assign jersey_bundle_total = jersey_original_total | minus: jersey_discount_cents
+            -%}
+
+            {%- if choice_col != blank -%}
+              <label
+                class="bundle-tier-option{% if forloop.first %} is-selected{% endif %}"
+                for="tier-bundle-{{ block.id }}"
+              >
+                <input
+                  type="radio"
+                  id="tier-bundle-{{ block.id }}"
+                  name="bundle-tier-{{ section.id }}"
+                  value="{{ block.id }}"
+                  class="bundle-tier-radio"
+                  {% if forloop.first %}checked{% endif %}
+                >
+                <div
+                  class="bundle-tier-option__body"
+                  data-bundle-block="{{ block.id }}"
+                  data-bundle-type="jersey_bundle"
+                  data-discount-code="{{ block.settings.discount_code | escape }}"
+                  data-base-price="{{ product.price }}"
+                  data-fixed-total="0"
+                  data-first-choice-price="{{ first_jersey_price }}"
+                  data-discount-fixed-amount="{{ jersey_discount_cents }}"
+                >
+                  <div class="bundle-tier-option__row">
+                    <span class="bundle-tier-option__check" aria-hidden="true">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <div class="bundle-tier-option__info">
+                      <span class="bundle-tier-option__name">{{ block.settings.label | default: 'Boot + Jersey Bundle' }}</span>
+                      <span class="bundle-tier-option__badge">Save £5</span>
+                    </div>
+                    <div class="bundle-tier-option__prices">
+                      <span class="bundle-tier-option__was" data-bundle-original>{{ jersey_original_total | money }}</span>
+                      <span class="bundle-tier-option__now" data-bundle-price>{{ jersey_bundle_total | money }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Thumbnails: shoe + jersey pick placeholder -->
+                  <div class="bundle-tier-option__items">
+                    {%- if product.featured_image -%}
+                      <div class="bundle-tier-item" title="{{ product.title | escape }}">
+                        <img src="{{ product.featured_image | image_url: width: 120 }}" alt="{{ product.title | escape }}" width="48" height="48" loading="lazy">
+                      </div>
+                    {%- endif -%}
+                    <span class="bundle-tier-item__plus" aria-hidden="true">+</span>
+                    <div class="bundle-tier-item bundle-tier-item--choice" title="{{ block.settings.choice_label | default: 'Your jersey' }}">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                      <span>Pick one</span>
+                    </div>
+                  </div>
+
+                  <!-- Jersey picker -->
+                  {%- if choice_col.products.size > 0 -%}
+                    <div class="bundle-tier-option__picker">
+                      <div class="bundle-jersey-picker" data-block="{{ block.id }}">
+
+                        <p class="bundle-jersey-picker__step-label">
+                          <span class="bundle-jersey-step-num">1</span>
+                          {{ block.settings.choice_label | default: 'Choose your jersey' }}
                         </p>
-                        <div class="bundle-size-panel__grid">
-                          {%- for variant in choice_product.variants -%}
+                        <div class="bundle-jersey-picker__grid" role="listbox" aria-label="{{ block.settings.choice_label | default: 'Choose your jersey' }}">
+                          {%- for choice_product in choice_col.products limit: 8 -%}
                             <button
-                              class="bundle-size-btn"
+                              class="bundle-jersey-card"
                               type="button"
-                              data-variant-id="{{ variant.id }}"
-                              data-price="{{ variant.price }}"
-                              {% unless variant.available %}disabled aria-label="{{ variant.title }} — sold out"{% endunless %}
-                            >{{ variant.title }}</button>
+                              data-product-idx="{{ forloop.index0 }}"
+                              data-product-title="{{ choice_product.title | escape }}"
+                              aria-pressed="false"
+                              aria-label="{{ choice_product.title | escape }}"
+                            >
+                              {%- if choice_product.featured_image -%}
+                                <img src="{{ choice_product.featured_image | image_url: width: 200 }}" alt="{{ choice_product.title | escape }}" width="72" height="72" loading="lazy">
+                              {%- else -%}
+                                <div class="bundle-jersey-card__placeholder">?</div>
+                              {%- endif -%}
+                              <span class="bundle-jersey-card__name">{{ choice_product.title | truncate: 22 }}</span>
+                              <span class="bundle-jersey-card__price">{{ choice_product.price_min | money }}</span>
+                            </button>
                           {%- endfor -%}
                         </div>
+
+                        {%- for choice_product in choice_col.products limit: 8 -%}
+                          <div class="bundle-size-panel" data-for-idx="{{ forloop.index0 }}" hidden>
+                            <p class="bundle-size-panel__label">
+                              <span class="bundle-jersey-step-num">2</span>
+                              Select size — <strong>{{ choice_product.title | truncate: 28 }}</strong>
+                            </p>
+                            <div class="bundle-size-panel__grid">
+                              {%- for variant in choice_product.variants -%}
+                                <button
+                                  class="bundle-size-btn"
+                                  type="button"
+                                  data-variant-id="{{ variant.id }}"
+                                  data-price="{{ variant.price }}"
+                                  {% unless variant.available %}disabled aria-label="{{ variant.title }} — sold out"{% endunless %}
+                                >{{ variant.title }}</button>
+                              {%- endfor -%}
+                            </div>
+                          </div>
+                        {%- endfor -%}
+
+                        <input type="hidden" class="bundle-choice-variant" value="">
+                        <p class="bundle-jersey-picker__hint" aria-live="polite" aria-atomic="true"></p>
                       </div>
-                    {%- endfor -%}
+                    </div>
+                  {%- endif -%}
 
-                    <!-- Stores the final chosen variant ID -->
-                    <input type="hidden" class="bundle-choice-variant" value="">
-                    <p class="bundle-jersey-picker__hint" aria-live="polite" aria-atomic="true"></p>
-                  </div>
+                  {%- if block.settings.discount_code != blank -%}
+                    <p class="bundle-pricing__code-note">
+                      Code <strong>{{ block.settings.discount_code }}</strong> auto-applied · valid once per purchase
+                    </p>
+                  {%- endif -%}
+
                 </div>
-              {%- endif -%}
+              </label>
+            {%- endif -%}
 
-              {%- if discount_code != blank -%}
-                <p class="bundle-pricing__code-note">
-                  Code <strong>{{ discount_code }}</strong> auto-applied at checkout
-                </p>
-              {%- endif -%}
-
-            </div>
-          </label>
           {%- endif -%}
         {%- endfor -%}
 
@@ -320,16 +286,8 @@
     var picker = document.querySelector('.bundle-tier-picker');
     var trustBadges = document.querySelector('.trust-badges');
     var bundleSection = document.getElementById('section-{{ section.id }}');
-
-    // Move picker inline — right before trust badges, inside product-info
-    if (picker && trustBadges) {
-      trustBadges.parentNode.insertBefore(picker, trustBadges);
-    }
-
-    // Hide the now-empty bundle section container
+    if (picker && trustBadges) trustBadges.parentNode.insertBefore(picker, trustBadges);
     if (bundleSection) bundleSection.style.display = 'none';
-
-    // Hide the original ATC row (picker has its own button)
     var atcRow = document.querySelector('.product-atc');
     if (atcRow) atcRow.style.display = 'none';
     var buyNow = document.getElementById('buy-now-btn');
@@ -376,93 +334,117 @@
   ],
   "blocks": [
     {
-      "type": "bundle",
-      "name": "Bundle Option",
+      "type": "shoes_bundle",
+      "name": "Shoes Bundle",
       "settings": [
         {
           "type": "text",
           "id": "label",
-          "label": "Bundle name",
+          "label": "Bundle option name",
+          "default": "The Shoes Bundle"
+        },
+        {
+          "type": "paragraph",
+          "content": "Select the single Shopify product that represents the full bundle. Set its price in the product admin — that price is added to the shoe price. Only the boot + this one product are added to cart."
+        },
+        {
+          "type": "product",
+          "id": "bundle_product",
+          "label": "Bundle product (e.g. 'The Shoes Bundle')"
+        },
+        {
+          "type": "header",
+          "content": "Visual thumbnails (display only)"
+        },
+        {
+          "type": "image_picker",
+          "id": "display_image_1",
+          "label": "Item 1 image"
+        },
+        {
+          "type": "text",
+          "id": "display_title_1",
+          "label": "Item 1 title",
+          "default": "Shin Pads"
+        },
+        {
+          "type": "image_picker",
+          "id": "display_image_2",
+          "label": "Item 2 image"
+        },
+        {
+          "type": "text",
+          "id": "display_title_2",
+          "label": "Item 2 title",
+          "default": "Training Ball"
+        },
+        {
+          "type": "image_picker",
+          "id": "display_image_3",
+          "label": "Item 3 image"
+        },
+        {
+          "type": "text",
+          "id": "display_title_3",
+          "label": "Item 3 title",
+          "default": "Boot Bag"
+        },
+        {
+          "type": "image_picker",
+          "id": "display_image_4",
+          "label": "Item 4 image"
+        },
+        {
+          "type": "text",
+          "id": "display_title_4",
+          "label": "Item 4 title",
+          "default": "Grip Socks"
+        }
+      ]
+    },
+    {
+      "type": "jersey_bundle",
+      "name": "Boot + Jersey Bundle",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Bundle option name",
           "default": "Boot + Jersey Bundle"
         },
         {
           "type": "header",
-          "content": "Pricing — use one of the two options below"
-        },
-        {
-          "type": "number",
-          "id": "discount",
-          "label": "Discount % (any value, e.g. 11 or 12)",
-          "info": "Enter any whole number. Leave at 0 if using 'Set exact bundle price' instead.",
-          "default": 10
-        },
-        {
-          "type": "number",
-          "id": "bundle_price_override",
-          "label": "Set exact bundle price (£)",
-          "info": "Enter the final price in pounds, e.g. 95. When set, overrides the discount % above and the % badge is calculated automatically. Leave at 0 to use discount % instead."
-        },
-        {
-          "type": "number",
-          "id": "discount_fixed_amount",
-          "label": "Fixed discount amount ($) — for automatic discounts",
-          "info": "Use when Shopify has an automatic discount (e.g. $10 off jerseys). Enter the fixed dollar amount so the bundle price preview is accurate. Leave at 0 if using discount % or exact price instead."
-        },
-        {
-          "type": "text",
-          "id": "discount_code",
-          "label": "Discount code (auto-applied to cart session)",
-          "info": "Create this code in Shopify Admin → Discounts first"
-        },
-        {
-          "type": "header",
-          "content": "Fixed items always added"
-        },
-        {
-          "type": "product",
-          "id": "fixed_item_1",
-          "label": "Fixed item 1"
-        },
-        {
-          "type": "product",
-          "id": "fixed_item_2",
-          "label": "Fixed item 2 (optional)"
-        },
-        {
-          "type": "product",
-          "id": "fixed_item_3",
-          "label": "Fixed item 3 (optional)"
-        },
-        {
-          "type": "product",
-          "id": "fixed_item_4",
-          "label": "Fixed item 4 (optional)"
-        },
-        {
-          "type": "product",
-          "id": "fixed_item_5",
-          "label": "Fixed item 5 (optional)"
-        },
-        {
-          "type": "header",
-          "content": "Customer choice item"
+          "content": "Jersey selection"
         },
         {
           "type": "collection",
           "id": "choice_collection",
-          "label": "Let customer choose from this collection",
-          "info": "e.g. 'Football Jerseys' — customer picks which jersey"
+          "label": "Jersey collection (customers pick from here)"
         },
         {
           "type": "text",
           "id": "choice_label",
-          "label": "Picker label",
+          "label": "Picker heading",
           "default": "Choose your jersey"
+        },
+        {
+          "type": "header",
+          "content": "£5 discount — once per purchase"
+        },
+        {
+          "type": "paragraph",
+          "content": "Price shown = boot price + jersey price − £5. Create a discount code in Shopify Admin → Discounts, set it to £5 off, and enable 'Limit to one use per customer' to enforce once-per-purchase. Enter the code below so it auto-applies at checkout."
+        },
+        {
+          "type": "text",
+          "id": "discount_code",
+          "label": "Discount code (e.g. JERSEY5OFF)",
+          "info": "Must exist in Shopify Admin → Discounts. Set to £5 off with one-use-per-customer."
         }
       ]
     }
   ],
-  "max_blocks": 3,
+  "max_blocks": 2,
   "presets": [
     { "name": "Bundle & Save" }
   ]

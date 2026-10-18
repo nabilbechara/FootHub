@@ -188,35 +188,19 @@ document.addEventListener('click', e => {
 
 // ── Bundle Tier Picker ──
 
-// ── Bundle Tier Picker ──
-
 function updateBundlePrice(body) {
-  const discount      = Number(body.dataset.discount || 0);
-  const priceOverride = Number(body.dataset.priceOverride || 0);
-  const basePrice     = Number(body.dataset.basePrice || 0);
-  const fixedTotal    = Number(body.dataset.fixedTotal || 0);
+  if (body.dataset.bundleType === 'shoes_bundle') return;
 
-  // Choice price: from selected jersey size, legacy radio, or the first jersey
-  // price from Liquid (so the initial JS render matches the Liquid-rendered price)
-  const selectedSizeBtn    = body.querySelector('.bundle-size-btn.is-selected');
-  const selectedRadio      = body.querySelector('.bundle-picker__radio:checked');
-  const firstChoicePrice   = Number(body.dataset.firstChoicePrice || 0);
-  const choicePrice = selectedSizeBtn
-    ? Number(selectedSizeBtn.dataset.price || 0)
-    : selectedRadio
-      ? Number(selectedRadio.closest('.bundle-picker__option')?.dataset.price || 0)
-      : firstChoicePrice;
-
-  const discountCode        = body.dataset.discountCode?.trim();
+  const basePrice           = Number(body.dataset.basePrice || 0);
+  const fixedTotal          = Number(body.dataset.fixedTotal || 0);
+  const firstChoicePrice    = Number(body.dataset.firstChoicePrice || 0);
   const discountFixedAmount = Number(body.dataset.discountFixedAmount || 0);
+
+  const selectedSizeBtn = body.querySelector('.bundle-size-btn.is-selected');
+  const choicePrice = selectedSizeBtn ? Number(selectedSizeBtn.dataset.price || 0) : firstChoicePrice;
+
   const original    = basePrice + fixedTotal + choicePrice;
-  const bundlePrice = priceOverride > 0
-    ? priceOverride
-    : discountFixedAmount > 0
-      ? original - discountFixedAmount
-      : discountCode
-        ? original - Math.round(choicePrice * discount / 100)
-        : original - Math.round(original * discount / 100);
+  const bundlePrice = discountFixedAmount > 0 ? original - discountFixedAmount : original;
 
   const fmt = p => window.formatMoney ? window.formatMoney(p) : `£${(p / 100).toFixed(2)}`;
   const wasEl = body.querySelector('[data-bundle-original]');
@@ -225,16 +209,14 @@ function updateBundlePrice(body) {
   if (nowEl) nowEl.textContent = fmt(bundlePrice);
 
   const badgeEl = body.closest('.bundle-tier-option')?.querySelector('.bundle-tier-option__badge');
-  if (badgeEl && original > 0) {
-    const pct = Math.round((original - bundlePrice) * 100 / original);
-    badgeEl.textContent = pct > 0 ? `Save ${pct}%` : '';
-    badgeEl.style.display = pct > 0 ? '' : 'none';
+  if (badgeEl && body.dataset.bundleType === 'jersey_bundle' && discountFixedAmount > 0) {
+    badgeEl.textContent = `Save ${fmt(discountFixedAmount)}`;
+    badgeEl.style.display = '';
   }
 }
 
 document.querySelectorAll('.bundle-tier-option__body[data-bundle-block]').forEach(updateBundlePrice);
 
-// Init sticky ATC label to match the pre-selected tier
 (function() {
   const picker = document.querySelector('.bundle-tier-picker');
   const preChecked = picker?.querySelector('.bundle-tier-radio:checked');
@@ -244,7 +226,6 @@ document.querySelectorAll('.bundle-tier-option__body[data-bundle-block]').forEac
   }
 })();
 
-// Tier radio change (shoes-only vs bundle)
 document.addEventListener('change', e => {
   const radio = e.target.closest('.bundle-tier-radio');
   if (!radio) return;
@@ -252,62 +233,47 @@ document.addEventListener('change', e => {
   if (!picker) return;
   picker.querySelectorAll('.bundle-tier-option').forEach(opt => opt.classList.remove('is-selected'));
   radio.closest('.bundle-tier-option')?.classList.add('is-selected');
-  // Clear all jersey picker hints on tier switch
   picker.querySelectorAll('.bundle-jersey-picker__hint').forEach(h => h.textContent = '');
   const stickyBtn = document.getElementById('sticky-atc-btn');
   if (stickyBtn) stickyBtn.textContent = radio.value === 'solo' ? 'Add to Bag' : 'Add Bundle to Bag';
 });
 
-// Jersey card click — show its size panel
 document.addEventListener('click', e => {
   const card = e.target.closest('.bundle-jersey-card');
   if (!card) return;
   const jerseyPicker = card.closest('.bundle-jersey-picker');
   if (!jerseyPicker) return;
-
   const idx = card.dataset.productIdx;
-
-  // Highlight card
   jerseyPicker.querySelectorAll('.bundle-jersey-card').forEach(c => {
     c.classList.remove('is-selected');
     c.setAttribute('aria-pressed', 'false');
   });
   card.classList.add('is-selected');
   card.setAttribute('aria-pressed', 'true');
-
-  // Show matching size panel, hide others
   jerseyPicker.querySelectorAll('.bundle-size-panel').forEach(p => p.hidden = true);
   const panel = jerseyPicker.querySelector(`.bundle-size-panel[data-for-idx="${idx}"]`);
   if (panel) panel.hidden = false;
-
-  // Clear previous size selection
   jerseyPicker.querySelector('.bundle-choice-variant').value = '';
   panel?.querySelectorAll('.bundle-size-btn').forEach(b => b.classList.remove('is-selected'));
-
   const hint = jerseyPicker.querySelector('.bundle-jersey-picker__hint');
   if (hint) hint.textContent = 'Now select your size below';
 });
 
-// Size button click — store variant and update price
 document.addEventListener('click', e => {
   const sizeBtn = e.target.closest('.bundle-size-btn');
   if (!sizeBtn || sizeBtn.disabled) return;
   const panel = sizeBtn.closest('.bundle-size-panel');
   const jerseyPicker = panel?.closest('.bundle-jersey-picker');
   if (!jerseyPicker) return;
-
   panel.querySelectorAll('.bundle-size-btn').forEach(b => b.classList.remove('is-selected'));
   sizeBtn.classList.add('is-selected');
   jerseyPicker.querySelector('.bundle-choice-variant').value = sizeBtn.dataset.variantId;
-
   const hint = jerseyPicker.querySelector('.bundle-jersey-picker__hint');
   if (hint) hint.textContent = '';
-
   const body = jerseyPicker.closest('.bundle-tier-option__body[data-bundle-block]');
   if (body) updateBundlePrice(body);
 });
 
-// Unified Add to Bag
 document.addEventListener('click', e => {
   const btn = e.target.closest('.bundle-tier-add-btn');
   if (!btn) return;
@@ -319,19 +285,20 @@ document.addEventListener('click', e => {
   const mainVariantId = Number(document.getElementById('variant-id')?.value || picker.dataset.mainVariant);
   if (!mainVariantId) return;
 
-  // Bundle mode — validate jersey + size if picker is present
   if (!isSolo) {
     const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
-    const jerseyPicker = body?.querySelector('.bundle-jersey-picker');
-    if (jerseyPicker) {
-      const choiceVal = jerseyPicker.querySelector('.bundle-choice-variant')?.value;
-      if (!choiceVal) {
-        const hint = jerseyPicker.querySelector('.bundle-jersey-picker__hint');
-        if (hint) hint.textContent = !jerseyPicker.querySelector('.bundle-jersey-card.is-selected')
-          ? 'Please select a jersey first'
-          : 'Please select a size';
-        jerseyPicker.querySelector('.bundle-jersey-picker__grid')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        return;
+    if (body?.dataset.bundleType === 'jersey_bundle') {
+      const jerseyPicker = body.querySelector('.bundle-jersey-picker');
+      if (jerseyPicker) {
+        const choiceVal = jerseyPicker.querySelector('.bundle-choice-variant')?.value;
+        if (!choiceVal) {
+          const hint = jerseyPicker.querySelector('.bundle-jersey-picker__hint');
+          if (hint) hint.textContent = !jerseyPicker.querySelector('.bundle-jersey-card.is-selected')
+            ? 'Please select a jersey first'
+            : 'Please select a size';
+          jerseyPicker.querySelector('.bundle-jersey-picker__grid')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
       }
     }
   }
@@ -358,82 +325,69 @@ document.addEventListener('click', e => {
 
   const body = picker.querySelector(`.bundle-tier-option__body[data-bundle-block="${selectedRadio.value}"]`);
   if (!body) return;
+  const bundleType = body.dataset.bundleType;
 
-  const discountCode        = body.dataset.discountCode?.trim();
-  const discountFixedAmount = Number(body.dataset.discountFixedAmount || 0);
-
-  const priceOverride = Number(body.dataset.priceOverride || 0);
-  const basePrice = Number(body.dataset.basePrice || 0);
-  const fixedTotal = Number(body.dataset.fixedTotal || 0);
-  const discount = Number(body.dataset.discount || 0);
-  const firstChoicePrice = Number(body.dataset.firstChoicePrice || 0);
-  const selectedSizeBtn = body.querySelector('.bundle-size-btn.is-selected');
-  const choicePrice = selectedSizeBtn ? Number(selectedSizeBtn.dataset.price || 0) : firstChoicePrice;
-  const baseTotalCents = basePrice + fixedTotal + choicePrice;
-  const bundlePriceCents = priceOverride > 0
-    ? priceOverride
-    : discountFixedAmount > 0
-      ? baseTotalCents - discountFixedAmount
-      : discountCode
-        ? baseTotalCents - Math.round(choicePrice * discount / 100)
-        : baseTotalCents - Math.round(baseTotalCents * discount / 100);
-  const savingCents = Math.max(0, baseTotalCents - bundlePriceCents);
-
-  const mainProps = {};
-  if (savingCents > 0) mainProps['_bundle_saving'] = savingCents;
-  if (bundlePriceCents > 0) mainProps['_bundle_price'] = bundlePriceCents;
-  if (discountCode) mainProps['_bundle_code'] = discountCode;
-  // Build child items first so we can store their IDs on the main boot
-  const childItems = [];
-  body.querySelectorAll('.bundle-fixed-variant').forEach(input => {
-    const id = Number(input.value);
-    if (id) childItems.push({ id, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } });
-  });
-  const choiceInput = body.querySelector('.bundle-choice-variant');
-  if (choiceInput?.value) {
-    childItems.push({ id: Number(choiceInput.value), quantity: 1, properties: { _bundle_parent: String(mainVariantId) } });
-  }
-
-  if (childItems.length) mainProps['_bundle_children'] = childItems.map(i => i.id).join(',');
-  const items = [{ id: mainVariantId, quantity: 1, properties: mainProps }, ...childItems];
-
-  fetch('/cart/add.js', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items })
-  }).then(r => r.json()).then(() => {
-    const applyDiscount = discountCode
-      ? fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {})
-      : Promise.resolve();
-    return applyDiscount;
-  }).then(() => {
-    return fetch('/cart.js').then(r => r.json()).catch(() => ({ attributes: {} }));
-  }).then(currentCart => {
-    const existingCodes = currentCart.attributes?._bundle_discounts || '';
-    const codeSet = new Set([...existingCodes.split(','), ...(discountCode ? [discountCode] : [])].filter(Boolean));
-    const existingSaving = Number(currentCart.attributes?._bundle_saving || 0);
-    return fetch('/cart/update.js', {
+  // ── Shoes Bundle: boot + single bundle product ──
+  if (bundleType === 'shoes_bundle') {
+    const bundleVariantId = Number(body.dataset.bundleProductVariant);
+    if (!bundleVariantId) {
+      btn.disabled = false; btn.innerHTML = 'Add to Bag';
+      window.showToast?.('Bundle product not configured — check theme settings', 'error');
+      return;
+    }
+    fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        attributes: {
-          _bundle_discounts: [...codeSet].join(','),
-          _bundle_saving: String(existingSaving + savingCents)
-        }
+        items: [
+          { id: mainVariantId, quantity: 1, properties: { _bundle_type: 'shoes_bundle' } },
+          { id: bundleVariantId, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } }
+        ]
       })
-    }).catch(() => {});
-  }).then(() => {
-    btn.innerHTML = '✓ Bundle Added!';
-    window.showToast?.('Bundle added to bag!', 'success');
-    window.openCartDrawer?.();
-    setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Add to Bag'; }, 2500);
-  }).catch(() => {
-    btn.disabled = false; btn.innerHTML = 'Add to Bag';
-    window.showToast?.('Could not add bundle — try again', 'error');
-  });
+    }).then(r => r.json()).then(() => {
+      btn.innerHTML = '✓ Bundle Added!';
+      window.showToast?.('Bundle added to bag!', 'success');
+      window.openCartDrawer?.();
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Add to Bag'; }, 2500);
+    }).catch(() => {
+      btn.disabled = false; btn.innerHTML = 'Add to Bag';
+      window.showToast?.('Could not add bundle — try again', 'error');
+    });
+    return;
+  }
+
+  // ── Jersey Bundle: boot + jersey, auto-apply discount code (once per purchase) ──
+  if (bundleType === 'jersey_bundle') {
+    const jerseyPicker = body.querySelector('.bundle-jersey-picker');
+    const choiceVariantId = Number(jerseyPicker?.querySelector('.bundle-choice-variant')?.value);
+    const discountCode = body.dataset.discountCode?.trim();
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: [
+          { id: mainVariantId, quantity: 1, properties: { _bundle_type: 'jersey_bundle', _bundle_saving: '500' } },
+          { id: choiceVariantId, quantity: 1, properties: { _bundle_parent: String(mainVariantId) } }
+        ]
+      })
+    }).then(r => r.json()).then(() => {
+      if (discountCode) {
+        return fetch(`/discount/${encodeURIComponent(discountCode)}`, { method: 'GET' }).catch(() => {});
+      }
+    }).then(() => {
+      btn.innerHTML = '✓ Bundle Added!';
+      window.showToast?.('Bundle added to bag!', 'success');
+      window.openCartDrawer?.();
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = 'Add to Bag'; }, 2500);
+    }).catch(() => {
+      btn.disabled = false; btn.innerHTML = 'Add to Bag';
+      window.showToast?.('Could not add bundle — try again', 'error');
+    });
+    return;
+  }
 });
 
-// Sticky ATC should also use tier picker if present
 document.getElementById('sticky-atc-btn')?.addEventListener('click', () => {
   const tierBtn = document.querySelector('.bundle-tier-add-btn');
   if (tierBtn) tierBtn.click();
