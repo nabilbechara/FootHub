@@ -4028,25 +4028,40 @@ svg { display: block; }
   .collection-grid { padding: var(--space-4); }
 }
 
-/* ── Cart drawer — slides from bottom on mobile ── */
+/* ── Cart drawer — bottom sheet on mobile ── */
 @media (max-width: 768px) {
+  /* Outer container = full-screen backdrop, no slide */
   .cart-drawer {
-    top: auto;
+    top: 0;
+    right: 0;
     bottom: 0;
     left: 0;
+    transform: none;
+    max-height: none;
+    border-radius: 0;
+    padding-bottom: 0;
+    z-index: 1000;
+  }
+  .cart-drawer.is-open { transform: none; }
+
+  /* Panel = the actual sheet that slides up */
+  .cart-drawer__panel {
+    position: absolute;
+    top: auto;
     right: 0;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    max-width: 100%;
     max-height: 90vh;
     border-radius: 20px 20px 0 0;
     transform: translateY(100%);
+    transition: transform var(--transition-slow);
+    overflow-y: auto;
     padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
-    z-index: 1000;
   }
-  .cart-drawer.is-open { transform: translateY(0); }
-  .cart-drawer__header {
-    padding: var(--space-4) var(--space-5);
-  }
+  .cart-drawer.is-open .cart-drawer__panel { transform: translateY(0); }
+
+  .cart-drawer__header { padding: var(--space-4) var(--space-5); }
   /* Drag handle */
   .cart-drawer__header::before {
     content: '';
