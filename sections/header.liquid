@@ -13,89 +13,85 @@
       <ul class="site-header__nav-list" role="list">
         {%- for link in linklists[main_menu].links -%}
           {%- assign link_title_down = link.title | downcase -%}
-          {%- assign is_sale = false -%}
-          {%- assign is_new = false -%}
-          {%- if link_title_down contains 'sale' or link_title_down contains 'outlet' -%}
-            {%- assign is_sale = true -%}
+          {%- assign skip_link = false -%}
+          {%- if link_title_down == 'home' or link_title_down == 'about us' or link_title_down == 'about' -%}
+            {%- assign skip_link = true -%}
           {%- endif -%}
-          {%- if link_title_down == 'new' or link_title_down == 'new in' or link_title_down == 'new arrivals' -%}
-            {%- assign is_new = true -%}
-          {%- endif -%}
-          <li class="site-header__nav-item">
+          {%- unless skip_link -%}
             {%- if link.links.size > 0 -%}
-              <button
-                class="site-header__nav-link{% if is_sale %} site-header__nav-link--sale{% endif %}{% if is_new %} site-header__nav-link--new{% endif %}"
-                aria-expanded="false"
-                aria-haspopup="true"
-              >
-                {{- link.title -}}
-                {%- if is_new %}<span class="nav-badge nav-badge--new">New</span>{%- endif -%}
-                {%- if is_sale %}<span class="nav-badge nav-badge--sale">Sale</span>{%- endif -%}
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-              </button>
-              <div class="mega-menu{% if is_sale %} mega-menu--sale{% endif %}" role="menu" aria-label="{{ link.title }} submenu">
-                <div class="mega-menu__inner">
-                  {%- assign col_count = 0 -%}
-                  {%- for child_link in link.links -%}
-                    {%- if col_count < 3 -%}
-                      <div class="mega-menu__col">
-                        <p class="mega-menu__heading">{{ child_link.title }}</p>
-                        {%- if child_link.links.size > 0 -%}
-                          <ul class="mega-menu__list" role="list">
-                            {%- for grandchild_link in child_link.links -%}
-                              {%- assign gc_down = grandchild_link.title | downcase -%}
-                              <li>
-                                <a
-                                  class="mega-menu__link{% if gc_down == 'sale' or gc_down == 'view all' %} mega-menu__link--accent{% endif %}"
-                                  href="{{ grandchild_link.url }}"
-                                  role="menuitem"
-                                >
-                                  {{ grandchild_link.title }}
-                                  {%- if gc_down == 'sale' -%}<span class="mega-menu__link-tag">Hot</span>{%- endif -%}
-                                  {%- if gc_down == 'new' or gc_down == 'new in' -%}<span class="mega-menu__link-tag mega-menu__link-tag--new">New</span>{%- endif -%}
-                                </a>
-                              </li>
-                            {%- endfor -%}
-                          </ul>
-                        {%- else -%}
-                          <a class="mega-menu__link mega-menu__link--accent" href="{{ child_link.url }}" role="menuitem">Shop All →</a>
-                        {%- endif -%}
+              {%- comment -%}Promote children to top-level nav items{%- endcomment -%}
+              {%- for child_link in link.links -%}
+                {%- assign ct_down = child_link.title | downcase -%}
+                {%- assign child_is_sale = false -%}
+                {%- assign child_is_new = false -%}
+                {%- if ct_down contains 'sale' or ct_down contains 'outlet' -%}{%- assign child_is_sale = true -%}{%- endif -%}
+                {%- if ct_down == 'new' or ct_down == 'new in' or ct_down == 'new arrivals' -%}{%- assign child_is_new = true -%}{%- endif -%}
+                <li class="site-header__nav-item">
+                  {%- if child_link.links.size > 0 -%}
+                    <button
+                      class="site-header__nav-link{% if child_is_sale %} site-header__nav-link--sale{% endif %}{% if child_is_new %} site-header__nav-link--new{% endif %}"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                    >
+                      {{- child_link.title -}}
+                      {%- if child_is_new %}<span class="nav-badge nav-badge--new">New</span>{%- endif -%}
+                      {%- if child_is_sale %}<span class="nav-badge nav-badge--sale">Sale</span>{%- endif -%}
+                      <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <div class="mega-menu{% if child_is_sale %} mega-menu--sale{% endif %}" role="menu" aria-label="{{ child_link.title }} submenu">
+                      <div class="mega-menu__inner">
+                        {%- for grandchild_link in child_link.links -%}
+                          <div class="mega-menu__col">
+                            <p class="mega-menu__heading">{{ grandchild_link.title }}</p>
+                            {%- if grandchild_link.links.size > 0 -%}
+                              <ul class="mega-menu__list" role="list">
+                                {%- for ggchild in grandchild_link.links -%}
+                                  {%- assign gg_down = ggchild.title | downcase -%}
+                                  <li>
+                                    <a class="mega-menu__link{% if gg_down == 'sale' or gg_down == 'view all' %} mega-menu__link--accent{% endif %}" href="{{ ggchild.url }}" role="menuitem">{{ ggchild.title }}</a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- else -%}
+                              <a class="mega-menu__link mega-menu__link--accent" href="{{ grandchild_link.url }}" role="menuitem">Shop All →</a>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
                       </div>
-                      {%- assign col_count = col_count | plus: 1 -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-                  {%- if section.settings.mega_menu_image != blank -%}
-                    <div class="mega-menu__col mega-menu__col--featured">
-                      <a class="mega-menu__featured" href="{{ section.settings.mega_menu_link | default: '#' }}">
-                        <img
-                          class="mega-menu__featured-img"
-                          src="{{ section.settings.mega_menu_image | image_url: width: 400 }}"
-                          alt="{{ section.settings.mega_menu_image.alt | escape }}"
-                          width="200" height="267"
-                          loading="lazy"
-                        >
-                        {%- if section.settings.mega_menu_label != blank -%}
-                          <span class="mega-menu__featured-label">{{ section.settings.mega_menu_label }}</span>
-                        {%- endif -%}
-                      </a>
                     </div>
+                  {%- else -%}
+                    <a
+                      class="site-header__nav-link{% if child_link.active %} is-active{% endif %}{% if child_is_sale %} site-header__nav-link--sale{% endif %}{% if child_is_new %} site-header__nav-link--new{% endif %}"
+                      href="{{ child_link.url }}"
+                      {% if child_link.current %}aria-current="page"{% endif %}
+                    >
+                      {{- child_link.title -}}
+                      {%- if child_is_new %}<span class="nav-badge nav-badge--new">New</span>{%- endif -%}
+                      {%- if child_is_sale %}<span class="nav-badge nav-badge--sale">Sale</span>{%- endif -%}
+                    </a>
                   {%- endif -%}
-                </div>
-              </div>
+                </li>
+              {%- endfor -%}
             {%- else -%}
-              <a
-                class="site-header__nav-link{% if link.active %} is-active{% endif %}{% if is_sale %} site-header__nav-link--sale{% endif %}{% if is_new %} site-header__nav-link--new{% endif %}"
-                href="{{ link.url }}"
-                {% if link.current %}aria-current="page"{% endif %}
-              >
-                {{- link.title -}}
-                {%- if is_new %}<span class="nav-badge nav-badge--new">New</span>{%- endif -%}
-                {%- if is_sale %}<span class="nav-badge nav-badge--sale">Sale</span>{%- endif -%}
-              </a>
+              {%- assign is_sale = false -%}
+              {%- assign is_new = false -%}
+              {%- if link_title_down contains 'sale' or link_title_down contains 'outlet' -%}{%- assign is_sale = true -%}{%- endif -%}
+              {%- if link_title_down == 'new' or link_title_down == 'new in' or link_title_down == 'new arrivals' -%}{%- assign is_new = true -%}{%- endif -%}
+              <li class="site-header__nav-item">
+                <a
+                  class="site-header__nav-link{% if link.active %} is-active{% endif %}{% if is_sale %} site-header__nav-link--sale{% endif %}{% if is_new %} site-header__nav-link--new{% endif %}"
+                  href="{{ link.url }}"
+                  {% if link.current %}aria-current="page"{% endif %}
+                >
+                  {{- link.title -}}
+                  {%- if is_new %}<span class="nav-badge nav-badge--new">New</span>{%- endif -%}
+                  {%- if is_sale %}<span class="nav-badge nav-badge--sale">Sale</span>{%- endif -%}
+                </a>
+              </li>
             {%- endif -%}
-          </li>
+          {%- endunless -%}
         {%- endfor -%}
       </ul>
     </nav>
@@ -189,35 +185,44 @@
     <nav aria-label="Mobile navigation">
       <ul class="mobile-nav__list" role="list">
         {%- for link in linklists[main_menu].links -%}
-          <li class="mobile-nav__item">
+          {%- assign link_title_down = link.title | downcase -%}
+          {%- assign skip_link = false -%}
+          {%- if link_title_down == 'home' or link_title_down == 'about us' or link_title_down == 'about' -%}
+            {%- assign skip_link = true -%}
+          {%- endif -%}
+          {%- unless skip_link -%}
             {%- if link.links.size > 0 -%}
-              <button
-                class="mobile-nav__link"
-                data-has-sub
-                aria-expanded="false"
-              >
-                {{ link.title }}
-                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
-                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-              </button>
-              <ul class="mobile-nav__sub-list" role="list">
-                {%- for child_link in link.links -%}
-                  <li>
-                    <a class="mobile-nav__sub-link" href="{{ child_link.url }}">{{ child_link.title }}</a>
-                  </li>
-                {%- endfor -%}
-              </ul>
+              {%- for child_link in link.links -%}
+                <li class="mobile-nav__item">
+                  {%- if child_link.links.size > 0 -%}
+                    <button class="mobile-nav__link" data-has-sub aria-expanded="false">
+                      {{ child_link.title }}
+                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <ul class="mobile-nav__sub-list" role="list">
+                      {%- for grandchild_link in child_link.links -%}
+                        <li>
+                          <a class="mobile-nav__sub-link" href="{{ grandchild_link.url }}">{{ grandchild_link.title }}</a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- else -%}
+                    <a class="mobile-nav__link" href="{{ child_link.url }}" {% if child_link.current %}aria-current="page"{% endif %}>
+                      {{ child_link.title }}
+                    </a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
             {%- else -%}
-              <a
-                class="mobile-nav__link"
-                href="{{ link.url }}"
-                {% if link.current %}aria-current="page"{% endif %}
-              >
-                {{ link.title }}
-              </a>
+              <li class="mobile-nav__item">
+                <a class="mobile-nav__link" href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>
+                  {{ link.title }}
+                </a>
+              </li>
             {%- endif -%}
-          </li>
+          {%- endunless -%}
         {%- endfor -%}
       </ul>
     </nav>
